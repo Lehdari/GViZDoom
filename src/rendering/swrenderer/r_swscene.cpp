@@ -111,7 +111,7 @@ sector_t *SWSceneDrawer::RenderView(player_t *player)
 			mat->AddTextureLayer(PaletteTexture, false);
 
 			Canvas.reset();
-			Canvas.reset(new DCanvas(screen->GetWidth(), screen->GetHeight(), V_IsTrueColor()));
+			Canvas.reset(new DCanvas(screen->GetWidth(), screen->GetHeight(), V_IsTrueColor(), true));
 		}
 
 		IHardwareTexture *systemTexture = GetSystemTexture();

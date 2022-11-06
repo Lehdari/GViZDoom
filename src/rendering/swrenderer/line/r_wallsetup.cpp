@@ -687,7 +687,13 @@ namespace swrenderer
 		}
 	}
 
-	void ProjectedWallLight::SetColormap(const sector_t *frontsector, seg_t *lineseg, int tier, lightlist_t *lit)
+    void ProjectedWallLight::SetDepthLeft(RenderThread* thread, const FWallCoords& wallc)
+    {
+        depthinvleft = 1.0f/wallc.sz1;
+        depthinvstep = (1.0f/wallc.sz2 - depthinvleft) / float(wallc.sx2 - wallc.sx1);
+    }
+
+    void ProjectedWallLight::SetColormap(const sector_t *frontsector, seg_t *lineseg, int tier, lightlist_t *lit)
 	{
 		if (!lit)
 		{

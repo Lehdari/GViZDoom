@@ -902,6 +902,9 @@ namespace swrenderer
 			lightstep = 0;
 		}
 
+        float curdepthinv = wallargs.depthinvpos;
+        float depthinvstep = wallargs.depthinvstep;
+
 		float upos = wallargs.texcoords.upos, ustepX = wallargs.texcoords.ustepX, ustepY = wallargs.texcoords.ustepY;
 		float vpos = wallargs.texcoords.vpos, vstepX = wallargs.texcoords.vstepX, vstepY = wallargs.texcoords.vstepY;
 		float wpos = wallargs.texcoords.wpos, wstepX = wallargs.texcoords.wstepX, wstepY = wallargs.texcoords.wstepY;
@@ -931,6 +934,8 @@ namespace swrenderer
 				else
 					wallcolargs.dc_num_lights = 0;
 
+                wallcolargs.SetDepthInv(curdepthinv);
+
 				float dy = (y1 - centerY);
 				float u = upos + ustepY * dy;
 				float v = vpos + vstepY * dy;
@@ -955,6 +960,7 @@ namespace swrenderer
 			vpos += vstepX;
 			wpos += wstepX;
 			curlight += lightstep;
+            curdepthinv += depthinvstep;
 		}
 	}
 

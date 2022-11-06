@@ -41,6 +41,8 @@ namespace swrenderer
 		int DestY() const { return dc_dest_y; }
 		int Count() const { return dc_count; }
 
+        float* DestDepth() const { return dc_depth_dest; }
+
 		int FuzzX() const { return dc_x; }
 		int FuzzY1() const { return dc_yl; }
 		int FuzzY2() const { return dc_yh; }
@@ -80,6 +82,7 @@ namespace swrenderer
 		uint8_t *dc_dest = nullptr;
 		int dc_dest_y = 0;
 		int dc_count = 0;
+        float* dc_depth_dest = nullptr;
 
 		fixed_t dc_iscale;
 		fixed_t dc_texturefrac;

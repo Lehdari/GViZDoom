@@ -72,7 +72,7 @@ EXTERN_CVAR(Bool, r_drawplayersprites)
 EXTERN_CVAR(Bool, r_deathcamera)
 EXTERN_CVAR(Bool, r_fullbrightignoresectorcolor)
 
-CVAR(Bool, r_noaccel, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+CVAR(Bool, r_noaccel, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
 
 namespace swrenderer
 {

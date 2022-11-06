@@ -55,7 +55,8 @@ namespace swrenderer
 		// from clipangle to -clipangle.
 		angle_t xtoviewangle[MAXWIDTH + 1];
 
-		uint8_t *GetDest(int x, int y);
+        uint8_t *GetDest(int x, int y);
+        float* GetDepthDest(int x, int y);
 
 		DVector3 PointWorldToView(const DVector3 &worldPos) const;
 		DVector3 PointWorldToScreen(const DVector3 &worldPos) const;

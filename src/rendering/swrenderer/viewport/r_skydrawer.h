@@ -28,6 +28,8 @@ namespace swrenderer
 		int DestY() const { return dc_dest_y; }
 		int Count() const { return dc_count; }
 
+        float* DestDepth() const { return dc_depth_dest; }
+
 		uint32_t TextureVPos() const { return dc_texturefrac; }
 		uint32_t TextureVStep() const { return dc_iscale; }
 
@@ -46,10 +48,13 @@ namespace swrenderer
 		void DrawSingleSkyColumn(RenderThread *thread);
 		void DrawDoubleSkyColumn(RenderThread *thread);
 
+        static constexpr float skyDepth = 65536.0f;
+
 	private:
 		uint8_t *dc_dest = nullptr;
 		int dc_dest_y = 0;
 		int dc_count = 0;
+        float* dc_depth_dest = nullptr;
 		const uint8_t *dc_source;
 		const uint8_t *dc_source2;
 		uint32_t dc_sourceheight;

@@ -121,6 +121,7 @@ namespace swrenderer
 			uint32_t frac = args.TextureVPos();
 			uint32_t texturefracx = args.TextureUPos();
 			uint32_t *dest = (uint32_t*)args.Dest();
+            float* destDepth = args.DestDepth();
 			int dest_y = args.DestY();
 
 			auto lights = args.dc_lights;
@@ -152,10 +153,20 @@ namespace swrenderer
 				BgraColor fgcolor = Shade<ShadeModeT>(ifgcolor, light, desaturate, inv_desaturate, shade_fade, shade_light, lights, num_lights, viewpos_z);
 				BgraColor outcolor = Blend(fgcolor, bgcolor, ifgcolor, srcalpha, destalpha);
 
-				*dest = outcolor;
+                *dest = outcolor;
 				dest += pitch;
 				frac += fracstep;
 				viewpos_z += step_viewpos_z;
+
+                // Depth rendering
+                if (destDepth != nullptr) {
+                    // alpha over 128 (0.5) overwrites the previous depth as depth blending makes no sense
+                    if (BlendT::Mode == (int)WallBlendModes::Opaque || fgcolor.a > 128) {
+                        float depth = (1.0f / args.DepthInv()) / 256; // TODO remove division by 256
+                        *destDepth = depth;
+                    }
+                    destDepth += pitch;
+                }
 			}
 		}
 

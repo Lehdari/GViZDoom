@@ -48,7 +48,12 @@ namespace swrenderer
 		mShade = shade;
 	}
 
-	void DrawerArgs::SetTranslationMap(lighttable_t *translation)
+    void DrawerArgs::SetDepth(float depth)
+    {
+        mDepth = depth;
+    }
+
+    void DrawerArgs::SetTranslationMap(lighttable_t *translation)
 	{
 		mTranslation = translation;
 	}

@@ -81,6 +81,7 @@ namespace swrenderer
 
 		mLight.SetColormap(lightsector, curline, tier);
 		mLight.SetLightLeft(Thread, WallC);
+        mLight.SetDepthLeft(Thread, WallC);
 
 		CameraLight* cameraLight = CameraLight::Instance();
 		if (cameraLight->FixedColormap() || cameraLight->FixedLightLevel() >= 0 || !(lightsector->e && lightsector->e->XFloor.lightlist.Size()))
@@ -171,6 +172,9 @@ namespace swrenderer
 
 		drawerargs.lightpos = mLight.GetLightPos(x1);
 		drawerargs.lightstep = mLight.GetLightStep();
+
+        drawerargs.depthinvpos = mLight.GetDepthInvPos(x1);
+        drawerargs.depthinvstep = mLight.GetDepthInvStep();
 
 		drawerargs.lightlist = light_list;
 

@@ -186,6 +186,7 @@ namespace swrenderer
 			int count = args.DestX2() - args.DestX1() + 1;
 			int pitch = args.Viewport()->RenderTarget->GetPitch();
 			uint32_t *dest = (uint32_t*)args.Viewport()->GetDest(args.DestX1(), args.DestY());
+            float* destDepth = args.Viewport()->GetDepthDest(args.DestX1(), args.DestY());
 
 			if (FilterModeT::Mode == (int)FilterModes::Linear)
 			{
@@ -217,6 +218,16 @@ namespace swrenderer
 				texdata.xfrac += texdata.xstep;
 				texdata.yfrac += texdata.ystep;
 				viewpos_x += step_viewpos_x;
+
+                // Depth rendering
+                if (destDepth != nullptr) {
+                    // alpha over 128 (0.5) overwrites the previous depth as depth blending makes no sense
+                    if (BlendT::Mode == (int)SpanBlendModes::Opaque || fgcolor.a > 128) {
+                        float depth = args.Depth() / 256; // TODO remove division by 256
+                        *destDepth = depth;
+                    }
+                    ++destDepth;
+                }
 			}
 
 		}

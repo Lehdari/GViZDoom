@@ -218,7 +218,19 @@ namespace swrenderer
 		return RenderTarget->GetPixels() + (x + y * pitch) * pixelsize;
 	}
 
-	void RenderViewport::InitTextureMapping()
+    float* RenderViewport::GetDepthDest(int x, int y)
+    {
+        if (!RenderTarget->HasDepth())
+            return nullptr;
+
+        x += viewwindowx;
+        y += viewwindowy;
+
+        int pitch = RenderTarget->GetPitch();
+        return RenderTarget->GetDepthPixels() + (x + y * pitch);
+    }
+
+    void RenderViewport::InitTextureMapping()
 	{
 		int i;
 

@@ -34,6 +34,7 @@ namespace swrenderer
 		void SetBaseColormap(FSWColormap *base_colormap);
 		void SetLight(float light, int shade);
 		void SetLight(float light, int lightlevel, bool foggy, RenderViewport *viewport);
+		void SetDepth(float depth);
 		void SetTranslationMap(lighttable_t *translation);
 
 		uint8_t *Colormap(RenderViewport *viewport) const;
@@ -42,6 +43,7 @@ namespace swrenderer
 
 		ShadeConstants ColormapConstants() const;
 		fixed_t Light() const { return LIGHTSCALE(mLight, mShade); }
+		float Depth() const { return mDepth; }
 
 		float FixedLight() const { return mLight; }
 		int Shade() const { return mShade; }
@@ -53,6 +55,7 @@ namespace swrenderer
 		FSWColormap *mBaseColormap = nullptr;
 		float mLight = 0.0f;
 		int mShade = 0;
+		float mDepth = 0.0f;
 		uint8_t *mTranslation = nullptr;
 	};
 

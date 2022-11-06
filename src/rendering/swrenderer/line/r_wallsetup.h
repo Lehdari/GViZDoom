@@ -117,10 +117,13 @@ namespace swrenderer
 
 		float GetLightPos(int x) const { return lightleft + lightstep * (x - x1); }
 		float GetLightStep() const { return lightstep; }
+        float GetDepthInvPos(int x) const { return depthinvleft + depthinvstep * (x - x1); }
+        float GetDepthInvStep() const { return depthinvstep; }
 		bool IsSpriteLight() const { return spritelight; }
 
 		void SetColormap(const sector_t *frontsector, seg_t *lineseg, int tier, lightlist_t *lit = nullptr);
 		void SetLightLeft(RenderThread *thread, const FWallCoords &wallc);
+        void SetDepthLeft(RenderThread *thread, const FWallCoords &wallc);
 		void SetSpriteLight() { lightleft = 0.0f; lightstep = 0.0f; spritelight = true; }
 
 	private:
@@ -132,5 +135,7 @@ namespace swrenderer
 		int x1;
 		float lightleft;
 		float lightstep;
+        float depthinvleft;
+        float depthinvstep;
 	};
 }

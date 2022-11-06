@@ -33,6 +33,7 @@ namespace swrenderer
 		static void DrawColumn(const SkyDrawerArgs& args)
 		{
 			uint32_t *dest = (uint32_t *)args.Dest();
+            float* destDepth = args.DestDepth();
 			int pitch = args.Viewport()->RenderTarget->GetPitch();
 			const uint32_t *source0 = (const uint32_t *)args.FrontTexturePixels();
 			int textureheight0 = args.FrontTextureHeight();
@@ -66,6 +67,9 @@ namespace swrenderer
 					*dest = source0[sample_index];
 					dest += pitch;
 					frac += fracstep;
+
+                    *destDepth = SkyDrawerArgs::skyDepth;
+                    destDepth += pitch;
 				}
 
 				return;
@@ -83,6 +87,9 @@ namespace swrenderer
 				dest += pitch;
 				frac += fracstep;
 				index++;
+
+                *destDepth = SkyDrawerArgs::skyDepth;
+                destDepth += pitch;
 			}
 
 			// Top fade:
@@ -103,6 +110,9 @@ namespace swrenderer
 				frac += fracstep;
 				dest += pitch;
 				index++;
+
+                *destDepth = SkyDrawerArgs::skyDepth;
+                destDepth += pitch;
 			}
 
 			// Textured center:
@@ -114,6 +124,9 @@ namespace swrenderer
 				frac += fracstep;
 				dest += pitch;
 				index++;
+
+                *destDepth = SkyDrawerArgs::skyDepth;
+                destDepth += pitch;
 			}
 
 			// Fade bottom:
@@ -134,6 +147,9 @@ namespace swrenderer
 				frac += fracstep;
 				dest += pitch;
 				index++;
+
+                *destDepth = SkyDrawerArgs::skyDepth;
+                destDepth += pitch;
 			}
 
 			// Bottom solid color:
@@ -142,6 +158,9 @@ namespace swrenderer
 				*dest = solid_bottom;
 				dest += pitch;
 				index++;
+
+                *destDepth = SkyDrawerArgs::skyDepth;
+                destDepth += pitch;
 			}
 		}
 	};

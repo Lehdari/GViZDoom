@@ -195,12 +195,13 @@ bool setsizeneeded = false;
 //
 //==========================================================================
 
-DCanvas::DCanvas (int _width, int _height, bool _bgra)
+DCanvas::DCanvas (int _width, int _height, bool _bgra, bool _depthEnabled)
 {
 	// Init member vars
 	Width = _width;
 	Height = _height;
 	Bgra = _bgra;
+    DepthEnabled = _depthEnabled;
 	Resize(_width, _height);
 }
 
@@ -263,6 +264,11 @@ void DCanvas::Resize(int width, int height, bool optimizepitch)
 	int bytes_per_pixel = Bgra ? 4 : 1;
 	Pixels.Resize(Pitch * height * bytes_per_pixel);
 	memset (Pixels.Data(), 0, Pixels.Size());
+
+    if (DepthEnabled) {
+        DepthPixels.Resize(Pitch * height);
+        memset (DepthPixels.Data(), 0, DepthPixels.Size());
+    }
 }
 
 

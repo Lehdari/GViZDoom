@@ -3035,6 +3035,8 @@ namespace swrenderer
 				else
 					wallcolargs.dc_num_lights = 0;
 
+                wallcolargs.SetDepthInv(wallargs.depthinvpos);
+
 				float dy = (y1 - centerY);
 				float u = upos + ustepY * dy;
 				float v = vpos + vstepY * dy;

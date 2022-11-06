@@ -55,6 +55,8 @@ namespace swrenderer
 		dc_dest = viewport->GetDest(x, y);
 		dc_dest_y = y;
 		dc_viewport = viewport;
+
+        dc_depth_dest = Viewport()->GetDepthDest(x, y);
 	}
 
 	void SkyDrawerArgs::SetFrontTexture(RenderThread *thread, FSoftwareTexture *texture, fixed_t column)

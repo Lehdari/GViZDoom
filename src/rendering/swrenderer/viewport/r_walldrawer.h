@@ -36,6 +36,9 @@ namespace swrenderer
 		float lightpos;
 		float lightstep;
 
+        float depthinvpos;
+        float depthinvstep;
+
 		int texwidth;
 		int texheight;
 		int fracbits;

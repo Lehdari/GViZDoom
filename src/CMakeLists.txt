@@ -233,10 +233,11 @@ if( DEM_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	set( CMAKE_C_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers -ffp-contract=off ${CMAKE_C_FLAGS}" )
 	set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers -ffp-contract=off ${CMAKE_CXX_FLAGS}" )
 
-	if( NOT X64 AND NOT CAN_DO_MFPMATH )
+	# TODO SSE operations disabled for now
+	#if( NOT X64 AND NOT CAN_DO_MFPMATH )
 		set( CMAKE_C_FLAGS "-DNO_SSE ${CMAKE_C_FLAGS}" )
 		set( CMAKE_CXX_FLAGS "-DNO_SSE ${CMAKE_CXX_FLAGS}" )
-	endif()
+	#endif()
 
 	# Remove extra warnings when using the official DirectX headers.
 	# Also, TDM-GCC 4.4.0 no longer accepts glibc-style printf formats as valid,

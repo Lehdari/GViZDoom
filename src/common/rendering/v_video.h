@@ -102,23 +102,27 @@ struct SamplerUniform;
 class DCanvas
 {
 public:
-	DCanvas (int width, int height, bool bgra);
+	DCanvas (int width, int height, bool bgra, bool depthEnabled = false);
 	~DCanvas ();
 	void Resize(int width, int height, bool optimizepitch = true);
 
 	// Member variable access
 	inline uint8_t *GetPixels () const { return Pixels.Data(); }
+    inline float *GetDepthPixels () { return DepthPixels.Data(); }
 	inline int GetWidth () const { return Width; }
 	inline int GetHeight () const { return Height; }
 	inline int GetPitch () const { return Pitch; }
 	inline bool IsBgra() const { return Bgra; }
+    inline bool HasDepth() const { return DepthEnabled; }
 
 protected:
 	TArray<uint8_t> Pixels;
+    TArray<float> DepthPixels;
 	int Width;
 	int Height;
 	int Pitch;
 	bool Bgra;
+    bool DepthEnabled;
 };
 
 class IHardwareTexture;

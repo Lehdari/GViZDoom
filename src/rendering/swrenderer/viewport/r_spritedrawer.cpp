@@ -87,6 +87,9 @@ namespace swrenderer
 		float lightpos = light.GetLightPos(x1);
 		float lightstep = light.GetLightStep();
 
+        float depthinvpos = light.GetDepthInvPos(x1);
+        float depthinvstep = light.GetDepthInvStep();
+
 		if (x1 > WallC.sx1)
 		{
 			int dx = x1 - WallC.sx1;
@@ -117,6 +120,7 @@ namespace swrenderer
 			uint32_t texelStepX = (uint32_t)(int64_t)(scaleU * 0x1'0000'0000LL);
 			uint32_t texelStepY = (uint32_t)(int64_t)(scaleV * 0x1'0000'0000LL);
 
+            SetDepth(w);
 			DrawMaskedColumn(thread, x, y1, mceilingclip[x], mfloorclip[x], texelX, texelStepX, texelStepY, scaleV, flipY, tex, texwidth, texheight, bgra, style);
 
 			upos += ustepX;
@@ -563,5 +567,7 @@ namespace swrenderer
 		dc_dest = viewport->GetDest(x, y);
 		dc_dest_y = y;
 		dc_viewport = viewport;
+
+        dc_depth_dest = viewport->GetDepthDest(x, y);
 	}
 }

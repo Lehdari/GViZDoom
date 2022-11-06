@@ -189,6 +189,8 @@ namespace swrenderer
 			drawerargs.SetLight((float)Thread->Light->FlatPlaneVis(y, planeheight, foggy, viewport), lightlevel, foggy, viewport);
 		}
 
+        drawerargs.SetDepth(fabs(planeheight / Thread->Viewport->ScreenToViewY(y, 1.0)));
+
 		if (r_dynlights)
 		{
 			int tx = x1;

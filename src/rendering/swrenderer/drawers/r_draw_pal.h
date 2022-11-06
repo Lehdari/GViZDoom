@@ -21,6 +21,8 @@ namespace swrenderer
 		{
 			dc_dest = Viewport()->GetDest(x, y);
 			dc_dest_y = y;
+
+            dc_depth_dest = Viewport()->GetDepthDest(x, y);
 		}
 
 		void SetCount(int count) { dc_count = count; }
@@ -36,10 +38,13 @@ namespace swrenderer
 		void SetTextureVStep(fixed_t step) { dc_iscale = step; }
 
 		void SetLight(float light, int shade) { mLight = light; mShade = shade; }
+        void SetDepthInv(float depthinv) { mDepthInv = depthinv; }
 
 		uint8_t* Dest() const { return dc_dest; }
 		int DestY() const { return dc_dest_y; }
 		int Count() const { return dc_count; }
+
+        float* DestDepth() const { return dc_depth_dest; }
 
 		uint32_t* SrcBlend() const { return wallargs->SrcBlend(); }
 		uint32_t* DestBlend() const { return wallargs->DestBlend(); }
@@ -85,6 +90,7 @@ namespace swrenderer
 
 		ShadeConstants ColormapConstants() const { return wallargs->ColormapConstants(); }
 		fixed_t Light() const { return LIGHTSCALE(mLight, mShade); }
+        float DepthInv() const { return mDepthInv; }
 
 		FLightNode* LightList() const { return wallargs->lightlist; }
 
@@ -94,6 +100,8 @@ namespace swrenderer
 		uint8_t* dc_dest = nullptr;
 		int dc_dest_y = 0;
 		int dc_count = 0;
+
+        float* dc_depth_dest = nullptr;
 
 		fixed_t dc_iscale = 0;
 		fixed_t dc_texturefrac = 0;
@@ -105,6 +113,7 @@ namespace swrenderer
 
 		float mLight = 0.0f;
 		int mShade = 0;
+        float mDepthInv = 0.0f;
 	};
 
 	struct DrawWallModeNormal;
