@@ -377,6 +377,11 @@ if( ${HAVE_VM_JIT} )
 	set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} "${ASMJIT_LIBRARIES}")
 endif()
 
+# TODO opencv temp
+find_package(OpenCV REQUIRED)
+set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} ${OpenCV_LIBS} )
+# TODO end of opencv temp
+
 # Start defining source files for ZDoom
 set( PLAT_WIN32_SOURCES
 	win32/i_steam.cpp
@@ -1230,6 +1235,9 @@ if( UNIX )
 endif()
 
 target_link_libraries( zdoom ${PROJECT_LIBRARIES} gdtoa lzma ${ZMUSIC_LIBRARIES} )
+#TODO opencv temp
+target_include_directories( zdoom PUBLIC ${OpenCV_INCLUDE_DIRS} )
+#TODO end of opencv temp
 
 include_directories( .
 	common/audio/sound
