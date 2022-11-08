@@ -81,7 +81,7 @@
 #include "teaminfo.h"
 #include "hardware.h"
 #include "sbarinfo.h"
-#include "d_net.h"
+#include "d_net.h" // TODO: remove networking code
 #include "d_event.h"
 #include "d_netinf.h"
 #include "m_cheat.h"
@@ -3510,12 +3510,14 @@ static int D_DoomMain_Internal (void)
 	const char *wad;
 	FIWadManager *iwad_man;
 
-	GC::AddMarkerFunc(GC_MarkGameRoots);
-	VM_CastSpriteIDToString = Doom_CastSpriteIDToString;
+	GC::AddMarkerFunc(GC_MarkGameRoots); // ELJAS: garbage collection stuff
+	// VM_CastSpriteIDToString = Doom_CastSpriteIDToString; // ELJAS: I just randomly commented this away and the code still works
 
 	// Set up the button list. Mlook and Klook need a bit of extra treatment.
 	buttonMap.SetButtons(DoomButtons, countof(DoomButtons));
-	buttonMap.GetButton(Button_Mlook)->ReleaseHandler = Mlook_ReleaseHandler;
+	
+	// Networking shit, not needed 
+	// buttonMap.GetButton(Button_Mlook)->ReleaseHandler = Mlook_ReleaseHandler;
 	buttonMap.GetButton(Button_Mlook)->bReleaseLock = true;
 	buttonMap.GetButton(Button_Klook)->bReleaseLock = true;
 
@@ -3708,10 +3710,12 @@ int GameMain()
 		I_ShowFatalError(error.what());
 		ret = -1;
 	}
+
+	
 	// Unless something really bad happened, the game should only exit through this single point in the code.
 	// No more 'exit', please.
 	D_Cleanup();
-	CloseNetwork();
+	// CloseNetwork(); // ELJAS: probably not needed
 	GC::FinalGC = true;
 	GC::FullGC();
 	GC::DelSoftRootHead();	// the soft root head will not be collected by a GC so we have to do it explicitly
