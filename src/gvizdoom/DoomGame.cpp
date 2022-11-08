@@ -18,3 +18,8 @@ void DoomGame::init()
 {
 
 }
+
+void DoomGame::update(const Action& action)
+{
+
+}

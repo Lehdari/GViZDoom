@@ -11,11 +11,15 @@
 #pragma once
 
 
+#include "gvizdoom/Action.hpp"
+
+
 namespace gvizdoom {
 
 class DoomGame {
 public:
     void init();
+    void update(const Action& action);
 
 private:
 
