@@ -13,12 +13,12 @@
 
 namespace gvizdoom {
 
-    class DoomGame {
-    public:
-        void init();
+class DoomGame {
+public:
+    void init();
 
-    private:
+private:
 
-    };
+};
 
-}
+} // namespace gvizdoom
