@@ -1177,6 +1177,11 @@ set (GVIZDOOM_SOURCES
 	gvizdoom/DoomGame.cpp
 )
 
+set (GVIZDOOM_CLIENT_SOURCES
+	gvizdoom_client/App.cpp
+	gvizdoom_client/main.cpp
+)
+
 if( ${HAVE_VM_JIT} )
 	set( PCH_SOURCES ${PCH_SOURCES} ${VM_JIT_SOURCES} )
 else()
@@ -1219,6 +1224,21 @@ add_executable( zdoom WIN32 MACOSX_BUNDLE
 	common/thirdparty/math/tan.c
 	common/thirdparty/math/tanh.c
 	common/thirdparty/math/fastsin.cpp
+)
+
+add_executable(gvizdoom_client
+	${GVIZDOOM_CLIENT_SOURCES}
+)
+
+target_include_directories(gvizdoom_client
+PUBLIC
+	../include
+	${SDL2_INCLUDE_DIR}
+)
+
+target_link_libraries(gvizdoom_client
+PUBLIC
+	${SDL2_LIBRARY}
 )
 
 set_source_files_properties( ${FASTMATH_SOURCES} PROPERTIES COMPILE_FLAGS ${ZD_FASTMATH_FLAG} )
