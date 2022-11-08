@@ -1188,7 +1188,7 @@ void D_DoomLoop ()
 			if (gametic > lasttic)
 			{
 				lasttic = gametic;
-				I_StartFrame ();
+				// I_StartFrame (); // Joystick
 			}
 			I_SetFrameTime();
 
