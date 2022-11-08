@@ -1173,6 +1173,10 @@ set (PCH_SOURCES
 	utility/nodebuilder/nodebuild_utility.cpp
 )
 
+set (GVIZDOOM_SOURCES
+	gvizdoom/DoomGame.cpp
+)
+
 if( ${HAVE_VM_JIT} )
 	set( PCH_SOURCES ${PCH_SOURCES} ${VM_JIT_SOURCES} )
 else()
@@ -1192,6 +1196,7 @@ add_executable( zdoom WIN32 MACOSX_BUNDLE
 	${SYSTEM_SOURCES}
 	${FASTMATH_SOURCES}
 	${PCH_SOURCES}
+	${GVIZDOOM_SOURCES}
 	common/utility/x86.cpp
 	common/thirdparty/strnatcmp.c
 	common/utility/zstring.cpp
@@ -1275,6 +1280,7 @@ include_directories( .
 	common/scripting/frontend
 	common/scripting/backend
 	doom
+	../include/
 	g_statusbar
 	console
 	playsim
