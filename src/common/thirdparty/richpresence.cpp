@@ -83,6 +83,7 @@ static void handleDiscordJoinRequest(const DiscordUser* request)
 		request->userId);
 }
 
+// TODO: not needed
 void I_UpdateDiscordPresence(bool SendPresence, const char* curstatus, const char* appid, const char* steamappid)
 {
 	const char* curappid = DEFAULT_DISCORD_APP_ID;

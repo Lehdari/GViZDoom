@@ -31,6 +31,8 @@
 **
 */
 
+// TODO: this module is not needed
+
 #include "types.h"
 #include "screenjob.h"
 #include "i_time.h"

@@ -1169,6 +1169,8 @@ void D_ErrorCleanup ()
 
 void D_DoomLoop ()
 {
+	printf("[ELJAS] entered D_DoomLoop()\n");
+
 	int lasttic = 0;
 
 	// Clamp the timer to TICRATE until the playloop has been entered.
@@ -3624,12 +3626,15 @@ static int D_DoomMain_Internal (void)
 
 	// reinit from here
 
+	printf("\t[ELJAS] going into while loop\n");
+
 	while (true)
 	{
 		PClass::StaticInit();
 		PType::StaticInit();
+		printf("We have %d restart\n", restart);
 
-		if (restart)
+		if (restart) // see D_Cleanup()
 		{
 			C_InitConsole(SCREENWIDTH, SCREENHEIGHT, false);
 		}
@@ -3649,12 +3654,18 @@ static int D_DoomMain_Internal (void)
 
 		// The IWAD selection dialogue does not show in fullscreen so if the
 		// restart is initiated without a defined IWAD assume for now that it's not going to change.
-		if (iwad.IsEmpty()) iwad = lastIWAD;
+		if (iwad.IsEmpty()) { iwad = lastIWAD; }
 
 		TArray<FString> allwads;
 		
 		const FIWADInfo *iwad_info = iwad_man->FindIWAD(allwads, iwad, basewad, optionalwad);
-		if (!iwad_info) return 0;	// user exited the selection popup via cancel button.
+		
+		if (!iwad_info)
+		{
+			printf("\t[ELJAS] NOT IWAD INFO\n");
+			return 0;
+		}	// user exited the selection popup via cancel button.
+
 		if ((iwad_info->flags & GI_SHAREWARE) && pwads.Size() > 0)
 		{
 			I_FatalError ("You cannot -file with the shareware version. Register!");
@@ -3665,19 +3676,31 @@ static int D_DoomMain_Internal (void)
 		allwads.Reset();
 		delete iwad_man;	// now we won't need this anymore
 		iwad_man = NULL;
-		if (ret != 0) return ret;
+		if (ret != 0)
+		{
+			printf("\t[ELJAS] exit point bravo\n");
+			return ret;
+		}
 
-		D_DoAnonStats();
-		I_UpdateWindowTitle();
+		printf("[ELJAS] Going to DoomLoop from internal main\n");
+
+		// D_DoAnonStats(); // Nope, not needed.
+		// I_UpdateWindowTitle(); // Nope, not needed
 		D_DoomLoop ();		// this only returns if a 'restart' CCMD is given.
+
+		printf("[ELJAS] Out of doomloop, in doom main internal\n");
+
 		// 
 		// Clean up after a restart
 		//
 
-		D_Cleanup();
+		D_Cleanup(); // edits 'restart'
 
+		// This looks like a state machine
 		gamestate = GS_STARTUP;
 	}
+
+	printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
 }
 
 int GameMain()
@@ -3715,7 +3738,7 @@ int GameMain()
 	
 	// Unless something really bad happened, the game should only exit through this single point in the code.
 	// No more 'exit', please.
-	D_Cleanup();
+	D_Cleanup(); // edits 'restart'
 	// CloseNetwork(); // ELJAS: probably not needed
 	GC::FinalGC = true;
 	GC::FullGC();
@@ -3737,6 +3760,7 @@ int GameMain()
 //
 // clean up the resources
 //
+// edits restart
 //==========================================================================
 
 void D_Cleanup()
@@ -3900,9 +3924,16 @@ void I_UpdateWindowTitle()
 		}
 	}
 	*dstp = 0;
+
+	// TODO: discord not needed
 	if (i_discordrpc)
+	{
 		I_UpdateDiscordPresence(true, copy.Data(), GameStartupInfo.DiscordAppId.GetChars(), GameStartupInfo.SteamAppId.GetChars());
+	}
 	else
+	{
 		I_UpdateDiscordPresence(false, nullptr, nullptr, nullptr);
+	}
+	
 	I_SetWindowTitle(copy.Data());
 }

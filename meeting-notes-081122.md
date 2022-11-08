@@ -36,3 +36,5 @@
     - make some random actions in a doom map
     - update the game state accordingly
     - close gracefully (no crashing pls)
+- Save state
+  - Try several different actions from the state
