@@ -61,9 +61,9 @@
 
 extern "C" int cc_install_handlers(int, char**, int, int*, const char*, int(*)(char*, char*));
 
-#ifdef __APPLE__
-void Mac_I_FatalError(const char* errortext);
-#endif
+// #ifdef __APPLE__
+// void Mac_I_FatalError(const char* errortext);
+// #endif
 
 #ifdef __linux__
 void Linux_I_FatalError(const char* errortext);
@@ -146,12 +146,14 @@ void I_StartupJoysticks();
 
 int main (int argc, char **argv)
 {
-#if !defined (__APPLE__)
+	printf("Hello world!\n");
+
+// #if !defined (__APPLE__)
 	{
 		int s[4] = { SIGSEGV, SIGILL, SIGFPE, SIGBUS };
 		cc_install_handlers(argc, argv, 4, s, GAMENAMELOWERCASE "-crash.log", GetCrashInfo);
 	}
-#endif // !__APPLE__
+// #endif // !__APPLE__
 
 	printf(GAMENAME" %s - %s - SDL version\nCompiled on %s\n",
 		GetVersionString(), GetGitTime(), __DATE__);
