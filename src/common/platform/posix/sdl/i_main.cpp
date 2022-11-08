@@ -176,21 +176,36 @@ int main (int argc, char **argv)
 
 	Args = new FArgs(argc, argv);
 
-	// Should we even be doing anything with progdir on Unix systems?
-	char program[PATH_MAX];
-	if (realpath (argv[0], program) == NULL)
-		strcpy (program, argv[0]);
-	char *slash = strrchr (program, '/');
-	if (slash != NULL)
+	printf("[ELJAS] %d args\n", argc);
+	for (int i = 0; i < argc; ++i)
 	{
-		*(slash + 1) = '\0';
-		progdir = program;
+		printf("[ELJAS] argc: %s\n", argv[i]);
 	}
-	else
+	printf("\n");
+
+	// ELJAS: this piece of code gets the program path
 	{
-		progdir = "./";
+		// Should we even be doing anything with progdir on Unix systems?
+		char program[PATH_MAX];
+		if (realpath (argv[0], program) == NULL)
+		{
+			strcpy (program, argv[0]);
+		}
+		char *slash = strrchr(program, '/');
+		if (slash != NULL)
+		{
+			*(slash + 1) = '\0';
+			progdir = program;
+		}
+		else
+		{
+			progdir = "./";
+		}
+		printf("[ELJAS] program directory: %s\n", progdir.GetChars());
 	}
 
+	// ELJAS: let's not use joysticks
+#define NO_SDL_JOYSTICK
 	I_StartupJoysticks();
 
 	const int result = GameMain();
