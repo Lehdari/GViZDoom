@@ -4,12 +4,23 @@
 #include "tarray.h"
 #include "name.h"
 
+/*
+Exposes extern variable buttonMap
+Holds interface for setting keyboard bindings
+and accessing buttons and their state
+
+See: d_buttons.h
+*/
+
 // Actions
+// For each action (move left, shoot, use, ...)
+// there are multiple physical keys (mouse1, W, enter) that can
+// be mapped to the actions
 struct FButtonStatus
 {
-	enum { MAX_KEYS = 6 };	// Maximum number of keys that can press this button
+	static constexpr int MAX_KEYS{6};	// Maximum number of keys that can press this button
+	uint16_t Keys[MAX_KEYS]; // Mapping from key index to 
 
-	uint16_t Keys[MAX_KEYS];
 	bool bDown;				// Button is down right now
 	bool bWentDown;			// Button went down this tic
 	bool bWentUp;			// Button went up this tic
