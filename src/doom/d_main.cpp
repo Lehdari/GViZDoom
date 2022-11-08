@@ -3683,15 +3683,16 @@ int GameMain()
 	GameTicRate = TICRATE;
 	I_InitTime();
 
-	ConsoleCallbacks cb = {
-		D_UserInfoChanged,
-		D_SendServerInfoChange,
-		D_SendServerFlagChange,
-		G_GetUserCVar,
-		[]() { return gamestate != GS_FULLCONSOLE && gamestate != GS_STARTUP; }
-	};
+	// ELJAS: remove these, probably only for multiplayer
+	// ConsoleCallbacks cb = {
+	// 	D_UserInfoChanged,
+	// 	D_SendServerInfoChange,
+	// 	D_SendServerFlagChange,
+	// 	G_GetUserCVar,
+	// 	[]() { return gamestate != GS_FULLCONSOLE && gamestate != GS_STARTUP; }
+	// };
 	C_InitCVars(0);
-	C_InstallHandlers(&cb);
+	// C_InstallHandlers(&cb);
 	SetConsoleNotifyBuffer();
 
 	try
