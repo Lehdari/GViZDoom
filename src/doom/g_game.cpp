@@ -958,6 +958,8 @@ CCMD (spycancel)
 	ChangeSpy (SPY_CANCEL);
 }
 
+// ELJAS TODO: read this function
+
 //
 // G_Responder
 // Get info needed to make ticcmd_ts for the players.

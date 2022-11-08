@@ -3522,14 +3522,14 @@ static int D_DoomMain_Internal (void)
 	buttonMap.GetButton(Button_Klook)->bReleaseLock = true;
 
 	sysCallbacks = {
-		G_Responder,
+		G_Responder, // ELJAS: this is important
 		System_WantGuiCapture,
 		System_WantLeftButton,
 		System_NetGame,
 		System_WantNativeMouse,
 		System_CaptureModeInGame,
 		System_CrashInfo,
-		System_PlayStartupSound,
+		System_PlayStartupSound, // TODO: not needed
 		System_IsSpecialUI,
 		System_DisableTextureFilter,
 		System_OnScreenSizeChanged,
@@ -3539,12 +3539,12 @@ static int D_DoomMain_Internal (void)
 		System_GetPlayerName,
 		System_DispatchEvent,
 		StrTable_ValidFilter,
-		StrTable_GetGender,
-		nullptr,
+		StrTable_GetGender, // TODO: not needed
+		nullptr, // MenuClosed
 		CheckSkipGameOptionBlock,
 		System_ConsoleToggled,
-		nullptr, 
-		nullptr,
+		nullptr, // PreBindTexture
+		nullptr, // FontCharCreated
 		System_ToggleFullConsole,
 		System_StartCutscene,
 		System_SetTransition,
@@ -3552,7 +3552,7 @@ static int D_DoomMain_Internal (void)
 		System_HudScaleChanged,
 		M_SetSpecialMenu,
 		OnMenuOpen,
-		System_LanguageChanged,
+		System_LanguageChanged, // TODO: not needed
 		OkForLocalization,
 		[]() ->FConfigFile* { return GameConfig; }
 
@@ -3577,28 +3577,32 @@ static int D_DoomMain_Internal (void)
 	I_DetectOS();
 
 	// +logfile gets checked too late to catch the full startup log in the logfile so do some extra check for it here.
-	FString logfile = Args->TakeValue("+logfile");
-	if (logfile.IsNotEmpty())
+	// This piece of code checks if we are trying to save the run to a logfile
 	{
-		execLogfile(logfile);
-	}
-	else if (batchout != NULL && *batchout != 0)
-	{
-		batchrun = true;
-		nosound = true;
-		execLogfile(batchout, true);
-		Printf("Command line: ");
-		for (int i = 0; i < Args->NumArgs(); i++)
+		FString logfile = Args->TakeValue("+logfile");
+		if (logfile.IsNotEmpty())
 		{
-			Printf("%s ", Args->GetArg(i));
+			execLogfile(logfile);
 		}
-		Printf("\n");
+		else if (batchout != NULL && *batchout != 0)
+		{
+			batchrun = true;
+			nosound = true;
+			execLogfile(batchout, true);
+			Printf("Command line: ");
+			for (int i = 0; i < Args->NumArgs(); i++)
+			{
+				Printf("%s ", Args->GetArg(i));
+			}
+			Printf("\n");
+		}
 	}
 
 	Printf("%s version %s\n", GAMENAME, GetVersionString());
 
-	extern void D_ConfirmSendStats();
-	D_ConfirmSendStats();
+	// Nope, we don't want.
+	// extern void D_ConfirmSendStats();
+	// D_ConfirmSendStats();
 
 	FString basewad = wad;
 

@@ -20,7 +20,11 @@
 //-----------------------------------------------------------------------------
 //
 // DESCRIPTION:
-//	 Duh.
+//   Probably a high-level class for game related things such as
+//	 - game state
+//   - actor
+//   - load, save game
+//   - replay, record demo
 // 
 //-----------------------------------------------------------------------------
 
