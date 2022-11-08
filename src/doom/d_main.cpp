@@ -3605,9 +3605,7 @@ static int D_DoomMain_Internal (void)
 	// D_ConfirmSendStats();
 
 	FString basewad = wad;
-
 	FString optionalwad = BaseFileSearch(OPTIONALWAD, NULL, true, GameConfig);
-
 	iwad_man = new FIWadManager(basewad, optionalwad);
 
 	// Now that we have the IWADINFO, initialize the autoload ini sections.
@@ -3626,7 +3624,7 @@ static int D_DoomMain_Internal (void)
 
 	// reinit from here
 
-	do
+	while (true)
 	{
 		PClass::StaticInit();
 		PType::StaticInit();
@@ -3680,7 +3678,6 @@ static int D_DoomMain_Internal (void)
 
 		gamestate = GS_STARTUP;
 	}
-	while (1);
 }
 
 int GameMain()
