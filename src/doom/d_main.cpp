@@ -3695,6 +3695,8 @@ static int D_DoomMain_Internal (void)
 	}
 
 	printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
+
+	return 0;
 }
 
 int GameMain()
