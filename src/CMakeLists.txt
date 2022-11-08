@@ -778,37 +778,37 @@ set (FASTMATH_SOURCES ${FASTMATH_SOURCES})
 
 set (PCH_SOURCES
 	common/thirdparty/richpresence.cpp
-	am_map.cpp
+	doom/am_map.cpp
 	playsim/bots/b_bot.cpp
 	playsim/bots/b_func.cpp
 	playsim/bots/b_game.cpp
 	playsim/bots/b_move.cpp
 	playsim/bots/b_think.cpp
-	bbannouncer.cpp
+	doom/bbannouncer.cpp
 	console/c_cmds.cpp
 	console/c_notifybuffer.cpp
 	console/c_functions.cpp
-	ct_chat.cpp
-	d_iwad.cpp
-	d_main.cpp
-	d_defcvars.cpp
-	d_anonstats.cpp
-	d_net.cpp
-	d_netinfo.cpp
-	d_protocol.cpp
-	doomstat.cpp
-	g_cvars.cpp
-	g_dumpinfo.cpp
-	g_game.cpp
-	g_hub.cpp
-	g_level.cpp
-	gameconfigfile.cpp
-	hu_scores.cpp
-	m_cheat.cpp
-	m_misc.cpp
+	doom/ct_chat.cpp
+	doom/d_iwad.cpp
+	doom/d_main.cpp
+	doom/d_defcvars.cpp
+	doom/d_anonstats.cpp
+	doom/d_net.cpp
+	doom/d_netinfo.cpp
+	doom/d_protocol.cpp
+	doom/doomstat.cpp
+	doom/g_cvars.cpp
+	doom/g_dumpinfo.cpp
+	doom/g_game.cpp
+	doom/g_hub.cpp
+	doom/g_level.cpp
+	doom/gameconfigfile.cpp
+	doom/hu_scores.cpp
+	doom/m_cheat.cpp
+	doom/m_misc.cpp
 	playsim/p_acs.cpp
 	playsim/p_actionfunctions.cpp
-	p_conversation.cpp
+	doom/p_conversation.cpp
 	playsim/p_destructible.cpp
 	playsim/p_effect.cpp
 	playsim/p_enemy.cpp
@@ -817,25 +817,25 @@ set (PCH_SOURCES
 	playsim/p_map.cpp
 	playsim/p_maputl.cpp
 	playsim/p_mobj.cpp
-	p_openmap.cpp
+	doom/p_openmap.cpp
 	playsim/p_pspr.cpp
-	p_saveg.cpp
-	p_setup.cpp
+	doom/p_saveg.cpp
+	doom/p_setup.cpp
 	playsim/p_spec.cpp
-	p_states.cpp
+	doom/p_states.cpp
 	playsim/p_things.cpp
-	p_tick.cpp
+	doom/p_tick.cpp
 	playsim/p_user.cpp
 	rendering/r_utility.cpp
 	rendering/r_sky.cpp
 	sound/s_advsound.cpp
 	sound/s_sndseq.cpp
 	sound/s_doomsound.cpp
-	serializer_doom.cpp
-	scriptutil.cpp
-	st_stuff.cpp
+	doom/serializer_doom.cpp
+	doom/scriptutil.cpp
+	doom/st_stuff.cpp
 	r_data/v_palette.cpp
-	wi_stuff.cpp
+	doom/wi_stuff.cpp
 	gamedata/a_keys.cpp
 	gamedata/a_weapons.cpp
 	gamedata/decallib.cpp
@@ -959,7 +959,7 @@ set (PCH_SOURCES
 	rendering/swrenderer/textures/r_swtexture.cpp
 	rendering/swrenderer/textures/warptexture.cpp
 	rendering/swrenderer/textures/swcanvastexture.cpp
-	events.cpp
+	doom/events.cpp
 	common/audio/sound/i_sound.cpp
 	common/audio/sound/oalsound.cpp
 	common/audio/sound/s_environment.cpp
@@ -1180,7 +1180,7 @@ else()
 endif()
 
 if( MSVC )
-	enable_precompiled_headers( g_pch.h PCH_SOURCES )
+	enable_precompiled_headers(doom/g_pch.h PCH_SOURCES )
 else()
 	# Temporary solution for compilers other than MSVC
 	set_source_files_properties( ${PCH_SOURCES} PROPERTIES COMPILE_FLAGS "-include g_pch.h" )
@@ -1274,6 +1274,7 @@ include_directories( .
 	common/scripting/interface
 	common/scripting/frontend
 	common/scripting/backend
+	doom
 	g_statusbar
 	console
 	playsim
@@ -1431,7 +1432,7 @@ source_group("Rendering\\Software Renderer\\Plane" REGULAR_EXPRESSION "^${CMAKE_
 source_group("Rendering\\Software Renderer\\Things" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/rendering/swrenderer/things/.+")
 source_group("Rendering\\Software Renderer\\Viewport" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/rendering/swrenderer/viewport/.+")
 source_group("Render Data" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/r_data/.+")
-source_group("Render Interface" FILES r_defs.h r_renderer.h r_sky.cpp r_sky.h r_state.h r_utility.cpp r_utility.h)
+source_group("Render Interface" FILES r_defs.h r_renderer.h r_sky.cpp r_sky.h doom/r_state.h r_utility.cpp r_utility.h)
 source_group("Platforms\\POSIX Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/.+")
 source_group("Platforms\\Win32 Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/win32/.+")
 source_group("Scripting\\Decorate frontend" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/scripting/decorate/.+")
@@ -1492,6 +1493,6 @@ source_group("Common\\Third Party\\SFMT" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SO
 source_group("Utility" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/utility/.+")
 source_group("Utility\\Node Builder" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/utility/nodebuilder/.+")
 source_group("Statusbar" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/g_statusbar/.+")
-source_group("Versioning" FILES version.h win32/zdoom.rc)
+source_group("Versioning" FILES doom/version.h win32/zdoom.rc)
 source_group("Xlat" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/xlat/.+" FILES ${CMAKE_CURRENT_BINARY_DIR}/xlat_parser.c ${CMAKE_CURRENT_BINARY_DIR}/xlat_parser.h)
 source_group("Source Files" FILES ${CMAKE_CURRENT_BINARY_DIR}/sc_man_scanner.h common/engine/sc_man_scanner.re)
