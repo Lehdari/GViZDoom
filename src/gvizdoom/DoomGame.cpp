@@ -10,13 +10,15 @@
 
 #include "gvizdoom/DoomGame.hpp"
 
+#include <utility>
+
 
 using namespace gvizdoom;
 
 
-void DoomGame::init()
+void DoomGame::init(GameConfig gameConfig)
 {
-
+    _gameConfig = std::move(gameConfig);
 }
 
 void DoomGame::update(const Action& action)

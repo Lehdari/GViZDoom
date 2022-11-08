@@ -12,17 +12,18 @@
 
 
 #include "gvizdoom/Action.hpp"
+#include "gvizdoom/GameConfig.hpp"
 
 
 namespace gvizdoom {
 
 class DoomGame {
 public:
-    void init();
+    void init(GameConfig gameConfig);
     void update(const Action& action);
 
 private:
-
+    GameConfig  _gameConfig;
 };
 
 } // namespace gvizdoom
