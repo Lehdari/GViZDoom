@@ -17,10 +17,13 @@
 
 namespace gvizdoom {
 
+// DoomGame serves as the top-level interface for the GViZDoom library
 class DoomGame {
 public:
     void init(GameConfig gameConfig);
     void update(const Action& action);
+
+    // TODO getter(s) for updated game state
 
 private:
     GameConfig  _gameConfig;
