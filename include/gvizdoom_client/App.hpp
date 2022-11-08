@@ -44,13 +44,11 @@ public:
     struct Context {
         WindowSettings* windowSettings;
         SDL_Window*     window;
-        SDL_GLContext*  glContext;
         bool*           quit;
 
         Context(App& app) :
             windowSettings  (&app._settings.window),
             window          (app._window),
-            glContext       (&app._glCtx),
             quit            (&app._quit)
         {}
     };
@@ -86,7 +84,6 @@ public:
 private:
     Settings            _settings;
     SDL_Window*         _window;
-    SDL_GLContext       _glCtx;
     bool                _quit; // flag for quitting the application
     uint32_t            _lastTicks;
     uint32_t            _frameTicks;

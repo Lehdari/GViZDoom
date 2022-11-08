@@ -46,28 +46,11 @@ App::App(
         printf("Error: SDL Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return;
     }
-#if 0
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _settings.gl.contextMajor);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _settings.gl.contextMinor);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, _settings.gl.contextFlags);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, _settings.gl.profileMask);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, _settings.gl.doubleBuffer);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-
-    _glCtx = SDL_GL_CreateContext(_window);
-
-    if (_glCtx == nullptr) {
-        printf("Error: SDL OpenGL context could not be created! SDL_Error: %s\n",
-            SDL_GetError());
-        return;
-    }
-#endif
 }
 
 App::~App()
 {
     // Destroy window and quit SDL subsystems
-    SDL_GL_DeleteContext(_glCtx);
     SDL_DestroyWindow(_window);
     SDL_Quit();
 }
@@ -86,16 +69,7 @@ void App::loop(void)
         // User-defined render
         if (_renderContext != nullptr && _settings.render != nullptr)
             _settings.render(*_renderContext, _appContext);
-#if 0
-        // Generate draw data
-        ImGui::Render();
 
-        // Render imgui
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // Swap draw and display buffers
-        SDL_GL_SwapWindow(_window);
-#endif
         SDL_Delay(1000/_settings.window.framerateLimit);
 
         uint32_t curTicks = SDL_GetTicks();
