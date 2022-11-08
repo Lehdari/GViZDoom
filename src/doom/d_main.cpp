@@ -1181,7 +1181,7 @@ void D_DoomLoop ()
 
 	vid_cursor->Callback();
 
-	for (;;)
+	while (true)
 	{
 		try
 		{
@@ -3686,7 +3686,7 @@ static int D_DoomMain_Internal (void)
 
 		// D_DoAnonStats(); // Nope, not needed.
 		// I_UpdateWindowTitle(); // Nope, not needed
-		D_DoomLoop ();		// this only returns if a 'restart' CCMD is given.
+		D_DoomLoop();		// this only returns if a 'restart' CCMD is given.
 
 		printf("[ELJAS] Out of doomloop, in doom main internal\n");
 
