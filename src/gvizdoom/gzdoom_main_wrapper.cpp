@@ -31,10 +31,9 @@
 #include "i_system.h"
 #include "i_interface.h"
 #include "printf.h"
-#include "d_main.h"
 
 
-int gzdoom_main_wrapper(int argc, char **argv)
+int gzdoom_main_init(int argc, char **argv)
 {
     printf("Hello world!\n");
 
@@ -55,12 +54,6 @@ int gzdoom_main_wrapper(int argc, char **argv)
     setenv ("LC_NUMERIC", "C", 1);
 
     setlocale (LC_ALL, "C");
-
-    if (SDL_Init (0) < 0)
-    {
-        fprintf (stderr, "Could not initialize SDL:\n%s\n", SDL_GetError());
-        return -1;
-    }
 
     printf("\n");
 
@@ -97,10 +90,4 @@ int gzdoom_main_wrapper(int argc, char **argv)
     // ELJAS: let's not use joysticks
     #define NO_SDL_JOYSTICK
     I_StartupJoysticks();
-
-    const int result = GameMain();
-
-    SDL_Quit();
-
-    return result;
 }

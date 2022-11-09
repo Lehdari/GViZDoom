@@ -61,7 +61,8 @@ int main(int argv, char** args)
 
     app.loop();
 #endif
-    gzdoom_main_wrapper(argv, args);
+    gzdoom_main_init(argv, args);
+    const int result = GameMain();
 
-    return 0;
+    return result;
 }
