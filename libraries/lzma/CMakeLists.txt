@@ -30,3 +30,4 @@ add_library( lzma STATIC
 	C/Threads.c
 )
 target_link_libraries( lzma Threads::Threads )
+set_target_properties(lzma PROPERTIES POSITION_INDEPENDENT_CODE ON)
