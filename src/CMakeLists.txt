@@ -1225,6 +1225,37 @@ add_executable( zdoom WIN32 MACOSX_BUNDLE
 	common/thirdparty/math/fastsin.cpp
 )
 
+add_library(gvizdoom SHARED
+	${HEADER_FILES}
+	${NOT_COMPILED_SOURCE_FILES}
+	${SYSTEM_SOURCES}
+	${FASTMATH_SOURCES}
+	${PCH_SOURCES}
+	${GVIZDOOM_SOURCES}
+	common/utility/x86.cpp
+	common/thirdparty/strnatcmp.c
+	common/utility/zstring.cpp
+	common/utility/findfile.cpp
+	common/thirdparty/math/asin.c
+	common/thirdparty/math/atan.c
+	common/thirdparty/math/const.c
+	common/thirdparty/math/cosh.c
+	common/thirdparty/math/exp.c
+	common/thirdparty/math/isnan.c
+	common/thirdparty/math/log.c
+	common/thirdparty/math/log10.c
+	common/thirdparty/math/mtherr.c
+	common/thirdparty/math/polevl.c
+	common/thirdparty/math/pow.c
+	common/thirdparty/math/powi.c
+	common/thirdparty/math/sin.c
+	common/thirdparty/math/sinh.c
+	common/thirdparty/math/sqrt.c
+	common/thirdparty/math/tan.c
+	common/thirdparty/math/tanh.c
+	common/thirdparty/math/fastsin.cpp
+)
+
 add_executable(gvizdoom_client
 	${GVIZDOOM_CLIENT_SOURCES}
 )
@@ -1237,6 +1268,7 @@ PUBLIC
 
 target_link_libraries(gvizdoom_client
 PUBLIC
+	gvizdoom
 	${SDL2_LIBRARY}
 )
 
@@ -1262,6 +1294,18 @@ target_link_libraries( zdoom ${PROJECT_LIBRARIES} gdtoa lzma ${ZMUSIC_LIBRARIES}
 #TODO opencv temp
 target_include_directories( zdoom PUBLIC ${OpenCV_INCLUDE_DIRS} )
 #TODO end of opencv temp
+
+target_link_libraries(gvizdoom ${PROJECT_LIBRARIES} gdtoa lzma ${ZMUSIC_LIBRARIES} )
+#TODO opencv temp
+target_include_directories(gvizdoom PUBLIC ${OpenCV_INCLUDE_DIRS} )
+#TODO end of opencv temp
+
+set_target_properties(gvizdoom gvizdoom_client
+	PROPERTIES
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
 
 include_directories( .
 	common/audio/sound

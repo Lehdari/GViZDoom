@@ -9,6 +9,7 @@
 //
 
 #include "gvizdoom_client/App.hpp"
+#include "gvizdoom_client/gzdoom_main_wrapper.hpp"
 
 
 using namespace gvizdoom;
@@ -43,12 +44,13 @@ void handleEvents(SDL_Event& event, App::Context& appContext)
 // Pipeline function for rendering
 void render(RenderContext& renderContext, App::Context& appContext)
 {
-    
+
 }
 
 
 int main(int argv, char** args)
 {
+#if 0
     // Setup app and render context
     App::Settings appSettings;
     appSettings.handleEvents = &handleEvents;
@@ -58,6 +60,8 @@ int main(int argv, char** args)
     app.setRenderContext(&context);
 
     app.loop();
+#endif
+    gzdoom_main_wrapper(argv, args);
 
     return 0;
 }
