@@ -53,6 +53,8 @@ struct CRestartException
 
 
 void D_Display ();
+void DoomLoopCycle(int lasttic);
+int GameMain();
 
 
 //

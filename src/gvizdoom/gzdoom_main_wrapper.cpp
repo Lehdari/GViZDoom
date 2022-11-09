@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <sys/utsname.h>
 
+#include "i_main.h"
 #include "engineerrors.h"
 #include "m_argv.h"
 #include "c_console.h"
@@ -30,97 +31,8 @@
 #include "i_system.h"
 #include "i_interface.h"
 #include "printf.h"
+#include "d_main.h"
 
-// MACROS ------------------------------------------------------------------
-
-// TYPES -------------------------------------------------------------------
-
-// EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
-
-extern "C" int cc_install_handlers(int, char**, int, int*, const char*, int(*)(char*, char*));
-
-// #ifdef __APPLE__
-// void Mac_I_FatalError(const char* errortext);
-// #endif
-
-#ifdef __linux__
-void Linux_I_FatalError(const char* errortext);
-#endif
-
-// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
-int GameMain();
-
-// PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
-
-// EXTERNAL DATA DECLARATIONS ----------------------------------------------
-
-// PUBLIC DATA DEFINITIONS -------------------------------------------------
-
-// The command line arguments.
-FArgs *Args;
-
-// PRIVATE DATA DEFINITIONS ------------------------------------------------
-
-
-// CODE --------------------------------------------------------------------
-
-
-
-static int GetCrashInfo (char *buffer, char *end)
-{
-    if (sysCallbacks.CrashInfo) sysCallbacks.CrashInfo(buffer, end - buffer, "\n");
-    return strlen(buffer);
-}
-
-void I_DetectOS()
-{
-    FString operatingSystem;
-
-    const char *paths[] = {"/etc/os-release", "/usr/lib/os-release"};
-
-    for (const char *path : paths)
-    {
-        struct stat dummy;
-
-        if (stat(path, &dummy) != 0)
-            continue;
-
-        char cmdline[256];
-        snprintf(cmdline, sizeof cmdline, ". %s && echo ${PRETTY_NAME}", path);
-
-        FILE *proc = popen(cmdline, "r");
-
-        if (proc == nullptr)
-            continue;
-
-        char distribution[256] = {};
-        fread(distribution, sizeof distribution - 1, 1, proc);
-
-        const size_t length = strlen(distribution);
-
-        if (length > 1)
-        {
-            distribution[length - 1] = '\0';
-            operatingSystem = distribution;
-        }
-
-        pclose(proc);
-        break;
-    }
-
-    utsname unameInfo;
-
-    if (uname(&unameInfo) == 0)
-    {
-        const char* const separator = operatingSystem.Len() > 0 ? ", " : "";
-        operatingSystem.AppendFormat("%s%s %s on %s", separator, unameInfo.sysname, unameInfo.release, unameInfo.machine);
-    }
-
-    if (operatingSystem.Len() > 0)
-        Printf("OS: %s\n", operatingSystem.GetChars());
-}
-
-void I_StartupJoysticks();
 
 int gzdoom_main_wrapper(int argc, char **argv)
 {
@@ -183,7 +95,7 @@ int gzdoom_main_wrapper(int argc, char **argv)
     }
 
     // ELJAS: let's not use joysticks
-#define NO_SDL_JOYSTICK
+    #define NO_SDL_JOYSTICK
     I_StartupJoysticks();
 
     const int result = GameMain();

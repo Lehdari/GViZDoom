@@ -9,7 +9,7 @@
 //
 
 #include "gvizdoom_client/App.hpp"
-#include "gvizdoom_client/gzdoom_main_wrapper.hpp"
+#include "gvizdoom/gzdoom_main_wrapper.hpp"
 
 
 using namespace gvizdoom;
