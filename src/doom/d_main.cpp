@@ -3505,10 +3505,8 @@ struct D_DoomMain_Internal_State {
     int lasttic;
 };
 
-D_DoomMain_Internal_State D_DoomMain_Internal_Init()
+void D_DoomMain_Internal_Init(D_DoomMain_Internal_State& state)
 {
-    D_DoomMain_Internal_State state;
-
     GC::AddMarkerFunc(GC_MarkGameRoots); // ELJAS: garbage collection stuff
     // VM_CastSpriteIDToString = Doom_CastSpriteIDToString; // ELJAS: I just randomly commented this away and the code still works
 
@@ -3620,8 +3618,6 @@ D_DoomMain_Internal_State D_DoomMain_Internal_Init()
             I_FatalError("Cannot find savegame %s", file.GetChars());
         }
     }
-
-    return state;
 }
 
 int D_DoomMain_Internal_ReInit(D_DoomMain_Internal_State& state)
@@ -3710,24 +3706,6 @@ void D_DoomMain_Internal_Cleanup()
     gamestate = GS_STARTUP;
 }
 
-static int D_DoomMain_Internal (void)
-{
-    auto state = D_DoomMain_Internal_Init();
-
-	while (true) {
-        D_DoomMain_Internal_ReInit(state);
-
-        while (true) {
-            DoomLoopCycle(state.lasttic);
-        }
-
-        D_DoomMain_Internal_Cleanup();
-	}
-
-	printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
-
-	return 0;
-}
 
 int GameMain()
 {
@@ -3747,9 +3725,10 @@ int GameMain()
 	// C_InstallHandlers(&cb);
 	SetConsoleNotifyBuffer();
 
+    D_DoomMain_Internal_State state;
 	try
 	{
-		ret = D_DoomMain_Internal();
+        D_DoomMain_Internal_Init(state);
 	}
 	catch (const CExitEvent &exit)	// This is a regular exit initiated from deeply nested code.
 	{
@@ -3760,6 +3739,32 @@ int GameMain()
 		I_ShowFatalError(error.what());
 		ret = -1;
 	}
+
+    try
+    {
+        // Old D_DoomMain_Internal
+        while (true) {
+            D_DoomMain_Internal_ReInit(state);
+
+            while (true) {
+                DoomLoopCycle(state.lasttic);
+            }
+
+            D_DoomMain_Internal_Cleanup();
+        }
+
+        printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
+        ret = 0;
+    }
+    catch (const CExitEvent &exit)	// This is a regular exit initiated from deeply nested code.
+    {
+        ret = exit.Reason();
+    }
+    catch (const std::exception &error)
+    {
+        I_ShowFatalError(error.what());
+        ret = -1;
+    }
 
 	
 	// Unless something really bad happened, the game should only exit through this single point in the code.
