@@ -21,7 +21,7 @@ namespace gvizdoom {
 // DoomGame serves as the top-level interface for the GViZDoom library
 class DoomGame {
 public:
-    DoomGame() = default;
+    DoomGame();
     DoomGame(const DoomGame&) = delete;
     DoomGame(DoomGame&&);
     DoomGame& operator=(const DoomGame&) = delete;
@@ -29,14 +29,15 @@ public:
     ~DoomGame();
 
     void init(GameConfig&& gameConfig);
-    void restart();
+    void restart(); // TODO is this necessary? Does this do anything?
     bool update(const Action& action); // returns true upon exit
+    int getStatus() const;
 
     // TODO getter(s) for updated game state
 
 private:
     GameConfig                  _gameConfig;
-    int                         _status = 0;
+    int                         _status;
     D_DoomMain_Internal_State   _state;
 };
 

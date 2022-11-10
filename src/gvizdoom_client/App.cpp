@@ -27,8 +27,6 @@ App::App(
     _appContext     (*this),
     _renderContext  (renderContext)
 {
-    int err;
-
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Error: Could not initialize SDL!\n");
@@ -61,6 +59,12 @@ App::~App()
 
 void App::loop(void)
 {
+    if (_doomGame->getStatus()) {
+        // DoomGame uninitialized / in error state: cannot run loop
+        printf("App::loop: Invalid DoomGame status: %d\n", _doomGame->getStatus());
+        return;
+    }
+
     // Application main loop
     while (!_quit) {
 #if 0
