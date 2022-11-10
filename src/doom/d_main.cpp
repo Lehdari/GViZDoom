@@ -3494,17 +3494,6 @@ static int D_InitGame(const FIWADInfo* iwad_info, TArray<FString>& allwads, TArr
 //==========================================================================
 
 
-struct D_DoomMain_Internal_State {
-    const char *v;
-    const char *wad;
-    FIWadManager *iwad_man;
-
-    FString basewad;
-    FString optionalwad;
-
-    int lasttic;
-};
-
 void D_DoomMain_Internal_Init(D_DoomMain_Internal_State& state)
 {
     GC::AddMarkerFunc(GC_MarkGameRoots); // ELJAS: garbage collection stuff
@@ -3706,85 +3695,103 @@ void D_DoomMain_Internal_Cleanup()
     gamestate = GS_STARTUP;
 }
 
-
-int GameMain()
+int GameMain_Init(D_DoomMain_Internal_State& state)
 {
-	int ret = 0;
-	GameTicRate = TICRATE;
-	I_InitTime();
+    int ret = 0;
+    GameTicRate = TICRATE;
+    I_InitTime();
 
-	// ELJAS: remove these, probably only for multiplayer
-	// ConsoleCallbacks cb = {
-	// 	D_UserInfoChanged,
-	// 	D_SendServerInfoChange,
-	// 	D_SendServerFlagChange,
-	// 	G_GetUserCVar,
-	// 	[]() { return gamestate != GS_FULLCONSOLE && gamestate != GS_STARTUP; }
-	// };
-	C_InitCVars(0);
-	// C_InstallHandlers(&cb);
-	SetConsoleNotifyBuffer();
+    // ELJAS: remove these, probably only for multiplayer
+    // ConsoleCallbacks cb = {
+    // 	D_UserInfoChanged,
+    // 	D_SendServerInfoChange,
+    // 	D_SendServerFlagChange,
+    // 	G_GetUserCVar,
+    // 	[]() { return gamestate != GS_FULLCONSOLE && gamestate != GS_STARTUP; }
+    // };
+    C_InitCVars(0);
+    // C_InstallHandlers(&cb);
+    SetConsoleNotifyBuffer();
 
-    D_DoomMain_Internal_State state;
-	try
-	{
+    try {
         D_DoomMain_Internal_Init(state);
-	}
-	catch (const CExitEvent &exit)	// This is a regular exit initiated from deeply nested code.
-	{
-		ret = exit.Reason();
-	}
-	catch (const std::exception &error)
-	{
-		I_ShowFatalError(error.what());
-		ret = -1;
-	}
-
-    try
-    {
-        // Old D_DoomMain_Internal
-        while (true) {
-            D_DoomMain_Internal_ReInit(state);
-
-            while (true) {
-                DoomLoopCycle(state.lasttic);
-            }
-
-            D_DoomMain_Internal_Cleanup();
-        }
-
-        printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
-        ret = 0;
     }
-    catch (const CExitEvent &exit)	// This is a regular exit initiated from deeply nested code.
+    catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
     {
         ret = exit.Reason();
     }
-    catch (const std::exception &error)
-    {
+    catch (const std::exception& error) {
         I_ShowFatalError(error.what());
         ret = -1;
     }
 
-	
-	// Unless something really bad happened, the game should only exit through this single point in the code.
-	// No more 'exit', please.
-	D_Cleanup(); // edits 'restart'
-	// CloseNetwork(); // ELJAS: probably not needed
-	GC::FinalGC = true;
-	GC::FullGC();
-	GC::DelSoftRootHead();	// the soft root head will not be collected by a GC so we have to do it explicitly
-	C_DeinitConsole();
-	R_DeinitColormaps();
-	R_Shutdown();
-	I_ShutdownGraphics();
-	I_ShutdownInput();
-	M_SaveDefaultsFinal();
-	DeleteStartupScreen();
-	C_UninitCVars(); // must come last so that nothing will access the CVARs anymore after deletion.
-	delete Args;
-	Args = nullptr;
-	return ret;
+    return ret;
+}
+
+int GameMain_Loop(D_DoomMain_Internal_State& state)
+{
+    int ret = 0;
+    try {
+        // Old D_DoomMain_Internal
+        //while (true) { // this loop does nothing?
+        D_DoomMain_Internal_ReInit(state);
+
+        while (true) {
+            DoomLoopCycle(state.lasttic);
+        }
+
+        D_DoomMain_Internal_Cleanup();
+        //}
+
+        printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
+        ret = 0;
+    }
+    catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
+    {
+        ret = exit.Reason();
+    }
+    catch (const std::exception& error) {
+        I_ShowFatalError(error.what());
+        ret = -1;
+    }
+
+    return ret;
+}
+
+void GameMain_Cleanup()
+{
+    // Unless something really bad happened, the game should only exit through this single point in the code.
+    // No more 'exit', please.
+    D_Cleanup(); // edits 'restart'
+    // CloseNetwork(); // ELJAS: probably not needed
+    GC::FinalGC = true;
+    GC::FullGC();
+    GC::DelSoftRootHead();	// the soft root head will not be collected by a GC so we have to do it explicitly
+    C_DeinitConsole();
+    R_DeinitColormaps();
+    R_Shutdown();
+    I_ShutdownGraphics();
+    I_ShutdownInput();
+    M_SaveDefaultsFinal();
+    DeleteStartupScreen();
+    C_UninitCVars(); // must come last so that nothing will access the CVARs anymore after deletion.
+    delete Args;
+    Args = nullptr;
+}
+
+int GameMain()
+{
+    D_DoomMain_Internal_State state;
+
+    int ret = GameMain_Init(state);
+    if (ret != 0) {
+        GameMain_Cleanup();
+        return ret;
+    }
+
+    ret = GameMain_Loop(state);
+    GameMain_Cleanup();
+    return ret;
 }
 
 //==========================================================================

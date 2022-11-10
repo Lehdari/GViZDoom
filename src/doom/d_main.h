@@ -51,9 +51,16 @@ struct CRestartException
 	char dummy;
 };
 
+struct D_DoomMain_Internal_State;
 
 void D_Display ();
 void DoomLoopCycle(int lasttic);
+void D_DoomMain_Internal_Init(D_DoomMain_Internal_State& state);
+int D_DoomMain_Internal_ReInit(D_DoomMain_Internal_State& state);
+void D_DoomMain_Internal_Cleanup();
+int GameMain_Init(D_DoomMain_Internal_State& state);
+int GameMain_Loop(D_DoomMain_Internal_State& state);
+void GameMain_Cleanup();
 int GameMain();
 
 
@@ -148,6 +155,17 @@ public:
 	}
 
 
+};
+
+struct D_DoomMain_Internal_State {
+    const char *v;
+    const char *wad;
+    FIWadManager *iwad_man;
+
+    FString basewad;
+    FString optionalwad;
+
+    int lasttic;
 };
 
 EXTERN_CVAR(Int, vid_rendermode)
