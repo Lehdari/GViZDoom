@@ -16,7 +16,8 @@ using namespace gvizdoom;
 
 App::App(
     const App::Settings &settings,
-    RenderContext* renderContext
+    RenderContext* renderContext,
+    GameConfig gameConfig
 ) :
     _settings       (settings),
     _window         (nullptr),
@@ -46,6 +47,9 @@ App::App(
         printf("Error: SDL Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return;
     }
+
+    _doomGame = std::make_unique<DoomGame>();
+    _doomGame->init(std::move(gameConfig));
 }
 
 App::~App()
@@ -59,12 +63,19 @@ void App::loop(void)
 {
     // Application main loop
     while (!_quit) {
+#if 0
         // Event handling
         SDL_Event event;
         while (SDL_PollEvent(&event) != 0) {
             if (_settings.handleEvents != nullptr)
                 _settings.handleEvents(event, _appContext);
         }
+#endif
+
+        // Update game
+        _quit = _doomGame->update(Action());
+        if (_quit)
+            break;
 
         // User-defined render
         if (_renderContext != nullptr && _settings.render != nullptr)

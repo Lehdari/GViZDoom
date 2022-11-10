@@ -15,7 +15,9 @@ namespace gvizdoom {
 
 // GameConfig class encapsulates all information required for DoomGame initialization
 class GameConfig {
-    // TODO
+public:
+    int     argc; // TODO remove raw CLI parameters, use high-level abstraction
+    char**  argv;
 };
 
 } // namespace gvizdoom

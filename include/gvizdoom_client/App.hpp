@@ -12,7 +12,11 @@
 
 
 #include <string>
+#include <memory>
 #include <SDL.h>
+
+#include "gvizdoom/GameConfig.hpp"
+#include "gvizdoom/DoomGame.hpp"
 
 
 namespace gvizdoom {
@@ -45,11 +49,13 @@ public:
         WindowSettings* windowSettings;
         SDL_Window*     window;
         bool*           quit;
+        DoomGame*       doomGame;
 
         Context(App& app) :
             windowSettings  (&app._settings.window),
             window          (app._window),
-            quit            (&app._quit)
+            quit            (&app._quit),
+            doomGame        (app._doomGame.get())
         {}
     };
 
@@ -73,7 +79,8 @@ public:
 
     explicit App(
         const Settings& settings = Settings(),
-        RenderContext* renderContext = nullptr);
+        RenderContext* renderContext = nullptr,
+        GameConfig gameConfig = GameConfig());
 
     ~App();
 
@@ -82,14 +89,15 @@ public:
     void setRenderContext(RenderContext* renderContext);
 
 private:
-    Settings            _settings;
-    SDL_Window*         _window;
-    bool                _quit; // flag for quitting the application
-    uint32_t            _lastTicks;
-    uint32_t            _frameTicks;
+    Settings                    _settings;
+    SDL_Window*                 _window;
+    bool                        _quit; // flag for quitting the application
+    uint32_t                    _lastTicks;
+    uint32_t                    _frameTicks;
+    std::unique_ptr<DoomGame>   _doomGame;
 
-    App::Context        _appContext;
-    RenderContext*      _renderContext;
+    App::Context                _appContext;
+    RenderContext*              _renderContext;
 };
 
 } // namespace gvizdoom

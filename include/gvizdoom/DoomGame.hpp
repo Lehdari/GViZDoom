@@ -13,6 +13,7 @@
 
 #include "gvizdoom/Action.hpp"
 #include "gvizdoom/GameConfig.hpp"
+#include "d_main.h"
 
 
 namespace gvizdoom {
@@ -20,13 +21,23 @@ namespace gvizdoom {
 // DoomGame serves as the top-level interface for the GViZDoom library
 class DoomGame {
 public:
-    void init(GameConfig gameConfig);
-    void update(const Action& action);
+    DoomGame() = default;
+    DoomGame(const DoomGame&) = delete;
+    DoomGame(DoomGame&&);
+    DoomGame& operator=(const DoomGame&) = delete;
+    DoomGame& operator=(DoomGame&&);
+    ~DoomGame();
+
+    void init(GameConfig&& gameConfig);
+    void restart();
+    bool update(const Action& action); // returns true upon exit
 
     // TODO getter(s) for updated game state
 
 private:
-    GameConfig  _gameConfig;
+    GameConfig                  _gameConfig;
+    int                         _status = 0;
+    D_DoomMain_Internal_State   _state;
 };
 
 } // namespace gvizdoom
