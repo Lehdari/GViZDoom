@@ -35,8 +35,9 @@ DoomGame& DoomGame::operator=(DoomGame&& other)
 
 DoomGame::~DoomGame()
 {
-#if 0 // TODO
-    if (_status == 0) { // if status is not 0, everything has already been cleaned up
+    // TODO should this be moved into deinit function or something because of potential exceptions?
+#if 0
+    if (_status == 0) {
         D_DoomMain_Internal_Cleanup();
         GameMain_Cleanup();
     }
@@ -52,7 +53,54 @@ void DoomGame::init(GameConfig&& gameConfig)
         return;
     }
 
-    _status = GameMain_Loop(_state); // TODO obviously move game loop out of init :D
+    // "GameMain_Loop":
+    try {
+        // Old D_DoomMain_Internal
+        D_DoomMain_Internal_ReInit(_state);
+        _status = 0;
+    }
+    catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
+    {
+        _status = exit.Reason();
+        return;
+    }
+    catch (const std::exception& error) {
+        I_ShowFatalError(error.what());
+        _status = -1;
+        return;
+    }
+
+    while (true) {
+        try {
+            DoomLoopCycle(_state.lasttic);
+        }
+        catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
+        {
+            _status = exit.Reason();
+            break;
+        }
+        catch (const std::exception& error) {
+            I_ShowFatalError(error.what());
+            _status = -1;
+            return;
+        }
+    }
+
+    try {
+        D_DoomMain_Internal_Cleanup();
+        _status = 0;
+    }
+    catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
+    {
+        _status = exit.Reason();
+        return;
+    }
+    catch (const std::exception& error) {
+        I_ShowFatalError(error.what());
+        _status = -1;
+        return;
+    }
+
     GameMain_Cleanup();
 }
 
@@ -80,5 +128,21 @@ void DoomGame::restart()
 
 bool DoomGame::update(const Action& action)
 {
+#if 0
+    try {
+        DoomLoopCycle(_state.lasttic);
+    }
+    catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
+    {
+        _status = exit.Reason();
+        return true;
+    }
+    catch (const std::exception& error) {
+        I_ShowFatalError(error.what());
+        _status = -1;
+    }
+
+    return false;
+#endif
     return true; // TODO just quit for now
 }
