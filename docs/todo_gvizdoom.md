@@ -12,3 +12,8 @@ TODO
   - Semantic label buffer (floor, ceiling, walls, objects, items, enemies)
   - Automap
   - Visible items enumeration
+- Libraries
+  - Separate targets for PIC / non-PIC targets
+    - non-PIC targets for building gvizdoom into a static library
+- Command line parameters
+  - Handle more sophistically than just by sticking them into the GameConfig
