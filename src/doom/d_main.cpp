@@ -1170,8 +1170,10 @@ void DoomLoopCycle(int lasttic)
         I_SetFrameTime();
 
         // process one or more tics
+		// TODO: make `singletics` default as it's `false` currently
         if (singletics)
         {
+			// Use this branch for AI play
             I_StartTic ();
             D_ProcessEvents ();
             G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
@@ -1189,6 +1191,7 @@ void DoomLoopCycle(int lasttic)
         }
         else
         {
+			// Use this for manual human play (or multiplayer)
             TryRunTics (); // will run at least one tic
         }
         // Update display, next frame, with current state.
