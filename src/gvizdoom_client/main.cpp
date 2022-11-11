@@ -9,7 +9,7 @@
 //
 
 #include "gvizdoom_client/App.hpp"
-#include "gvizdoom_client/gzdoom_main_wrapper.hpp"
+#include "gvizdoom/gzdoom_main_wrapper.hpp"
 
 
 using namespace gvizdoom;
@@ -48,20 +48,20 @@ void render(RenderContext& renderContext, App::Context& appContext)
 }
 
 
-int main(int argv, char** args)
+int main(int argc, char** argv)
 {
-#if 0
     // Setup app and render context
     App::Settings appSettings;
     appSettings.handleEvents = &handleEvents;
     appSettings.render = &render;
-    RenderContext context;
-    App app(appSettings);
-    app.setRenderContext(&context);
+
+    RenderContext renderContext;
+
+    GameConfig gameConfig{argc, argv};
+
+    App app(appSettings, &renderContext, gameConfig);
 
     app.loop();
-#endif
-    gzdoom_main_wrapper(argv, args);
 
     return 0;
 }

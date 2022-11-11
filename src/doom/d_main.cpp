@@ -1157,6 +1157,69 @@ void D_ErrorCleanup ()
 	ClearGlobalVMStack();
 }
 
+void DoomLoopCycle(int lasttic)
+{
+    try
+    {
+        // frame syncronous IO operations
+        if (gametic > lasttic)
+        {
+            lasttic = gametic;
+            I_StartFrame ();
+        }
+        I_SetFrameTime();
+
+        // process one or more tics
+		// TODO: make `singletics` default as it's `false` currently
+        if (singletics)
+        {
+			// Use this branch for AI play
+            I_StartTic ();
+            D_ProcessEvents ();
+            G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
+            if (advancedemo)
+                D_DoAdvanceDemo ();
+            C_Ticker ();
+            M_Ticker ();
+            G_Ticker ();
+            // [RH] Use the consoleplayer's camera to update sounds
+            S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
+            gametic++;
+            maketic++;
+            GC::CheckGC ();
+            Net_NewMakeTic ();
+        }
+        else
+        {
+			// Use this for manual human play (or multiplayer)
+            TryRunTics (); // will run at least one tic
+        }
+        // Update display, next frame, with current state.
+        I_StartTic ();
+        D_Display ();
+        S_UpdateMusic();
+        if (wantToRestart)
+        {
+            wantToRestart = false;
+            return;
+        }
+    }
+    catch (CRecoverableError &error)
+    {
+        if (error.GetMessage ())
+        {
+            Printf (PRINT_NONOTIFY | PRINT_BOLD, "\n%s\n", error.GetMessage());
+        }
+        D_ErrorCleanup ();
+    }
+    catch (CVMAbortException &error)
+    {
+        error.MaybePrintMessage();
+        Printf(PRINT_NONOTIFY, "%s", error.stacktrace.GetChars());
+        D_ErrorCleanup();
+    }
+}
+
 //==========================================================================
 //
 // D_DoomLoop
@@ -1170,75 +1233,8 @@ void D_DoomLoop ()
 {
 	printf("[ELJAS] entered D_DoomLoop()\n");
 
-	int lasttic = 0;
 
-	// Clamp the timer to TICRATE until the playloop has been entered.
-	r_NoInterpolate = true;
-	Page.SetInvalid();
-	Subtitle = nullptr;
-	Advisory.SetInvalid();
 
-	vid_cursor->Callback();
-
-	while (true)
-	{
-		try
-		{
-			// frame syncronous IO operations
-			if (gametic > lasttic)
-			{
-				lasttic = gametic;
-				// I_StartFrame (); // Joystick
-			}
-			I_SetFrameTime();
-
-			// process one or more tics
-			if (singletics)
-			{
-				I_StartTic ();
-				D_ProcessEvents ();
-				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
-				if (advancedemo)
-					D_DoAdvanceDemo ();
-				C_Ticker ();
-				M_Ticker ();
-				G_Ticker ();
-				// [RH] Use the consoleplayer's camera to update sounds
-				S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
-				gametic++;
-				maketic++;
-				GC::CheckGC ();
-				Net_NewMakeTic ();
-			}
-			else
-			{
-				TryRunTics (); // will run at least one tic
-			}
-			// Update display, next frame, with current state.
-			I_StartTic ();
-			D_Display ();
-			S_UpdateMusic();
-			if (wantToRestart)
-			{
-				wantToRestart = false;
-				return;
-			}
-		}
-		catch (CRecoverableError &error)
-		{
-			if (error.GetMessage ())
-			{
-				Printf (PRINT_NONOTIFY | PRINT_BOLD, "\n%s\n", error.GetMessage());
-			}
-			D_ErrorCleanup ();
-		}
-		catch (CVMAbortException &error)
-		{
-			error.MaybePrintMessage();
-			Printf(PRINT_NONOTIFY, "%s", error.stacktrace.GetChars());
-			D_ErrorCleanup();
-		}
-	}
 }
 
 //==========================================================================
@@ -3500,256 +3496,305 @@ static int D_InitGame(const FIWADInfo* iwad_info, TArray<FString>& allwads, TArr
 //
 //==========================================================================
 
-static int D_DoomMain_Internal (void)
+
+void D_DoomMain_Internal_Init(D_DoomMain_Internal_State& state)
 {
-	const char *v;
-	const char *wad;
-	FIWadManager *iwad_man;
+    GC::AddMarkerFunc(GC_MarkGameRoots); // ELJAS: garbage collection stuff
+    // VM_CastSpriteIDToString = Doom_CastSpriteIDToString; // ELJAS: I just randomly commented this away and the code still works
 
-	GC::AddMarkerFunc(GC_MarkGameRoots); // ELJAS: garbage collection stuff
-	// VM_CastSpriteIDToString = Doom_CastSpriteIDToString; // ELJAS: I just randomly commented this away and the code still works
+    // Set up the button list. Mlook and Klook need a bit of extra treatment.
+    buttonMap.SetButtons(DoomButtons, countof(DoomButtons));
 
-	// Set up the button list. Mlook and Klook need a bit of extra treatment.
-	buttonMap.SetButtons(DoomButtons, countof(DoomButtons));
-	
-	// Networking shit, not needed 
-	// buttonMap.GetButton(Button_Mlook)->ReleaseHandler = Mlook_ReleaseHandler;
-	buttonMap.GetButton(Button_Mlook)->bReleaseLock = true;
-	buttonMap.GetButton(Button_Klook)->bReleaseLock = true;
+    // Networking shit, not needed
+    // buttonMap.GetButton(Button_Mlook)->ReleaseHandler = Mlook_ReleaseHandler;
+    buttonMap.GetButton(Button_Mlook)->bReleaseLock = true;
+    buttonMap.GetButton(Button_Klook)->bReleaseLock = true;
 
-	sysCallbacks = {
-		G_Responder, // ELJAS: this is important
-		System_WantGuiCapture,
-		System_WantLeftButton,
-		System_NetGame,
-		System_WantNativeMouse,
-		System_CaptureModeInGame,
-		System_CrashInfo,
-		System_PlayStartupSound, // TODO: not needed
-		System_IsSpecialUI,
-		System_DisableTextureFilter,
-		System_OnScreenSizeChanged,
-		System_GetSceneRect,
-		System_GetLocationDescription,
-		System_M_Dim,
-		System_GetPlayerName,
-		System_DispatchEvent,
-		StrTable_ValidFilter,
-		StrTable_GetGender, // TODO: not needed
-		nullptr, // MenuClosed
-		CheckSkipGameOptionBlock,
-		System_ConsoleToggled,
-		nullptr, // PreBindTexture
-		nullptr, // FontCharCreated
-		System_ToggleFullConsole,
-		System_StartCutscene,
-		System_SetTransition,
-		CheckCheatmode,
-		System_HudScaleChanged,
-		M_SetSpecialMenu,
-		OnMenuOpen,
-		System_LanguageChanged, // TODO: not needed
-		OkForLocalization,
-		[]() ->FConfigFile* { return GameConfig; }
+    sysCallbacks = {
+        G_Responder, // ELJAS: this is important
+        System_WantGuiCapture,
+        System_WantLeftButton,
+        System_NetGame,
+        System_WantNativeMouse,
+        System_CaptureModeInGame,
+        System_CrashInfo,
+        System_PlayStartupSound, // TODO: not needed
+        System_IsSpecialUI,
+        System_DisableTextureFilter,
+        System_OnScreenSizeChanged,
+        System_GetSceneRect,
+        System_GetLocationDescription,
+        System_M_Dim,
+        System_GetPlayerName,
+        System_DispatchEvent,
+        StrTable_ValidFilter,
+        StrTable_GetGender, // TODO: not needed
+        nullptr, // MenuClosed
+        CheckSkipGameOptionBlock,
+        System_ConsoleToggled,
+        nullptr, // PreBindTexture
+        nullptr, // FontCharCreated
+        System_ToggleFullConsole,
+        System_StartCutscene,
+        System_SetTransition,
+        CheckCheatmode,
+        System_HudScaleChanged,
+        M_SetSpecialMenu,
+        OnMenuOpen,
+        System_LanguageChanged, // TODO: not needed
+        OkForLocalization,
+        []() ->FConfigFile* { return GameConfig; }
 
-	};
+    };
 
-	
-	std::set_new_handler(NewFailure);
-	const char *batchout = Args->CheckValue("-errorlog");
 
-	D_DoomInit();
-	
-	// [RH] Make sure zdoom.pk3 is always loaded,
-	// as it contains magic stuff we need.
-	wad = BaseFileSearch(BASEWAD, NULL, true, GameConfig);
-	if (wad == NULL)
-	{
-		I_FatalError("Cannot find " BASEWAD);
-	}
-	LoadHexFont(wad);	// load hex font early so we have it during startup.
+    std::set_new_handler(NewFailure);
+    const char *batchout = Args->CheckValue("-errorlog");
 
-	C_InitConsole(80*8, 25*8, false);
-	I_DetectOS();
+    D_DoomInit();
 
-	// +logfile gets checked too late to catch the full startup log in the logfile so do some extra check for it here.
-	// This piece of code checks if we are trying to save the run to a logfile
-	{
-		FString logfile = Args->TakeValue("+logfile");
-		if (logfile.IsNotEmpty())
-		{
-			execLogfile(logfile);
-		}
-		else if (batchout != NULL && *batchout != 0)
-		{
-			batchrun = true;
-			nosound = true;
-			execLogfile(batchout, true);
-			Printf("Command line: ");
-			for (int i = 0; i < Args->NumArgs(); i++)
-			{
-				Printf("%s ", Args->GetArg(i));
-			}
-			Printf("\n");
-		}
-	}
+    // [RH] Make sure zdoom.pk3 is always loaded,
+    // as it contains magic stuff we need.
+    state.wad = BaseFileSearch(BASEWAD, NULL, true, GameConfig);
+    if (state.wad == NULL)
+    {
+        I_FatalError("Cannot find " BASEWAD);
+    }
+    LoadHexFont(state.wad);	// load hex font early so we have it during startup.
 
-	Printf("%s version %s\n", GAMENAME, GetVersionString());
+    C_InitConsole(80*8, 25*8, false);
+    I_DetectOS();
 
-	// Nope, we don't want.
-	// extern void D_ConfirmSendStats();
-	// D_ConfirmSendStats();
+    // +logfile gets checked too late to catch the full startup log in the logfile so do some extra check for it here.
+    // This piece of code checks if we are trying to save the run to a logfile
+    {
+        FString logfile = Args->TakeValue("+logfile");
+        if (logfile.IsNotEmpty())
+        {
+            execLogfile(logfile);
+        }
+        else if (batchout != NULL && *batchout != 0)
+        {
+            batchrun = true;
+            nosound = true;
+            execLogfile(batchout, true);
+            Printf("Command line: ");
+            for (int i = 0; i < Args->NumArgs(); i++)
+            {
+                Printf("%s ", Args->GetArg(i));
+            }
+            Printf("\n");
+        }
+    }
 
-	FString basewad = wad;
-	FString optionalwad = BaseFileSearch(OPTIONALWAD, NULL, true, GameConfig);
-	iwad_man = new FIWadManager(basewad, optionalwad);
+    Printf("%s version %s\n", GAMENAME, GetVersionString());
 
-	// Now that we have the IWADINFO, initialize the autoload ini sections.
-	GameConfig->DoAutoloadSetup(iwad_man);
+    // Nope, we don't want.
+    // extern void D_ConfirmSendStats();
+    // D_ConfirmSendStats();
 
-	// Prevent the game from starting if the savegame passed to -loadgame is invalid
-	v = Args->CheckValue("-loadgame");
-	if (v)
-	{
-		FString file = G_BuildSaveName(v);
-		if (!FileExists(file))
-		{
-			I_FatalError("Cannot find savegame %s", file.GetChars());
-		}
-	}
+    state.basewad = state.wad;
+    state.optionalwad = BaseFileSearch(OPTIONALWAD, NULL, true, GameConfig);
+    state.iwad_man = new FIWadManager(state.basewad, state.optionalwad);
 
-	// reinit from here
+    // Now that we have the IWADINFO, initialize the autoload ini sections.
+    GameConfig->DoAutoloadSetup(state.iwad_man);
 
-	printf("\t[ELJAS] going into while loop\n");
+    // Prevent the game from starting if the savegame passed to -loadgame is invalid
+    state.v = Args->CheckValue("-loadgame");
+    if (state.v)
+    {
+        FString file = G_BuildSaveName(state.v);
+        if (!FileExists(file))
+        {
+            I_FatalError("Cannot find savegame %s", file.GetChars());
+        }
+    }
+}
 
-	while (true)
-	{
-		PClass::StaticInit();
-		PType::StaticInit();
-		printf("We have %d restart\n", restart);
+int D_DoomMain_Internal_ReInit(D_DoomMain_Internal_State& state)
+{
+    PClass::StaticInit();
+    PType::StaticInit();
+    printf("We have %d restart\n", restart);
 
-		if (restart) // see D_Cleanup()
-		{
-			C_InitConsole(SCREENWIDTH, SCREENHEIGHT, false);
-		}
-		nospriterename = false;
+    if (restart) // see D_Cleanup()
+    {
+        C_InitConsole(SCREENWIDTH, SCREENHEIGHT, false);
+    }
+    nospriterename = false;
 
-		if (iwad_man == NULL)
-		{
-			iwad_man = new FIWadManager(basewad, optionalwad);
-		}
+    if (state.iwad_man == NULL)
+    {
+        state.iwad_man = new FIWadManager(state.basewad, state.optionalwad);
+    }
 
-		// Load zdoom.pk3 alone so that we can get access to the internal gameinfos before 
-		// the IWAD is known.
+    // Load zdoom.pk3 alone so that we can get access to the internal gameinfos before
+    // the IWAD is known.
 
-		TArray<FString> pwads;
-		GetCmdLineFiles(pwads);
-		FString iwad = CheckGameInfo(pwads);
+    TArray<FString> pwads;
+    GetCmdLineFiles(pwads);
+    FString iwad = CheckGameInfo(pwads);
 
-		// The IWAD selection dialogue does not show in fullscreen so if the
-		// restart is initiated without a defined IWAD assume for now that it's not going to change.
-		if (iwad.IsEmpty()) { iwad = lastIWAD; }
+    // The IWAD selection dialogue does not show in fullscreen so if the
+    // restart is initiated without a defined IWAD assume for now that it's not going to change.
+    if (iwad.IsEmpty()) { iwad = lastIWAD; }
 
-		TArray<FString> allwads;
-		
-		const FIWADInfo *iwad_info = iwad_man->FindIWAD(allwads, iwad, basewad, optionalwad);
-		
-		if (!iwad_info)
-		{
-			printf("\t[ELJAS] NOT IWAD INFO\n");
-			return 0;
-		}	// user exited the selection popup via cancel button.
+    TArray<FString> allwads;
 
-		if ((iwad_info->flags & GI_SHAREWARE) && pwads.Size() > 0)
-		{
-			I_FatalError ("You cannot -file with the shareware version. Register!");
-		}
-		lastIWAD = iwad;
+    const FIWADInfo *iwad_info = state.iwad_man->FindIWAD(allwads, iwad, state.basewad, state.optionalwad);
 
-		int ret = D_InitGame(iwad_info, allwads, pwads);
-		allwads.Reset();
-		delete iwad_man;	// now we won't need this anymore
-		iwad_man = NULL;
-		if (ret != 0)
-		{
-			printf("\t[ELJAS] exit point bravo\n");
-			return ret;
-		}
+    if (!iwad_info)
+    {
+        printf("\t[ELJAS] NOT IWAD INFO\n");
+        return 0;
+    }	// user exited the selection popup via cancel button.
 
-		printf("[ELJAS] Going to DoomLoop from internal main\n");
+    if ((iwad_info->flags & GI_SHAREWARE) && pwads.Size() > 0)
+    {
+        I_FatalError ("You cannot -file with the shareware version. Register!");
+    }
+    lastIWAD = iwad;
 
-		// D_DoAnonStats(); // Nope, not needed.
-		// I_UpdateWindowTitle(); // Nope, not needed
-		D_DoomLoop();		// this only returns if a 'restart' CCMD is given.
+    int ret = D_InitGame(iwad_info, allwads, pwads);
+    allwads.Reset();
+    delete state.iwad_man;	// now we won't need this anymore
+    state.iwad_man = NULL;
+    if (ret != 0)
+    {
+        printf("\t[ELJAS] exit point bravo\n");
+        return ret;
+    }
 
-		printf("[ELJAS] Out of doomloop, in doom main internal\n");
+    printf("[ELJAS] Going to DoomLoop from internal main\n");
 
-		// 
-		// Clean up after a restart
-		//
+    // D_DoAnonStats(); // Nope, not needed.
+    // I_UpdateWindowTitle(); // Nope, not needed
+    //D_DoomLoop();		// this only returns if a 'restart' CCMD is given.
+    state.lasttic = 0;
 
-		D_Cleanup(); // edits 'restart'
+    // Clamp the timer to TICRATE until the playloop has been entered.
+    r_NoInterpolate = true;
+    Page.SetInvalid();
+    Subtitle = nullptr;
+    Advisory.SetInvalid();
 
-		// This looks like a state machine
-		gamestate = GS_STARTUP;
-	}
+    vid_cursor->Callback();
 
-	printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
+    return 0;
+}
 
-	return 0;
+void D_DoomMain_Internal_Cleanup()
+{
+    printf("[ELJAS] Out of doomloop, in doom main internal\n");
+
+    //
+    // Clean up after a restart
+    //
+
+    D_Cleanup(); // edits 'restart'
+
+    // This looks like a state machine
+    gamestate = GS_STARTUP;
+}
+
+int GameMain_Init(D_DoomMain_Internal_State& state)
+{
+    int ret = 0;
+    GameTicRate = TICRATE;
+    I_InitTime();
+
+    // ELJAS: remove these, probably only for multiplayer
+    // ConsoleCallbacks cb = {
+    // 	D_UserInfoChanged,
+    // 	D_SendServerInfoChange,
+    // 	D_SendServerFlagChange,
+    // 	G_GetUserCVar,
+    // 	[]() { return gamestate != GS_FULLCONSOLE && gamestate != GS_STARTUP; }
+    // };
+    C_InitCVars(0);
+    // C_InstallHandlers(&cb);
+    SetConsoleNotifyBuffer();
+
+    try {
+        D_DoomMain_Internal_Init(state);
+    }
+    catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
+    {
+        ret = exit.Reason();
+    }
+    catch (const std::exception& error) {
+        I_ShowFatalError(error.what());
+        ret = -1;
+    }
+
+    return ret;
+}
+
+int GameMain_Loop(D_DoomMain_Internal_State& state)
+{
+    int ret = 0;
+    try {
+        // Old D_DoomMain_Internal
+        //while (true) { // this loop does nothing?
+        D_DoomMain_Internal_ReInit(state);
+
+        while (true) {
+            DoomLoopCycle(state.lasttic);
+        }
+
+        D_DoomMain_Internal_Cleanup();
+        //}
+
+        printf("[ELJAS] Exited D_DoomMain_Internal() while\n");
+        ret = 0;
+    }
+    catch (const CExitEvent& exit)    // This is a regular exit initiated from deeply nested code.
+    {
+        ret = exit.Reason();
+    }
+    catch (const std::exception& error) {
+        I_ShowFatalError(error.what());
+        ret = -1;
+    }
+
+    return ret;
+}
+
+void GameMain_Cleanup()
+{
+    // Unless something really bad happened, the game should only exit through this single point in the code.
+    // No more 'exit', please.
+    D_Cleanup(); // edits 'restart'
+    // CloseNetwork(); // ELJAS: probably not needed
+    GC::FinalGC = true;
+    GC::FullGC();
+    GC::DelSoftRootHead();	// the soft root head will not be collected by a GC so we have to do it explicitly
+    C_DeinitConsole();
+    R_DeinitColormaps();
+    R_Shutdown();
+    I_ShutdownGraphics();
+    I_ShutdownInput();
+    M_SaveDefaultsFinal();
+    DeleteStartupScreen();
+    C_UninitCVars(); // must come last so that nothing will access the CVARs anymore after deletion.
+    delete Args;
+    Args = nullptr;
 }
 
 int GameMain()
 {
-	int ret = 0;
-	GameTicRate = TICRATE;
-	I_InitTime();
+    D_DoomMain_Internal_State state;
 
-	// ELJAS: remove these, probably only for multiplayer
-	// ConsoleCallbacks cb = {
-	// 	D_UserInfoChanged,
-	// 	D_SendServerInfoChange,
-	// 	D_SendServerFlagChange,
-	// 	G_GetUserCVar,
-	// 	[]() { return gamestate != GS_FULLCONSOLE && gamestate != GS_STARTUP; }
-	// };
-	C_InitCVars(0);
-	// C_InstallHandlers(&cb);
-	SetConsoleNotifyBuffer();
+    int ret = GameMain_Init(state);
+    if (ret != 0) {
+        GameMain_Cleanup();
+        return ret;
+    }
 
-	try
-	{
-		ret = D_DoomMain_Internal();
-	}
-	catch (const CExitEvent &exit)	// This is a regular exit initiated from deeply nested code.
-	{
-		ret = exit.Reason();
-	}
-	catch (const std::exception &error)
-	{
-		I_ShowFatalError(error.what());
-		ret = -1;
-	}
-
-	
-	// Unless something really bad happened, the game should only exit through this single point in the code.
-	// No more 'exit', please.
-	D_Cleanup(); // edits 'restart'
-	// CloseNetwork(); // ELJAS: probably not needed
-	GC::FinalGC = true;
-	GC::FullGC();
-	GC::DelSoftRootHead();	// the soft root head will not be collected by a GC so we have to do it explicitly
-	C_DeinitConsole();
-	R_DeinitColormaps();
-	R_Shutdown();
-	I_ShutdownGraphics();
-	I_ShutdownInput();
-	M_SaveDefaultsFinal();
-	DeleteStartupScreen();
-	C_UninitCVars(); // must come last so that nothing will access the CVARs anymore after deletion.
-	delete Args;
-	Args = nullptr;
-	return ret;
+    ret = GameMain_Loop(state);
+    GameMain_Cleanup();
+    return ret;
 }
 
 //==========================================================================

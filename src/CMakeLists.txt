@@ -1174,12 +1174,13 @@ set (PCH_SOURCES
 
 set (GVIZDOOM_SOURCES
 	gvizdoom/DoomGame.cpp
+	gvizdoom/gzdoom_main_wrapper.cpp
 )
 
 set (GVIZDOOM_CLIENT_SOURCES
 	gvizdoom_client/App.cpp
 	gvizdoom_client/main.cpp
-	gvizdoom_client/gzdoom_main_wrapper.cpp ../include/gvizdoom_client/gzdoom_main_wrapper.hpp)
+)
 
 if( ${HAVE_VM_JIT} )
 	set( PCH_SOURCES ${PCH_SOURCES} ${VM_JIT_SOURCES} )
