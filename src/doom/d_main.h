@@ -54,7 +54,7 @@ struct CRestartException
 struct D_DoomMain_Internal_State;
 
 void D_Display ();
-void DoomLoopCycle(int lasttic);
+void DoomLoopCycle(D_DoomMain_Internal_State& state);
 void D_DoomMain_Internal_Init(D_DoomMain_Internal_State& state);
 int D_DoomMain_Internal_ReInit(D_DoomMain_Internal_State& state);
 void D_DoomMain_Internal_Cleanup();

@@ -88,7 +88,7 @@ bool DoomGame::update(const Action& action)
 {
     try {
         // run one cycle
-        DoomLoopCycle(_state.lasttic);
+        DoomLoopCycle(_state);
     }
     catch (const CExitEvent& exit) // This is a regular exit initiated from deeply nested code.
     {

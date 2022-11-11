@@ -1157,14 +1157,14 @@ void D_ErrorCleanup ()
 	ClearGlobalVMStack();
 }
 
-void DoomLoopCycle(int lasttic)
+void DoomLoopCycle(D_DoomMain_Internal_State& state)
 {
     try
     {
         // frame syncronous IO operations
-        if (gametic > lasttic)
+        if (gametic > state.lasttic)
         {
-            lasttic = gametic;
+            state.lasttic = gametic;
             I_StartFrame ();
         }
         I_SetFrameTime();
@@ -3740,7 +3740,7 @@ int GameMain_Loop(D_DoomMain_Internal_State& state)
         D_DoomMain_Internal_ReInit(state);
 
         while (true) {
-            DoomLoopCycle(state.lasttic);
+            DoomLoopCycle(state);
         }
 
         D_DoomMain_Internal_Cleanup();
