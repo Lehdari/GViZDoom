@@ -24,21 +24,6 @@ DoomGame::DoomGame() :
 {
 }
 
-DoomGame::DoomGame(DoomGame&& other) :
-    _gameConfig (other._gameConfig),
-    _status     (other._status),
-    _state      (other._state)
-{
-}
-
-DoomGame& DoomGame::operator=(DoomGame&& other)
-{
-    _gameConfig = other._gameConfig;
-    _status     = other._status;
-    _state      = other._state;
-    return *this;
-}
-
 DoomGame::~DoomGame()
 {
     GameMain_Cleanup();
