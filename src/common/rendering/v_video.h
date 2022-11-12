@@ -108,7 +108,7 @@ public:
 
 	// Member variable access
 	inline uint8_t *GetPixels () const { return Pixels.Data(); }
-    inline float *GetDepthPixels () { return DepthPixels.Data(); }
+    inline float *GetDepthPixels () const { return DepthPixels.Data(); }
 	inline int GetWidth () const { return Width; }
 	inline int GetHeight () const { return Height; }
 	inline int GetPitch () const { return Pitch; }
