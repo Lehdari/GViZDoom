@@ -39,8 +39,7 @@ App::App(
         SDL_WINDOWPOS_UNDEFINED,
         (int)_settings.window.width,
         (int)_settings.window.height,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-
+        SDL_WINDOW_SHOWN);
     if (_window == nullptr) {
         printf("Error: SDL Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return;
