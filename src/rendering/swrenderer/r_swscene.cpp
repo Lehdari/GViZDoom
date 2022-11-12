@@ -39,9 +39,6 @@
 #include "d_main.h"
 #include "v_draw.h"
 
-// TODO opencv temp
-#include <opencv2/opencv.hpp>
-// TODO end of opencv temp
 
 // [RH] Base blending values (for e.g. underwater)
 int BaseBlendR, BaseBlendG, BaseBlendB;
@@ -133,14 +130,6 @@ sector_t *SWSceneDrawer::RenderView(player_t *player)
 			screen->Draw2D();
 			twod->Clear();
 		});
-
-        // TODO opencv temp
-        {
-            cv::Mat depthMat(Canvas->GetHeight(), Canvas->GetWidth(), CV_32FC1, Canvas->GetDepthPixels());
-            cv::imshow("depth", depthMat);
-            cv::waitKey(1);
-        }
-        // TODO end of opencv temp
 	}
 	else
 	{
