@@ -10,6 +10,8 @@
 
 #include "gvizdoom_client/App.hpp"
 
+#include <opencv2/opencv.hpp>
+
 
 using namespace gvizdoom;
 
@@ -79,6 +81,23 @@ void App::loop(void)
         _quit = _doomGame->update(Action());
         if (_quit)
             break;
+
+        // TODO opencv temp
+        _doomGame->updateCanvas();
+        if (_doomGame->getPixelsRGBA() != nullptr) {
+            auto h = _doomGame->getScreenHeight();
+            auto w = _doomGame->getScreenWidth();
+
+            // render RGBA
+            cv::Mat rgbaMat(h, w, CV_8UC4, _doomGame->getPixelsRGBA());
+            cv::imshow("rgba", rgbaMat);
+
+            // render depth
+            cv::Mat depthMat(h, w, CV_32FC1, _doomGame->getPixelsDepth());
+            cv::imshow("depth", depthMat);
+            cv::waitKey(1);
+        }
+        // TODO end of opencv temp
 
         // User-defined render
         if (_renderContext != nullptr && _settings.render != nullptr)
