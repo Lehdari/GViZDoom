@@ -24,5 +24,6 @@ public:
 	~SWSceneDrawer();
 
 	sector_t *RenderView(player_t *player);
+    const DCanvas* getCanvas() const { return Canvas.get(); }
 };
 

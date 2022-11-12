@@ -13,6 +13,9 @@
 #include "engineerrors.h"
 
 
+const DCanvas* GetCanvas(); // TODO remove once proper way of fetching canvas is implemented
+
+
 using namespace gvizdoom;
 
 
