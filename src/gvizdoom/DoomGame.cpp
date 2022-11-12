@@ -20,7 +20,8 @@ using namespace gvizdoom;
 
 
 DoomGame::DoomGame() :
-    _status (-1)
+    _status (-1),
+    _canvas (nullptr)
 {
 }
 
@@ -94,4 +95,38 @@ bool DoomGame::update(const Action& action)
 int DoomGame::getStatus() const
 {
     return _status;
+}
+
+int DoomGame::getScreenWidth() const
+{
+    if (_canvas == nullptr)
+        return 0;
+    return _canvas->GetWidth();
+}
+
+int DoomGame::getScreenHeight() const
+{
+    if (_canvas == nullptr)
+        return 0;
+    return _canvas->GetHeight();
+}
+
+uint8_t* DoomGame::getPixelsRGBA() const
+{
+    if (_canvas == nullptr)
+        return nullptr;
+    return _canvas->GetPixels();
+}
+
+float* DoomGame::getPixelsDepth() const
+{
+    if (_canvas == nullptr)
+        return nullptr;
+    return _canvas->GetDepthPixels();
+}
+
+void DoomGame::updateCanvas()
+{
+    if (_canvas == nullptr)
+        _canvas = GetCanvas();
 }
