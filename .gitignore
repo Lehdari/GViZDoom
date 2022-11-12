@@ -26,3 +26,5 @@
 /build_vc2019-64
 /build_vc2019-32
 *.code-workspace
+cmake-build*/
+.idea/
