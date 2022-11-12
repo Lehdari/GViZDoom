@@ -23,9 +23,9 @@ class DoomGame {
 public:
     DoomGame();
     DoomGame(const DoomGame&) = delete;
-    DoomGame(DoomGame&&);
+    DoomGame(DoomGame&&) = default;
     DoomGame& operator=(const DoomGame&) = delete;
-    DoomGame& operator=(DoomGame&&);
+    DoomGame& operator=(DoomGame&&) = default;
     ~DoomGame();
 
     void init(GameConfig&& gameConfig);
