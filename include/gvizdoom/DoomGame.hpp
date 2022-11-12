@@ -14,6 +14,7 @@
 #include "gvizdoom/Action.hpp"
 #include "gvizdoom/GameConfig.hpp"
 #include "d_main.h"
+#include "v_video.h"
 
 
 namespace gvizdoom {
@@ -33,12 +34,17 @@ public:
     bool update(const Action& action); // returns true upon exit
     int getStatus() const;
 
-    // TODO getter(s) for updated game state
+    int getScreenWidth() const;
+    int getScreenHeight() const;
+    uint8_t* getPixelsRGBA() const;
+    float* getPixelsDepth() const;
+    void updateCanvas();
 
 private:
     GameConfig                  _gameConfig;
     int                         _status;
     D_DoomMain_Internal_State   _state;
+    const DCanvas*              _canvas;
 };
 
 } // namespace gvizdoom
