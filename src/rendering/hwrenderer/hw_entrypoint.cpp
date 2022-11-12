@@ -63,6 +63,13 @@ void CleanSWDrawer()
 	swdrawer = nullptr;
 }
 
+const DCanvas* GetCanvas()
+{
+    if (swdrawer)
+        return swdrawer->getCanvas();
+    return nullptr;
+}
+
 #include "g_levellocals.h"
 #include "a_dynlight.h"
 
