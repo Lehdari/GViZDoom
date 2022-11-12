@@ -379,7 +379,6 @@ endif()
 
 # TODO opencv temp
 find_package(OpenCV REQUIRED)
-set( PROJECT_LIBRARIES ${PROJECT_LIBRARIES} ${OpenCV_LIBS} )
 # TODO end of opencv temp
 
 # Start defining source files for ZDoom
@@ -1297,9 +1296,6 @@ target_include_directories( zdoom PUBLIC ${OpenCV_INCLUDE_DIRS} )
 #TODO end of opencv temp
 
 target_link_libraries(gvizdoom ${PROJECT_LIBRARIES} gdtoa lzma ${ZMUSIC_LIBRARIES} )
-#TODO opencv temp
-target_include_directories(gvizdoom PUBLIC ${OpenCV_INCLUDE_DIRS} )
-#TODO end of opencv temp
 
 set_target_properties(gvizdoom gvizdoom_client
 	PROPERTIES
