@@ -1264,12 +1264,14 @@ target_include_directories(gvizdoom_client
 PUBLIC
 	../include
 	${SDL2_INCLUDE_DIR}
-)
+	${OpenCV_INCLUDE_DIRS} # TODO opencv temp
+	)
 
 target_link_libraries(gvizdoom_client
 PUBLIC
 	gvizdoom
 	${SDL2_LIBRARY}
+	${OpenCV_LIBS} # TODO opencv temp
 )
 
 set_source_files_properties( ${FASTMATH_SOURCES} PROPERTIES COMPILE_FLAGS ${ZD_FASTMATH_FLAG} )
