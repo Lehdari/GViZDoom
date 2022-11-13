@@ -298,13 +298,6 @@ protected:
 };
 static SDLInputJoystickManager *JoystickManager;
 
-void I_StartupJoysticks()
-{
-#ifndef NO_SDL_JOYSTICK
-	if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) >= 0)
-		JoystickManager = new SDLInputJoystickManager();
-#endif
-}
 void I_ShutdownInput()
 {
 	if(JoystickManager)

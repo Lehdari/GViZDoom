@@ -197,10 +197,6 @@ int main (int argc, char **argv)
 		printf("[ELJAS] program directory: %s\n", progdir.GetChars());
 	}
 
-	// ELJAS: let's not use joysticks
-#define NO_SDL_JOYSTICK
-	I_StartupJoysticks();
-
 	const int result = GameMain();
 
 	SDL_Quit();

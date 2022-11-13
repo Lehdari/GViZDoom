@@ -83,4 +83,3 @@ void Linux_I_FatalError(const char* errortext);
 
 int GetCrashInfo (char *buffer, char *end);
 void I_DetectOS();
-void I_StartupJoysticks();

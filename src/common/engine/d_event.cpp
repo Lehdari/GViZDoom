@@ -88,8 +88,6 @@ void D_ProcessEvents (void)
 
 		if (ev->type == EV_None)
 			continue;
-		if (ev->type == EV_DeviceChange)
-			UpdateJoystickMenu(I_UpdateDeviceList());
 
 		if (gamestate != GS_INTRO) // GS_INTRO blocks the UI.
 		{
