@@ -1156,8 +1156,9 @@ void NetUpdate (void)
 		}
 
 		numtics = max(0, lowtic - realstart);
-		if (numtics > BACKUPTICS)
-			I_Error ("NetUpdate: Node %d missed too many tics", i);
+
+        if (numtics > BACKUPTICS)
+            printf("Warning: NetUpdate: Node %d missed too many tics\n", i);
 
 		switch (net_extratic)
 		{
