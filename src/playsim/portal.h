@@ -234,19 +234,19 @@ enum
 
 struct FSectorPortal
 {
-	int mType;
-	int mFlags;
-	unsigned mPartner;
-	int mPlane;
-	sector_t *mOrigin;
-	sector_t *mDestination;
-	DVector2 mDisplacement;
-	double mPlaneZ;
-	TObjPtr<AActor*> mSkybox;
+	int mType{};
+	int mFlags{};
+	unsigned mPartner{};
+	int mPlane{};
+	sector_t *mOrigin{};
+	sector_t *mDestination{};
+	DVector2 mDisplacement{};
+	double mPlaneZ{};
+	TObjPtr<AActor*> mSkybox{};
 
 	FSectorPortal()
 	{
-		memset(this, 0, sizeof * this);
+		// memset(this, 0, sizeof * this);
 	}
 
 	bool MergeAllowed() const
