@@ -592,9 +592,8 @@ void G_InitNew (const char *mapname, bool bTitleLevel)
 	{
 		if (!netgame && !demorecording && !demoplayback)
 		{
-			// [RH] Change the random seed for each new single player game
-			// [ED850] The demo already sets the RNG.
-			rngseed = use_staticrng ? staticrngseed : (rngseed + 1);
+			// Always use the same random seed
+			rngseed = 69420;
 		}
 		FRandom::StaticClearRandom ();
 		P_ClearACSVars(true);

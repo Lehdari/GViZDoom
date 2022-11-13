@@ -2832,18 +2832,8 @@ static int D_InitGame(const FIWADInfo* iwad_info, TArray<FString>& allwads, TArr
 	gameinfo.nokeyboardcheats = iwad_info->nokeyboardcheats;
 	gameinfo.ConfigName = iwad_info->Configname;
 
-	const char *v = Args->CheckValue("-rngseed");
-	if (v)
-	{
-		rngseed = staticrngseed = atoi(v);
-		use_staticrng = true;
-		if (!batchrun) Printf("D_DoomInit: Static RNGseed %d set.\n", rngseed);
-	}
-	else
-	{
-		rngseed = I_MakeRNGSeed();
-		use_staticrng = false;
-	}
+	// Always use the same rng seed
+	rngseed = 69420;
 	srand(rngseed);
 		
 	FRandom::StaticClearRandom ();
