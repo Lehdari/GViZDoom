@@ -1101,7 +1101,7 @@ void D_ErrorCleanup ()
 	ClearGlobalVMStack();
 }
 
-void DoomLoopCycle(D_DoomMain_Internal_State& state)
+void DoomLoopCycle(D_DoomMain_Internal_State& state, const gvizdoom::Action& action)
 {
     try
     {
@@ -1113,18 +1113,34 @@ void DoomLoopCycle(D_DoomMain_Internal_State& state)
         I_SetFrameTime();
 
         // process one or more tics
-		// TODO: make `singletics` default as it's `false` currently
-        if (singletics)
-        {
-			// Use this branch for AI play
-            I_StartTic ();
-            D_ProcessEvents ();
-            G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
+        if (state.singletics) {
+            I_StartTic();
+
+            // Get key press events
+            D_ProcessEvents();
+            
+            // Process actions
+            buttonMap.GetButton(Button_Forward)->bDown =
+                action.isSet(gvizdoom::Action::Key::ACTION_FORWARD);
+
+            buttonMap.GetButton(Button_Attack)->bDown =
+                action.isSet(gvizdoom::Action::Key::ACTION_ATTACK);
+
+            G_BuildTiccmd(&netcmds[consoleplayer][maketic%BACKUPTICS]);
+
+            // This event (?) is splurted periodically
+            // it just basically changes the background image in the
+            // title screen every now and then.
+            // Nothing we need in GViZDoom because we don't have any menus there
             if (advancedemo)
-                D_DoAdvanceDemo ();
-            C_Ticker ();
-            M_Ticker ();
-            G_Ticker ();
+            {
+                D_DoAdvanceDemo();
+            }
+
+            C_Ticker();
+            M_Ticker();
+            G_Ticker();
+
             // [RH] Use the consoleplayer's camera to update sounds
             S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
             gametic++;
@@ -3488,6 +3504,16 @@ int D_DoomMain_Internal_ReInit(D_DoomMain_Internal_State& state)
     Advisory.SetInvalid();
 
     vid_cursor->Callback();
+
+	// Force to new game without requiring user input
+	// to choose "start game" and difficulty level
+	{
+		gamestate = GS_DEMOSCREEN;
+		gameaction = ga_newgame;
+		FNewGameStartup NewGameStartupInfo{.Skill=0};
+		G_DeferedInitNew(&NewGameStartupInfo);
+		M_ClearMenus();
+	} 
 
     return 0;
 }

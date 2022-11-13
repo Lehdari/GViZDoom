@@ -1291,7 +1291,7 @@ if( UNIX )
 	endif()
 endif()
 
-target_link_libraries( zdoom ${PROJECT_LIBRARIES} gdtoa lzma ${ZMUSIC_LIBRARIES} )
+target_link_libraries( zdoom ${PROJECT_LIBRARIES} gdtoa lzma ${ZMUSIC_LIBRARIES} gvizdoom )
 #TODO opencv temp
 target_include_directories( zdoom PUBLIC ${OpenCV_INCLUDE_DIRS} )
 #TODO end of opencv temp

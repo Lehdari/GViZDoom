@@ -66,6 +66,20 @@ void App::loop(void)
         return;
     }
 
+    std::vector<Action> actions;
+    {
+        for (size_t i = 0; i < 50; ++i)
+            actions.emplace_back(Action::Key::ACTION_ATTACK);
+
+        for (size_t i = 0; i < 50; ++i)
+            actions.emplace_back(static_cast<int>(Action::Key::ACTION_FORWARD | Action::Key::ACTION_ATTACK));
+
+        for (size_t i = 0; i < 50; ++i)
+            actions.emplace_back(Action::Key::ACTION_FORWARD);
+    }
+
+    size_t actionIndex = 0LLU;
+
     // Application main loop
     while (!_quit) {
 #if 0
@@ -77,10 +91,18 @@ void App::loop(void)
         }
 #endif
 
-        // Update game
-        _quit = _doomGame->update(Action());
-        if (_quit)
+        if (actions.size() == 0 or actionIndex >= actions.size()) {
+            printf("App: performed all actions\n\n");
             break;
+        }
+
+        // Update game
+        _quit = _doomGame->update(actions.at(actionIndex++));
+
+        if (_quit) {
+            printf("App: got quit\n");
+            break;
+        }
 
         // TODO opencv temp
         _doomGame->updateCanvas();

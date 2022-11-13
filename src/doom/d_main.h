@@ -28,6 +28,7 @@
 #ifndef __D_MAIN__
 #define __D_MAIN__
 
+#include "gvizdoom/Action.hpp"
 #include "doomtype.h"
 #include "gametype.h"
 #include "startupinfo.h"
@@ -48,13 +49,13 @@ struct event_t;
 
 struct CRestartException
 {
-	char dummy;
+    char dummy;
 };
 
 struct D_DoomMain_Internal_State;
 
 void D_Display ();
-void DoomLoopCycle(D_DoomMain_Internal_State& state);
+void DoomLoopCycle(D_DoomMain_Internal_State& state, const gvizdoom::Action& action);
 void D_DoomMain_Internal_Init(D_DoomMain_Internal_State& state);
 int D_DoomMain_Internal_ReInit(D_DoomMain_Internal_State& state);
 void D_DoomMain_Internal_Cleanup();
