@@ -1237,49 +1237,29 @@ void G_Ticker ()
 
 			if ((gametic % ticdup) == 0)
 			{
-				RunNetSpecs (i, buf);
+				RunNetSpecs(i, buf);
 			}
-			if (demorecording)
-			{
-				G_WriteDemoTiccmd (newcmd, i, buf);
-			}
+
+			// Not needed
+			// if (demorecording)
+			// {
+			// 	G_WriteDemoTiccmd(newcmd, i, buf);
+			// }
+
 			players[i].oldbuttons = cmd->ucmd.buttons;
+
 			// If the user alt-tabbed away, paused gets set to -1. In this case,
 			// we do not want to read more demo commands until paused is no
 			// longer negative.
-			if (demoplayback)
-			{
-				G_ReadDemoTiccmd (cmd, i);
-			}
-			else
+			// Not applicable to GViZDoom
+            
+			// if (demoplayback)
+			// {
+			// 	G_ReadDemoTiccmd(cmd, i);
+			// }
+			// else
 			{
 				memcpy(cmd, newcmd, sizeof(ticcmd_t));
-			}
-
-			// check for turbo cheats
-			if (multiplayer && turbo > 100.f && cmd->ucmd.forwardmove > TURBOTHRESHOLD &&
-				!(gametic&31) && ((gametic>>5)&(MAXPLAYERS-1)) == i )
-			{
-				Printf ("%s is turbo!\n", players[i].userinfo.GetName());
-			}
-
-			if (netgame && players[i].Bot == NULL && !demoplayback && (gametic%ticdup) == 0)
-			{
-				//players[i].inconsistant = 0;
-				if (gametic > BACKUPTICS*ticdup && consistancy[i][buf] != cmd->consistancy)
-				{
-					players[i].inconsistant = gametic - BACKUPTICS*ticdup;
-				}
-				if (players[i].mo)
-				{
-					uint32_t sum = rngsum + int((players[i].mo->X() + players[i].mo->Y() + players[i].mo->Z())*257) + players[i].mo->Angles.Yaw.BAMs() + players[i].mo->Angles.Pitch.BAMs();
-					sum ^= players[i].health;
-					consistancy[i][buf] = sum;
-				}
-				else
-				{
-					consistancy[i][buf] = rngsum;
-				}
 			}
 		}
 	}
