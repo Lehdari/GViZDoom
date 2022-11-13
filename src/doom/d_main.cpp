@@ -176,8 +176,6 @@ bool OkForLocalization(FTextureID texnum, const char* substitute);
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-void D_DoomLoop ();
-
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
 EXTERN_CVAR (Float, turbo)
@@ -1181,23 +1179,6 @@ void DoomLoopCycle(D_DoomMain_Internal_State& state, const gvizdoom::Action& act
         Printf(PRINT_NONOTIFY, "%s", error.stacktrace.GetChars());
         D_ErrorCleanup();
     }
-}
-
-//==========================================================================
-//
-// D_DoomLoop
-//
-// Manages timing and IO, calls all ?_Responder, ?_Ticker, and ?_Drawer,
-// calls I_GetTime, I_StartFrame, and I_StartTic
-//
-//==========================================================================
-
-void D_DoomLoop ()
-{
-	printf("[ELJAS] entered D_DoomLoop()\n");
-
-
-
 }
 
 //==========================================================================
@@ -3536,18 +3517,10 @@ int GameMain_Init(D_DoomMain_Internal_State& state)
 {
     int ret = 0;
     GameTicRate = TICRATE;
-    I_InitTime();
-
-    // ELJAS: remove these, probably only for multiplayer
-    // ConsoleCallbacks cb = {
-    // 	D_UserInfoChanged,
-    // 	D_SendServerInfoChange,
-    // 	D_SendServerFlagChange,
-    // 	G_GetUserCVar,
-    // 	[]() { return gamestate != GS_FULLCONSOLE && gamestate != GS_STARTUP; }
-    // };
+    I_InitTime(); // Sets startup time
     C_InitCVars(0);
-    // C_InstallHandlers(&cb);
+
+    // Probably not needed
     SetConsoleNotifyBuffer();
 
     try {
