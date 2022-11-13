@@ -1106,8 +1106,7 @@ void DoomLoopCycle(D_DoomMain_Internal_State& state)
     try
     {
         // frame syncronous IO operations
-        if (gametic > state.lasttic)
-        {
+        if (gametic > state.lasttic) {
             state.lasttic = gametic;
             I_StartFrame ();
         }
@@ -1135,13 +1134,17 @@ void DoomLoopCycle(D_DoomMain_Internal_State& state)
         }
         else
         {
-			// Use this for manual human play (or multiplayer)
             TryRunTics (); // will run at least one tic
         }
+
         // Update display, next frame, with current state.
         I_StartTic ();
-        D_Display ();
+        D_Display (); // This is the function that calls NetUpdate()
         S_UpdateMusic();
+
+        // Only place in code where this is put to `true` is
+        // console command `restart`
+        // However, this does not seem to do anything...
         if (wantToRestart)
         {
             wantToRestart = false;
@@ -1184,7 +1187,7 @@ void D_DoomLoop ()
 //==========================================================================
 //
 // D_PageTicker
-//
+// TODO: not needed
 //==========================================================================
 
 void D_PageTicker (void)
@@ -1226,7 +1229,7 @@ void D_PageDrawer (void)
 // D_AdvanceDemo
 //
 // Called after each demo or intro demosequence finishes
-//
+// TODO: this function is not needed
 //==========================================================================
 
 void D_AdvanceDemo (void)
@@ -1249,6 +1252,8 @@ void D_DoAdvanceDemo (void)
 
 	advancedemo = false;
 
+	// If any `gameaction` happens during demo,
+	// break and process the action
 	if (gameaction != ga_nothing)
 	{
 		return;
@@ -1342,7 +1347,7 @@ void D_DoAdvanceDemo (void)
 //==========================================================================
 //
 // D_StartTitle
-//
+// TODO: not needed as we don't need the title screen
 //==========================================================================
 
 void D_StartTitle (void)
@@ -3474,9 +3479,6 @@ int D_DoomMain_Internal_ReInit(D_DoomMain_Internal_State& state)
 
     printf("[ELJAS] Going to DoomLoop from internal main\n");
 
-    // D_DoAnonStats(); // Nope, not needed.
-    // I_UpdateWindowTitle(); // Nope, not needed
-    //D_DoomLoop();		// this only returns if a 'restart' CCMD is given.
     state.lasttic = 0;
 
     // Clamp the timer to TICRATE until the playloop has been entered.
@@ -3546,7 +3548,9 @@ int GameMain_Loop(D_DoomMain_Internal_State& state)
         D_DoomMain_Internal_ReInit(state);
 
         while (true) {
-            DoomLoopCycle(state);
+            // We have changed the DoomLoopCycle interface so this needs to be changed, too
+            // However, we don't want to use this branch
+            DoomLoopCycle(state, gvizdoom::Action(gvizdoom::Action::Key::ACTION_NONE));
         }
 
         D_DoomMain_Internal_Cleanup();
@@ -3588,6 +3592,7 @@ void GameMain_Cleanup()
     Args = nullptr;
 }
 
+// TODO: remove, not needed, will be replaced by App.cpp
 int GameMain()
 {
     D_DoomMain_Internal_State state;

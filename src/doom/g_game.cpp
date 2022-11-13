@@ -580,9 +580,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	int 		side;
 	int			fly;
 
-	ticcmd_t	*base;
-
-	base = G_BaseTiccmd (); 
+	ticcmd_t* base = G_BaseTiccmd(); 
 	*cmd = *base;
 
 	cmd->consistancy = consistancy[consoleplayer][(maketic/ticdup)%BACKUPTICS];
@@ -881,8 +879,10 @@ enum {
 	SPY_PREV,
 };
 
+// TODO: not needed
 // [RH] Spy mode has been separated into two console commands.
 //		One goes forward; the other goes backward.
+/*
 static void ChangeSpy (int changespy)
 {
 	// If you're not in a level, then you can't spy.
@@ -940,6 +940,7 @@ static void ChangeSpy (int changespy)
 	}
 }
 
+
 CCMD (spynext)
 {
 	// allow spy mode changes even during the demo
@@ -957,6 +958,8 @@ CCMD (spycancel)
 	// allow spy mode changes even during the demo
 	ChangeSpy (SPY_CANCEL);
 }
+*/
+
 
 // ELJAS TODO: read this function
 
@@ -998,6 +1001,7 @@ bool G_Responder (event_t *ev)
 				stricmp (cmd, "bumpgamma") &&
 				stricmp (cmd, "screenshot")))
 			{
+				// Show menu after a keypress in title screen
 				M_StartControlPanel(true);
 				M_SetMenu(NAME_Mainmenu, -1);
 				return true;
@@ -1102,14 +1106,14 @@ static uint32_t StaticSumSeeds()
 //
 // G_Ticker
 // Make ticcmd_ts for the players.
-//
+// Takes gamestate and gameaction as input
 void G_Ticker ()
 {
-	int i;
-	gamestate_t	oldgamestate;
+	gamestate_t	oldgamestate{};
 
 	// do player reborns if needed
-	for (i = 0; i < MAXPLAYERS; i++)
+	// TODO: Not needed
+	for (int i = 0; i < MAXPLAYERS; i++)
 	{
 		if (playeringame[i])
 		{
@@ -1205,27 +1209,26 @@ void G_Ticker ()
 			gamestate = GS_INTRO;
 			gameaction = ga_nothing;
 			break;
-
-
-
 		default:
 		case ga_nothing:
 			break;
 		}
-		C_AdjustBottom ();
+		C_AdjustBottom();
 	}
 
 	// get commands, check consistancy, and build new consistancy check
-	int buf = (gametic/ticdup)%BACKUPTICS;
+	const int buf = (gametic/ticdup)%BACKUPTICS; // index of the command
 
 	// [RH] Include some random seeds and player stuff in the consistancy
 	// check, not just the player's x position like BOOM.
-	uint32_t rngsum = StaticSumSeeds ();
+	const uint32_t rngsum = StaticSumSeeds ();
 
 	//Added by MC: For some of that bot stuff. The main bot function.
 	primaryLevel->BotInfo.Main (primaryLevel);
 
-	for (i = 0; i < MAXPLAYERS; i++)
+	// Loop all players that are in the game (alive/connected)
+	// copy the new command from
+	for (int i = 0; i < MAXPLAYERS; i++)
 	{
 		if (playeringame[i])
 		{
@@ -1436,7 +1439,6 @@ void FLevelLocals::PlayerReborn (int player)
 // at the given mapthing spot  
 // because something is occupying it 
 //
-
 bool FLevelLocals::CheckSpot (int playernum, FPlayerStart *mthing)
 {
 	DVector3 spot;
@@ -2258,7 +2260,6 @@ void G_DoQuickSave ()
 	description.Format("Quicksave %s", readableTime);
 	G_DoSaveGame (true, true, file, description);
 }
-
 
 static void PutSaveWads (FSerializer &arc)
 {

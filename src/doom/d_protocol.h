@@ -61,6 +61,8 @@ struct zdemoheader_s {
 	uint8_t	consoleplayer;
 };
 
+// ELJAS:
+// this wraps the commands for actions
 struct usercmd_t
 {
 	uint32_t	buttons;

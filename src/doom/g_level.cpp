@@ -258,6 +258,7 @@ void G_DeferedInitNew (const char *mapname, int newskill)
 
 void G_DeferedInitNew (FNewGameStartup *gs)
 {
+	// Player classes are not needed?
 	if (gs->PlayerClass != NULL) playerclass = gs->PlayerClass;
 	d_mapname = AllEpisodes[gs->Episode].mEpisodeMap;
 	d_skill = gs->Skill;
@@ -536,7 +537,8 @@ static void InitPlayerClasses ()
 
 //==========================================================================
 //
-//
+// Init a new game
+// For example when selected a difficulty level in the menu
 //==========================================================================
 
 void G_InitNew (const char *mapname, bool bTitleLevel)
@@ -631,6 +633,7 @@ void G_InitNew (const char *mapname, bool bTitleLevel)
 	}
 	else if (gamestate != GS_STARTUP)
 	{
+		// After choosing the skill level in menu you go here
 		gamestate = GS_LEVEL;
 	}
 	
@@ -1951,12 +1954,6 @@ void G_WriteVisited(FSerializer &arc)
 			}
 		}
 		arc.EndArray();
-	}
-
-	// Store player classes to be used when spawning a random class
-	if (multiplayer)
-	{
-		arc.Array("randomclasses", SinglePlayerClass, MAXPLAYERS);
 	}
 
 	if (arc.BeginObject("playerclasses"))

@@ -70,11 +70,16 @@ void D_ProcessEvents (void)
 	TArray<event_t*> delayedevents;
 
 	keywasdown.Zero();
+
+	// Process all events in a while loop
 	while (eventtail != eventhead)
 	{
+		// The last event
 		event_t *ev = &events[eventtail];
 		eventtail = (eventtail + 1) & (MAXEVENTS - 1);
 
+		// Key was down, now got an event that it is up
+		// -> put the event to `delayedevents`
 		if (ev->type == EV_KeyUp && keywasdown[ev->data1])
 		{
 			delayedevents.Push(ev);
@@ -88,16 +93,24 @@ void D_ProcessEvents (void)
 
 		if (gamestate != GS_INTRO) // GS_INTRO blocks the UI.
 		{
+			// Respond to the events
+
 			if (C_Responder(ev))
 				continue;				// console ate the event
 			if (M_Responder(ev))
 				continue;				// menu ate the event
 		}
 
-		if (sysCallbacks.G_Responder(ev) && ev->type == EV_KeyDown) keywasdown.Set(ev->data1);
+		// Event: key down
+		// Save the key ID to the bitmap
+		if (sysCallbacks.G_Responder(ev) && ev->type == EV_KeyDown)
+			keywasdown.Set(ev->data1);
 	}
-
-	for (auto ev: delayedevents)
+	// Processed all events
+	
+	// Delayed events = a key is pressed for a long time?
+	// -> post a new event of these to keep them running (?)
+	for (auto ev : delayedevents)
 	{
 		D_PostEvent(ev);
 	}

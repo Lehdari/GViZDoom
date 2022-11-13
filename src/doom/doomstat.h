@@ -36,7 +36,7 @@
 #include "c_cvars.h"
 
 // -----------------------
-// Game speed.
+// Game speed. Or monsters speed?
 //
 enum EGameSpeed
 {

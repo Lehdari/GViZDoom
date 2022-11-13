@@ -161,6 +161,7 @@ struct History
 static struct History *HistHead = NULL, *HistTail = NULL, *HistPos = NULL;
 static int HistSize;
 
+// TODO: Notifications can be maybe removed
 static FNotifyBufferBase *NotifyStrings;
 
 void C_SetNotifyBuffer(FNotifyBufferBase* nbb)

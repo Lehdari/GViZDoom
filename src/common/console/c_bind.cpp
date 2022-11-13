@@ -815,6 +815,8 @@ bool C_DoKey (event_t *ev, FKeyBindings *binds, FKeyBindings *doublebinds)
 	bool dclick;
 	unsigned int nowtime;
 
+	// Check that the event is really a key event
+	// Otherwise skip
 	if (ev->type != EV_KeyDown && ev->type != EV_KeyUp)
 		return false;
 
