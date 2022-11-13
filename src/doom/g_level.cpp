@@ -652,7 +652,6 @@ void G_InitNew (const char *mapname, bool bTitleLevel)
 //
 static FString	nextlevel;
 static int		startpos;	// [RH] Support for multiple starts per level
-extern int		NoWipe;		// [RH] Don't wipe when travelling in hubs
 static int		changeflags;
 static bool		unloading;
 
@@ -789,8 +788,6 @@ void FLevelLocals::ChangeLevel(const char *levelname, int position, int inflags,
 
 	if (thiscluster && (thiscluster->flags & CLUSTER_HUB))
 	{
-		if (!ShouldDoIntermission(nextcluster, thiscluster))
-			NoWipe = 35;
 		D_DrawIcon = "TELEICON";
 	}
 
@@ -1321,8 +1318,6 @@ void DAutosaver::Tick ()
 // G_DoLoadLevel 
 //
 //==========================================================================
-
-extern gamestate_t 	wipegamestate; 
  
 void G_DoLoadLevel(const FString &nextmapname, int position, bool autosave, bool newGame)
 {
@@ -1332,9 +1327,6 @@ void G_DoLoadLevel(const FString &nextmapname, int position, bool autosave, bool
 	primaryLevel->DoLoadLevel(nextmapname, position, autosave, newGame);
 
 	// Reset the global state for the new level.
-	if (wipegamestate == GS_LEVEL)
-		wipegamestate = GS_FORCEWIPE;
-
 	if (gamestate != GS_TITLELEVEL)
 	{
 		gamestate = GS_LEVEL;

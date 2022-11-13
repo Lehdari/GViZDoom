@@ -3079,9 +3079,7 @@ void G_StartSlideshow(FLevelLocals *Level, FName whichone)
 	{
 		primaryLevel->SetMusic();
 		gamestate = GS_LEVEL;
-		wipegamestate = GS_LEVEL;
 		gameaction = ga_resumeconversation;
-
 	});
 }
 

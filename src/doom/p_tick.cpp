@@ -40,7 +40,6 @@
 #include "g_game.h"
 #include "i_interface.h"
 
-extern gamestate_t wipegamestate;
 extern uint8_t globalfreeze, globalchangefreeze;
 
 //==========================================================================
@@ -62,8 +61,7 @@ bool P_CheckTickerPaused ()
 			 ConsoleState == c_down || ConsoleState == c_falling)
 		 && !demoplayback
 		 && !demorecording
-		 && players[consoleplayer].viewz != NO_VALUE
-		 && wipegamestate == gamestate)
+		 && players[consoleplayer].viewz != NO_VALUE)
 	{
 		// Only the current UI level's settings are relevant for sound.
 		S_PauseSound (!(primaryLevel->flags2 & LEVEL2_PAUSE_MUSIC_IN_MENUS), false);

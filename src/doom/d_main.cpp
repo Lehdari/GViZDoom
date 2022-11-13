@@ -50,7 +50,6 @@
 #include "s_sound.h"
 #include "v_video.h"
 #include "intermission/intermission.h"
-#include "wipe.h"
 #include "m_argv.h"
 #include "m_misc.h"
 #include "menu.h"
@@ -315,13 +314,11 @@ bool wantToRestart;
 bool DrawFSHUD;				// [RH] Draw fullscreen HUD?
 bool devparm;				// started game with -devparm
 const char *D_DrawIcon;	// [RH] Patch name of icon to draw on next refresh
-int NoWipe;				// [RH] Allow wipe? (Needs to be set each time)
 bool singletics = false;	// debug flag to cancel adaptiveness
 FString startmap;
 bool autostart;
 bool advancedemo;
 FILE *debugfile;
-gamestate_t wipegamestate = GS_DEMOSCREEN;	// can be -1 to force a wipe
 bool PageBlank;
 FTextureID Advisory;
 FTextureID Page;
@@ -865,8 +862,6 @@ static void End2DAndUpdate()
 
 void D_Display ()
 {
-	FTexture *wipestart = nullptr;
-	int wipe_type;
 	sector_t *viewsec;
 
 	if (nodrawers || screen == NULL)
@@ -924,49 +919,7 @@ void D_Display ()
 		else
 		{
 			R_ExecuteSetViewSize (vp, r_viewwindow);
-	}
-	}
-
-	// [RH] Allow temporarily disabling wipes
-	if (NoWipe || !CanWipe())
-	{
-		if (NoWipe > 0) NoWipe--;
-		wipestart = nullptr;
-		wipegamestate = gamestate;
-	}
-	// No wipes when in a stereo3D VR mode
-	else if (gamestate != wipegamestate && gamestate != GS_FULLCONSOLE && gamestate != GS_TITLELEVEL)
-	{
-		if (vr_mode == 0 || vid_rendermode != 4)
-		{
-			// save the current screen if about to wipe
-			wipestart = screen->WipeStartScreen();
-
-			switch (wipegamestate)
-			{
-			default:
-				wipe_type = wipetype;
-				break;
-
-			case GS_FORCEWIPEFADE:
-				wipe_type = wipe_Fade;
-				break;
-
-			case GS_FORCEWIPEBURN:
-				wipe_type = wipe_Burn;
-				break;
-
-			case GS_FORCEWIPEMELT:
-				wipe_type = wipe_Melt;
-				break;
-			}
 		}
-
-		wipegamestate = gamestate;
-	}
-	else
-	{
-		wipestart = nullptr;
 	}
 	
 	screen->FrameTime = I_msTimeFS();
@@ -1056,6 +1009,7 @@ void D_Display ()
 				break;
 		}
 	}
+
 	if (!hud_toggled)
 	{
 		CT_Drawer ();
@@ -1103,7 +1057,6 @@ void D_Display ()
 				DrawTexture(twod, tex, 160 - tex->GetDisplayWidth()/2, 100 - tex->GetDisplayHeight()/2,
 					DTA_320x200, true, TAG_DONE);
 			}
-			NoWipe = 10;
 		}
 
 		if (snd_drawoutput)
@@ -1112,18 +1065,9 @@ void D_Display ()
 		}
 	}
 
-	if (!wipestart || NoWipe < 0 || wipe_type == wipe_None || hud_toggled)
-	{
-		if (wipestart != nullptr) wipestart->DecRef();
-		wipestart = nullptr;
-		DrawOverlays();
-		End2DAndUpdate ();
-	}
-	else
-	{
-		NetUpdate();		// send out any new accumulation
-		PerformWipe(wipestart, screen->WipeEndScreen(), wipe_type, false, DrawOverlays);
-	}
+
+    DrawOverlays();
+    End2DAndUpdate ();
 	cycles.Unclock();
 	FrameCycles = cycles;
 }
@@ -1292,134 +1236,6 @@ void D_AdvanceDemo (void)
 
 //==========================================================================
 //
-// D_DoStrifeAdvanceDemo
-//
-//==========================================================================
-
-void D_DoStrifeAdvanceDemo ()
-{
-	static const char *const fullVoices[6] =
-	{
-		"svox/pro1", "svox/pro2", "svox/pro3", "svox/pro4", "svox/pro5", "svox/pro6"
-	};
-	static const char *const teaserVoices[6] =
-	{
-		"svox/voc91", "svox/voc92", "svox/voc93", "svox/voc94", "svox/voc95", "svox/voc96"
-	};
-	const char *const *voices = gameinfo.flags & GI_SHAREWARE ? teaserVoices : fullVoices;
-	const char *pagename = nullptr;
-	const char *subtitle = nullptr;
-
-	gamestate = GS_DEMOSCREEN;
-	PageBlank = false;
-
-	switch (demosequence)
-	{
-	default:
-	case 0:
-		pagetic = 6 * TICRATE;
-		pagename = "TITLEPIC";
-		if (fileSystem.CheckNumForName ("d_logo", ns_music) < 0)
-		{ // strife0.wad does not have d_logo
-			S_StartMusic ("");
-		}
-		else
-		{
-			S_StartMusic ("d_logo");
-		}
-		C_HideConsole ();
-		break;
-
-	case 1:
-		// [RH] Strife fades to black and then to the Rogue logo, but
-		// I think it looks better if it doesn't fade.
-		pagetic = 10 * TICRATE/35;
-		pagename = "";	// PANEL0, but strife0.wad doesn't have it, so don't use it.
-		PageBlank = true;
-		S_Sound (CHAN_VOICE, CHANF_UI, "bishop/active", 1, ATTN_NORM);
-		break;
-
-	case 2:
-		pagetic = 4 * TICRATE;
-		pagename = "RGELOGO";
-		break;
-
-	case 3:
-		pagetic = 7 * TICRATE;
-		pagename = "PANEL1";
-		subtitle = "$TXT_SUB_INTRO1";
-		S_Sound (CHAN_VOICE, CHANF_UI, voices[0], 1, ATTN_NORM);
-		// The new Strife teaser has D_FMINTR.
-		// The full retail Strife has D_INTRO.
-		// And the old Strife teaser has both. (I do not know which one it actually uses, nor do I care.)
-		S_StartMusic (gameinfo.flags & GI_TEASER2 ? "d_fmintr" : "d_intro");
-		break;
-
-	case 4:
-		pagetic = 9 * TICRATE;
-		pagename = "PANEL2";
-		subtitle = "$TXT_SUB_INTRO2";
-		S_Sound (CHAN_VOICE, CHANF_UI, voices[1], 1, ATTN_NORM);
-		break;
-
-	case 5:
-		pagetic = 12 * TICRATE;
-		pagename = "PANEL3";
-		subtitle = "$TXT_SUB_INTRO3";
-		S_Sound (CHAN_VOICE, CHANF_UI, voices[2], 1, ATTN_NORM);
-		break;
-
-	case 6:
-		pagetic = 11 * TICRATE;
-		pagename = "PANEL4";
-		subtitle = "$TXT_SUB_INTRO4";
-		S_Sound (CHAN_VOICE, CHANF_UI, voices[3], 1, ATTN_NORM);
-		break;
-
-	case 7:
-		pagetic = 10 * TICRATE;
-		pagename = "PANEL5";
-		subtitle = "$TXT_SUB_INTRO5";
-		S_Sound (CHAN_VOICE, CHANF_UI, voices[4], 1, ATTN_NORM);
-		break;
-
-	case 8:
-		pagetic = 16 * TICRATE;
-		pagename = "PANEL6";
-		subtitle = "$TXT_SUB_INTRO6";
-		S_Sound (CHAN_VOICE, CHANF_UI, voices[5], 1, ATTN_NORM);
-		break;
-
-	case 9:
-		pagetic = 6 * TICRATE;
-		pagename = "vellogo";
-		wipegamestate = GS_FORCEWIPEFADE;
-		break;
-
-	case 10:
-		pagetic = 12 * TICRATE;
-		pagename = "CREDIT";
-		wipegamestate = GS_FORCEWIPEFADE;
-		break;
-	}
-	if (demosequence++ > 10)
-		demosequence = 0;
-	if (demosequence == 9 && !(gameinfo.flags & GI_SHAREWARE))
-		demosequence = 10;
-
-	if (pagename != nullptr)
-	{
-		Page = TexMan.CheckForTexture(pagename, ETextureType::MiscPatch);
-		Subtitle = subtitle;
-	}
-	else
-	{
-		Subtitle = nullptr;
-	}
-}
-
-//==========================================================================
-//
 // D_DoAdvanceDemo
 //
 //==========================================================================
@@ -1451,11 +1267,11 @@ void D_DoAdvanceDemo (void)
 		return;
 	}
 
-	if (gameinfo.gametype == GAME_Strife)
-	{
-		D_DoStrifeAdvanceDemo ();
-		return;
-	}
+	// if (gameinfo.gametype == GAME_Strife)
+	// {
+	// 	D_DoStrifeAdvanceDemo ();
+	// 	return;
+	// }
 
 	switch (demosequence)
 	{
@@ -2956,11 +2772,6 @@ static void System_StartCutscene(bool blockui)
 	gameaction = blockui ? ga_intro : ga_intermission;
 }
 
-static void System_SetTransition(int type)
-{
-	if (type != wipe_None) wipegamestate = type == wipe_Burn? GS_FORCEWIPEBURN : type == wipe_Fade? GS_FORCEWIPEFADE : GS_FORCEWIPEMELT;
-}
-
 static void System_HudScaleChanged()
 {
 	if (StatusBar)
@@ -3444,11 +3255,6 @@ static int D_InitGame(const FIWADInfo* iwad_info, TArray<FString>& allwads, TArr
 				{
 					if (autostart || netgame)
 					{
-						// Do not do any screenwipes when autostarting a game.
-						if (!Args->CheckParm("-warpwipe"))
-						{
-							NoWipe = TICRATE;
-						}
 						CheckWarpTransMap(startmap, true);
 						if (demorecording)
 							G_BeginRecording(startmap);
@@ -3536,7 +3342,7 @@ void D_DoomMain_Internal_Init(D_DoomMain_Internal_State& state)
         nullptr, // FontCharCreated
         System_ToggleFullConsole,
         System_StartCutscene,
-        System_SetTransition,
+        nullptr, // System_SetTransition, // Wipe, deleted
         CheckCheatmode,
         System_HudScaleChanged,
         M_SetSpecialMenu,

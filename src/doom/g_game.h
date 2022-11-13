@@ -38,13 +38,6 @@ struct event_t;
 #include "name.h"
 #include "gamestate.h"
 
-
-// wipegamestate can be set to -1
-//	to force a wipe on the next draw
-extern gamestate_t wipegamestate;
-
-
-
 class AActor;
 struct FLevelLocals;
 

@@ -72,8 +72,6 @@ IMPLEMENT_POINTERS_START(DIntermissionController)
 	IMPLEMENT_POINTER(mScreen)
 IMPLEMENT_POINTERS_END
 
-extern int		NoWipe;
-
 CVAR(Bool, nointerscrollabort, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
 
 CVAR(Bool, inter_classic_scaling, true, CVAR_ARCHIVE);
@@ -883,7 +881,7 @@ again:
 		FIntermissionAction *action = mDesc->mActions[mIndex++];
 		if (action->mClass == WIPER_ID)
 		{
-			wipegamestate = static_cast<FIntermissionActionWiper*>(action)->mWipeType;
+            // Do nothing, wipe not supported
 		}
 		else if (action->mClass == TITLE_ID)
 		{
@@ -1006,7 +1004,6 @@ DIntermissionController* F_StartIntermission(FIntermissionDescriptor *desc, bool
 	S_StopAllChannels ();
 	gameaction = ga_nothing;
 	gamestate = GS_FINALE;
-	//if (state == FSTATE_InLevel) wipegamestate = GS_FINALE;	// don't wipe when within a level.
 	auto CurrentIntermission = Create<DIntermissionController>(desc, deleteme, ending);
 
 	// If the intermission finishes straight away then cancel the wipe.
