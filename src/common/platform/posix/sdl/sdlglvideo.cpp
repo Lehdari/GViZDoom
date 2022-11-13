@@ -516,13 +516,13 @@ void ProcessSDLWindowEvent(const SDL_WindowEvent &event)
 	extern bool AppActive;
 
 	case SDL_WINDOWEVENT_FOCUS_GAINED:
-		S_SetSoundPaused(1);
-		AppActive = true;
+		// S_SetSoundPaused(1);
+		// AppActive = true;
 		break;
 
 	case SDL_WINDOWEVENT_FOCUS_LOST:
-		S_SetSoundPaused(0);
-		AppActive = false;
+		// S_SetSoundPaused(0);
+		// AppActive = false;
 		break;
 
 	case SDL_WINDOWEVENT_MOVED:
