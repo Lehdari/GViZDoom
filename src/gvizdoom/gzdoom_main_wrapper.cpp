@@ -35,38 +35,32 @@
 
 int gzdoom_main_init(int argc, char **argv)
 {
-    printf("Hello world!\n");
-
-// #if !defined (__APPLE__)
+#if !defined (__APPLE__)
     {
+        // Handle crashes: use GetCrashInfo() callback to create a crash log 
         int s[4] = { SIGSEGV, SIGILL, SIGFPE, SIGBUS };
         cc_install_handlers(argc, argv, 4, s, GAMENAMELOWERCASE "-crash.log", GetCrashInfo);
     }
-// #endif // !__APPLE__
+#endif // !__APPLE__
 
     printf(GAMENAME" %s - %s - SDL version\nCompiled on %s\n",
         GetVersionString(), GetGitTime(), __DATE__);
 
-    seteuid (getuid ());
+    seteuid(getuid());
+
     // Set LC_NUMERIC environment variable in case some library decides to
     // clear the setlocale call at least this will be correct.
     // Note that the LANG environment variable is overridden by LC_*
     setenv ("LC_NUMERIC", "C", 1);
 
+    // TODO: not needed
     setlocale (LC_ALL, "C");
 
     printf("\n");
 
     Args = new FArgs(argc, argv);
 
-    printf("[ELJAS] %d args\n", argc);
-    for (int i = 0; i < argc; ++i)
-    {
-        printf("[ELJAS] argc: %s\n", argv[i]);
-    }
-    printf("\n");
-
-    // ELJAS: this piece of code gets the program path
+    // Get the program executable path
     {
         // Should we even be doing anything with progdir on Unix systems?
         char program[PATH_MAX];
@@ -84,10 +78,7 @@ int gzdoom_main_init(int argc, char **argv)
         {
             progdir = "./";
         }
-        printf("[ELJAS] program directory: %s\n", progdir.GetChars());
     }
 
-    // ELJAS: let's not use joysticks
-    #define NO_SDL_JOYSTICK
-    I_StartupJoysticks();
+    return 0;
 }
