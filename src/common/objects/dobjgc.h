@@ -191,6 +191,7 @@ class TObjPtr
 	};
 public:
 
+	TObjPtr() = default;
 	constexpr TObjPtr<T>& operator=(T q) noexcept
 	{
 		pp = q;
