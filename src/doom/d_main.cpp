@@ -1138,7 +1138,7 @@ void DoomLoop::Iter(MainDebugInfo& out_dbgInfo,
             I_StartTic ();
             D_ProcessEvents ();
 
-            Button_Forward.bDown = true or action.isSet(gvizdoom::Action::Key::ACTION_FORWARD);
+            Button_Forward.bDown = action.isSet(gvizdoom::Action::Key::ACTION_FORWARD);
 
             G_BuildTiccmd(&netcmds[consoleplayer][maketic%BACKUPTICS]);
             

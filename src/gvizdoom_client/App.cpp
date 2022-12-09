@@ -73,40 +73,47 @@ void App::loop(void)
     }
 
     std::vector<Action> actions;
-#if 0
     {
         for (size_t i = 0; i < 50; ++i)
-            actions.emplace_back(Action::Key::ACTION_ATTACK);
+            actions.emplace_back(Action::Key::ACTION_ATTACK, 0);
 
         for (size_t i = 0; i < 50; ++i)
-            actions.emplace_back(static_cast<int>(Action::Key::ACTION_FORWARD | Action::Key::ACTION_ATTACK));
+            actions.emplace_back(static_cast<int>(Action::Key::ACTION_FORWARD | Action::Key::ACTION_ATTACK), 100);
 
         for (size_t i = 0; i < 50; ++i)
-            actions.emplace_back(Action::Key::ACTION_FORWARD);
+            actions.emplace_back(Action::Key::ACTION_FORWARD, 0);
     }
-#endif
     size_t actionIndex = 0LLU;
 
     // Application main loop
     while (!_quit) {
-#if 0
-        // Event handling
-        SDL_Event event;
-        while (SDL_PollEvent(&event) != 0) {
-            if (_settings.handleEvents != nullptr)
-                _settings.handleEvents(event, _appContext);
+        if (_doomGame->getGameConfig().interactive) {
+            printf("INTERACTIVE\n");
+            // Event handling
+            SDL_Event event;
+            while (SDL_PollEvent(&event) != 0) {
+                if (_settings.handleEvents != nullptr)
+                    _settings.handleEvents(event, _appContext);
+            }
         }
-#endif
 
-#if 0
-        if (actions.size() == 0 or actionIndex >= actions.size()) {
-            printf("App: performed all actions\n\n");
-            break;
-        }
-#endif
         // Update game
-        //_quit = _doomGame->update(actions.at(actionIndex++));
-        _quit = _quit || _doomGame->update(_actionMapper);
+        if (_doomGame->getGameConfig().interactive) {
+            _quit = _quit || _doomGame->update(_actionMapper);
+        }
+        else {
+            Action action = Action(Action::Key::ACTION_NONE, 0);
+            if (actions.size() != 0 and actionIndex < actions.size())
+            {
+                action = actions.at(actionIndex++);
+            }
+            else
+            {
+                // you do this and it crashes perkele
+                // _quit = true;
+            }
+            _quit = _quit || _doomGame->update(action);
+        }
 
         if (_quit) {
             printf("App: got quit\n");
@@ -141,6 +148,7 @@ void App::loop(void)
         _lastTicks = curTicks;
 #endif
 
+        // TEMP
         std::this_thread::sleep_for(std::chrono::milliseconds(8));
     }
 }

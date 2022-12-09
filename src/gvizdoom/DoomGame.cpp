@@ -134,3 +134,8 @@ float* DoomGame::getPixelsDepth() const
 #endif
     return nullptr;
 }
+
+const GameConfig& DoomGame::getGameConfig() const
+{
+    return _gameConfig;
+}

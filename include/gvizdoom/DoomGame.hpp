@@ -38,6 +38,8 @@ public:
     int getScreenHeight() const;
     uint8_t* getPixelsRGBA() const;
     float* getPixelsDepth() const;
+    const GameConfig& getGameConfig() const;
+
 
 private:
     GameConfig                              _gameConfig;
