@@ -21,7 +21,6 @@
 
 using namespace gvizdoom;
 
-
 // Test different video parameters
 TEST(TestGameConfig, VideoParams)
 {
@@ -97,6 +96,7 @@ TEST(TestGameConfig, VideoParams)
 #endif
 }
 
+#if 0
 // Test different HUD parameters
 TEST(TestGameConfig, HUDParams)
 {
@@ -164,3 +164,4 @@ TEST(TestGameConfig, HUDParams)
         ASSERT_EQ(hash, 0xc48f0080);
     }
 }
+#endif
