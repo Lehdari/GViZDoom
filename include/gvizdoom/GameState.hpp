@@ -29,6 +29,7 @@
     GAMESTATE(float, Y)                \
     GAMESTATE(float, Z)                \
     GAMESTATE(float, Angle)            \
+    GAMESTATE(bool,  PlayerDead)       \
 
 namespace gvizdoom {
 

@@ -1186,6 +1186,7 @@ void DoomLoop::Iter(gvizdoom::Context& context, gvizdoom::GameStateContainer& ou
     out_gameState.set<gvizdoom::GameState::Y>(pos.Y);
     out_gameState.set<gvizdoom::GameState::Z>(pos.Z);
     out_gameState.set<gvizdoom::GameState::Angle>(pos.Angle().Degrees);
+    out_gameState.set<gvizdoom::GameState::PlayerDead>(players[consoleplayer].playerstate == PST_DEAD);
 }
 
 //==========================================================================
