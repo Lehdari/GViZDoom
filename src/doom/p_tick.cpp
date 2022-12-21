@@ -42,8 +42,6 @@
 #include "events.h"
 #include "actorinlines.h"
 
-extern gamestate_t wipegamestate;
-
 //==========================================================================
 //
 // P_CheckTickerPaused
@@ -63,8 +61,7 @@ bool P_CheckTickerPaused ()
 			 ConsoleState == c_down || ConsoleState == c_falling)
 		 && !demoplayback
 		 && !demorecording
-		 && players[consoleplayer].viewz != NO_VALUE
-		 && wipegamestate == gamestate)
+		 && players[consoleplayer].viewz != NO_VALUE)
 	{
 		S_PauseSound (!(level.flags2 & LEVEL2_PAUSE_MUSIC_IN_MENUS), false);
 		return true;

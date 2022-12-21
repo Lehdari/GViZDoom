@@ -63,7 +63,6 @@
 #include "stats.h"
 #include "doomerrors.h"
 #include "r_data/r_translate.h"
-#include "f_wipe.h"
 #include "sbar.h"
 #include "win32iface.h"
 #include "win32swiface.h"

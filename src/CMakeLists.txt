@@ -474,7 +474,6 @@ set( PLAT_WIN32_SOURCES
 	sound/mididevices/music_win_mididevice.cpp
 	win32/critsec.cpp
 	win32/fb_d3d9.cpp
-	win32/fb_d3d9_wipe.cpp
 	win32/fb_ddraw.cpp
 	win32/hardware.cpp
 	win32/helperthread.cpp
@@ -813,7 +812,6 @@ set (PCH_SOURCES
 	doom/dsectoreffect.cpp
 	doom/dthinker.cpp
 	doom/edata.cpp
-	doom/f_wipe.cpp
 	doom/files.cpp
 	doom/files_decompress.cpp
 	doom/g_doomedmap.cpp
@@ -1248,7 +1246,7 @@ set_source_files_properties( xlat/parse_xlat.cpp PROPERTIES OBJECT_DEPENDS "${CM
 set_source_files_properties( sc_man.cpp PROPERTIES OBJECT_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/sc_man_scanner.h" )
 set_source_files_properties( ${NOT_COMPILED_SOURCE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE )
 if ( WIN32 )
-	set_source_files_properties( win32/fb_d3d9.cpp win32/fb_d3d9_wipe.cpp PROPERTIES COMPILE_FLAGS ${ZD_FASTMATH_FLAG} )
+	set_source_files_properties( win32/fb_d3d9.cpp PROPERTIES COMPILE_FLAGS ${ZD_FASTMATH_FLAG} )
 endif()
 
 

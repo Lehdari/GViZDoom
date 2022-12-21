@@ -444,12 +444,6 @@ public:
 	// Report a game restart
 	virtual void GameRestart();
 
-	// Screen wiping
-	virtual bool WipeStartScreen(int type);
-	virtual void WipeEndScreen();
-	virtual bool WipeDo(int ticks);
-	virtual void WipeCleanup();
-
 	virtual void ScaleCoordsFromWindow(int16_t &x, int16_t &y) {}
 
 	uint64_t GetLastFPS() const { return LastCount; }

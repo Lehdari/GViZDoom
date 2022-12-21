@@ -98,8 +98,6 @@ struct FIntermissionActionWiper : public FIntermissionAction
 {
 	typedef FIntermissionAction Super;
 
-	gamestate_t mWipeType;
-
 	FIntermissionActionWiper();
 	virtual bool ParseKey(FScanner &sc);
 };

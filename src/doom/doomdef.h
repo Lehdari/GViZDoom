@@ -85,11 +85,6 @@ enum gamestate_t : int
 	GS_HIDECONSOLE,		// [RH] The menu just did something that should hide fs console
 	GS_STARTUP,			// [RH] Console is fullscreen, and game is just starting
 	GS_TITLELEVEL,		// [RH] A combination of GS_LEVEL and GS_DEMOSCREEN
-
-	GS_FORCEWIPE = -1,
-	GS_FORCEWIPEFADE = -2,
-	GS_FORCEWIPEBURN = -3,
-	GS_FORCEWIPEMELT = -4
 };
 
 static std::string gamestateToStr(const gamestate_t& g)
@@ -113,14 +108,6 @@ static std::string gamestateToStr(const gamestate_t& g)
         return "GS_STARTUP";
     case GS_TITLELEVEL:
         return "GS_TITLELEVEL";
-    case GS_FORCEWIPE:
-        return "GS_FORCEWIPE";
-    case GS_FORCEWIPEFADE:
-        return "GS_FORCEWIPEFADE";
-    case GS_FORCEWIPEBURN:
-        return "GS_FORCEWIPEBURN";
-    case GS_FORCEWIPEMELT:
-        return "GS_FORCEWIPEMELT";
 
     default:
         break; 
@@ -129,11 +116,6 @@ static std::string gamestateToStr(const gamestate_t& g)
     return "ERROR: Did not find gamestate";
 }
 extern	gamestate_t 	gamestate;
-
-// wipegamestate can be set to -1
-//	to force a wipe on the next draw
-extern gamestate_t wipegamestate;
-
 
 typedef float skill_t;
 

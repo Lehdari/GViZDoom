@@ -73,7 +73,6 @@
 #include "sbar.h"
 #include "hardware.h"
 #include "r_data/r_translate.h"
-#include "f_wipe.h"
 #include "m_png.h"
 #include "colormatcher.h"
 #include "v_palette.h"
@@ -1187,63 +1186,6 @@ FNativeTexture *DFrameBuffer::CreateTexture(FTexture *gametex, FTextureFormat fm
 FNativePalette *DFrameBuffer::CreatePalette(FRemapTable *remap)
 {
 	return NULL;
-}
-
-//==========================================================================
-//
-// DFrameBuffer :: WipeStartScreen
-//
-// Grabs a copy of the screen currently displayed to serve as the initial
-// frame of a screen wipe. Also determines which screenwipe will be
-// performed.
-//
-//==========================================================================
-
-bool DFrameBuffer::WipeStartScreen(int type)
-{
-	return wipe_StartScreen(type);
-}
-
-//==========================================================================
-//
-// DFrameBuffer :: WipeEndScreen
-//
-// Grabs a copy of the most-recently drawn, but not yet displayed, screen
-// to serve as the final frame of a screen wipe.
-//
-//==========================================================================
-
-void DFrameBuffer::WipeEndScreen()
-{
-	wipe_EndScreen();
-	Unlock();
-}
-
-//==========================================================================
-//
-// DFrameBuffer :: WipeDo
-//
-// Draws one frame of a screenwipe. Should be called no more than 35
-// times per second. If called less than that, ticks indicates how many
-// ticks have passed since the last call.
-//
-//==========================================================================
-
-bool DFrameBuffer::WipeDo(int ticks)
-{
-	Lock(true);
-	return wipe_ScreenWipe(ticks);
-}
-
-//==========================================================================
-//
-// DFrameBuffer :: WipeCleanup
-//
-//==========================================================================
-
-void DFrameBuffer::WipeCleanup()
-{
-	wipe_Cleanup();
 }
 
 //==========================================================================

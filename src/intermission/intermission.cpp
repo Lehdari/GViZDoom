@@ -756,7 +756,6 @@ again:
 		FIntermissionAction *action = mDesc->mActions[mIndex++];
 		if (action->mClass == WIPER_ID)
 		{
-			wipegamestate = static_cast<FIntermissionActionWiper*>(action)->mWipeType;
 		}
 		else if (action->mClass == TITLE_ID)
 		{
@@ -838,7 +837,6 @@ void DIntermissionController::Ticker ()
 				if (level.cdtrack == 0 || !S_ChangeCDMusic (level.cdtrack, level.cdid))
 					S_ChangeMusic (level.Music, level.musicorder);
 				gamestate = GS_LEVEL;
-				wipegamestate = GS_LEVEL;
 				P_ResumeConversation ();
 				viewactive = true;
 				Destroy();
@@ -890,7 +888,6 @@ void F_StartIntermission(FIntermissionDescriptor *desc, bool deleteme, uint8_t s
 	S_StopAllChannels ();
 	gameaction = ga_nothing;
 	gamestate = GS_FINALE;
-	if (state == FSTATE_InLevel) wipegamestate = GS_FINALE;	// don't wipe when within a level.
 	viewactive = false;
 	automapactive = false;
 	DIntermissionController::CurrentIntermission = Create<DIntermissionController>(desc, deleteme, state);
@@ -898,7 +895,6 @@ void F_StartIntermission(FIntermissionDescriptor *desc, bool deleteme, uint8_t s
 	// If the intermission finishes straight away then cancel the wipe.
 	if (!DIntermissionController::CurrentIntermission->NextPage())
 	{
-		wipegamestate = GS_FINALE;
 	}
 
 	GC::WriteBarrier(DIntermissionController::CurrentIntermission);

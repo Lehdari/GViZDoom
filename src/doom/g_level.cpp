@@ -912,8 +912,6 @@ void DAutosaver::Tick ()
 // G_DoLoadLevel 
 //
 //==========================================================================
-
-extern gamestate_t 	wipegamestate; 
  
 void G_DoLoadLevel (int position, bool autosave)
 { 
@@ -952,9 +950,6 @@ void G_DoLoadLevel (int position, bool autosave)
 			"\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n"
 			TEXTCOLOR_BOLD "%s - %s\n\n",
 			mapname.GetChars(), level.LevelName.GetChars());
-
-	if (wipegamestate == GS_LEVEL)
-		wipegamestate = GS_FORCEWIPE;
 
 	if (gamestate != GS_TITLELEVEL)
 	{

@@ -62,7 +62,6 @@
 #include "s_sound.h"
 #include "v_video.h"
 #include "intermission/intermission.h"
-#include "f_wipe.h"
 #include "m_argv.h"
 #include "m_misc.h"
 #include "menu/menu.h"
@@ -205,7 +204,6 @@ CUSTOM_CVAR (Int, fraglimit, 0, CVAR_SERVERINFO)
 }
 
 CVAR (Float, timelimit, 0.f, CVAR_SERVERINFO);
-CVAR (Int, wipetype, 1, CVAR_ARCHIVE);
 CVAR (Int, snd_drawoutput, 0, 0);
 CUSTOM_CVAR (String, vid_cursor, "None", CVAR_ARCHIVE | CVAR_NOINITCALL)
 {
@@ -247,7 +245,6 @@ FILE *hashfile;
 event_t events[MAXEVENTS];
 int eventhead;
 int eventtail;
-gamestate_t wipegamestate = GS_DEMOSCREEN;	// can be -1 to force a wipe
 bool PageBlank;
 FTexture *Page;
 FTexture *Advisory;
@@ -681,7 +678,6 @@ void D_Display(gvizdoom::Context& context)
         screen = context.frameBuffer.get();
     }
 
-	bool wipe;
 	bool hw2d;
 
 	if (nodrawers || screen == NULL)
@@ -756,46 +752,9 @@ void D_Display(gvizdoom::Context& context)
 		V_SetBorderNeedRefresh();
 	}
 
-	// [RH] Allow temporarily disabling wipes
-	if (true)//(NoWipe)
-	{
-		V_SetBorderNeedRefresh();
-		NoWipe--;
-		wipe = false;
-		wipegamestate = gamestate;
-	}
-#if 0
-	else if (gamestate != wipegamestate && gamestate != GS_FULLCONSOLE && gamestate != GS_TITLELEVEL)
-	{ // save the current screen if about to wipe
-		V_SetBorderNeedRefresh();
-		switch (wipegamestate)
-		{
-		default:
-			wipe = screen->WipeStartScreen (wipetype);
-			break;
-
-		case GS_FORCEWIPEFADE:
-			wipe = screen->WipeStartScreen (wipe_Fade);
-			break;
-
-		case GS_FORCEWIPEBURN:
-			wipe = screen->WipeStartScreen (wipe_Burn);
-			break;
-
-		case GS_FORCEWIPEMELT:
-			wipe = screen->WipeStartScreen (wipe_Melt);
-			break;
-		}
-		wipegamestate = gamestate;
-	}
-	else
-	{
-		wipe = false;
-	}
-#endif
+    V_SetBorderNeedRefresh();
 
 	hw2d = false;
-
 
 	{
 		screen->FrameTime = I_msTimeFS();
@@ -942,7 +901,6 @@ void D_Display(gvizdoom::Context& context)
 			screen->DrawTexture (tex, 160 - tex->GetScaledWidth()/2, 100 - tex->GetScaledHeight()/2,
 				DTA_320x200, true, TAG_DONE);
 		}
-		NoWipe = 10;
 	}
 
 	if (snd_drawoutput)
@@ -950,7 +908,6 @@ void D_Display(gvizdoom::Context& context)
 		GSnd->DrawWaveDebug(snd_drawoutput);
 	}
 
-	if (!wipe || NoWipe < 0)
 	{
 		NetUpdate ();			// send out any new accumulation
 		// normal update
@@ -960,38 +917,7 @@ void D_Display(gvizdoom::Context& context)
 		FStat::PrintStat ();
 		screen->Update ();		// page flip or blit buffer
 	}
-	else
-	{
-		// wipe update
-		uint64_t wipestart, nowtime, diff;
-		bool done;
 
-		GSnd->SetSfxPaused(true, 1);
-		I_FreezeTime(true);
-		screen->WipeEndScreen ();
-
-		wipestart = I_msTime();
-		NetUpdate();		// send out any new accumulation
-
-		do
-		{
-			do
-			{
-				I_WaitVBL(2);
-				nowtime = I_msTime();
-				diff = (nowtime - wipestart) * 40 / 1000;	// Using 35 here feels too slow.
-			} while (diff < 1);
-			wipestart = nowtime;
-			done = screen->WipeDo (1);
-			C_DrawConsole (hw2d);	// console and
-			M_Drawer ();			// menu are drawn even on top of wipes
-			screen->Update ();		// page flip or blit buffer
-			NetUpdate ();			// [RH] not sure this is needed anymore
-		} while (!done);
-		screen->WipeCleanup();
-		I_FreezeTime(false);
-		GSnd->SetSfxPaused(false, 1);
-	}
 	screen->End2D();
 	cycles.Unclock();
 	FrameCycles = cycles;
@@ -1246,130 +1172,6 @@ void D_AdvanceDemo (void)
 
 //==========================================================================
 //
-// D_DoStrifeAdvanceDemo
-//
-//==========================================================================
-// not needed
-void D_DoStrifeAdvanceDemo ()
-{
-	static const char *const fullVoices[6] =
-	{
-		"svox/pro1", "svox/pro2", "svox/pro3", "svox/pro4", "svox/pro5", "svox/pro6"
-	};
-	static const char *const teaserVoices[6] =
-	{
-		"svox/voc91", "svox/voc92", "svox/voc93", "svox/voc94", "svox/voc95", "svox/voc96"
-	};
-	const char *const *voices = gameinfo.flags & GI_SHAREWARE ? teaserVoices : fullVoices;
-	const char *pagename = NULL;
-
-	gamestate = GS_DEMOSCREEN;
-	PageBlank = false;
-
-	switch (demosequence)
-	{
-	default:
-	case 0:
-		pagetic = 6 * TICRATE;
-		pagename = "TITLEPIC";
-		if (Wads.CheckNumForName ("d_logo", ns_music) < 0)
-		{ // strife0.wad does not have d_logo
-			S_StartMusic ("");
-		}
-		else
-		{
-			S_StartMusic ("d_logo");
-		}
-		C_HideConsole ();
-		break;
-
-	case 1:
-		// [RH] Strife fades to black and then to the Rogue logo, but
-		// I think it looks better if it doesn't fade.
-		pagetic = 10 * TICRATE/35;
-		pagename = "";	// PANEL0, but strife0.wad doesn't have it, so don't use it.
-		PageBlank = true;
-		S_Sound (CHAN_VOICE | CHAN_UI, "bishop/active", 1, ATTN_NORM);
-		break;
-
-	case 2:
-		pagetic = 4 * TICRATE;
-		pagename = "RGELOGO";
-		break;
-
-	case 3:
-		pagetic = 7 * TICRATE;
-		pagename = "PANEL1";
-		S_Sound (CHAN_VOICE | CHAN_UI, voices[0], 1, ATTN_NORM);
-		// The new Strife teaser has D_FMINTR.
-		// The full retail Strife has D_INTRO.
-		// And the old Strife teaser has both. (I do not know which one it actually uses, nor do I care.)
-		S_StartMusic (gameinfo.flags & GI_TEASER2 ? "d_fmintr" : "d_intro");
-		break;
-
-	case 4:
-		pagetic = 9 * TICRATE;
-		pagename = "PANEL2";
-		S_Sound (CHAN_VOICE | CHAN_UI, voices[1], 1, ATTN_NORM);
-		break;
-
-	case 5:
-		pagetic = 12 * TICRATE;
-		pagename = "PANEL3";
-		S_Sound (CHAN_VOICE | CHAN_UI, voices[2], 1, ATTN_NORM);
-		break;
-
-	case 6:
-		pagetic = 11 * TICRATE;
-		pagename = "PANEL4";
-		S_Sound (CHAN_VOICE | CHAN_UI, voices[3], 1, ATTN_NORM);
-		break;
-
-	case 7:
-		pagetic = 10 * TICRATE;
-		pagename = "PANEL5";
-		S_Sound (CHAN_VOICE | CHAN_UI, voices[4], 1, ATTN_NORM);
-		break;
-
-	case 8:
-		pagetic = 16 * TICRATE;
-		pagename = "PANEL6";
-		S_Sound (CHAN_VOICE | CHAN_UI, voices[5], 1, ATTN_NORM);
-		break;
-
-	case 9:
-		pagetic = 6 * TICRATE;
-		pagename = "vellogo";
-		wipegamestate = GS_FORCEWIPEFADE;
-		break;
-
-	case 10:
-		pagetic = 12 * TICRATE;
-		pagename = "CREDIT";
-		wipegamestate = GS_FORCEWIPEFADE;
-		break;
-	}
-	if (demosequence++ > 10)
-		demosequence = 0;
-	if (demosequence == 9 && !(gameinfo.flags & GI_SHAREWARE))
-		demosequence = 10;
-
-	if (pagename)
-	{
-		if (Page != NULL)
-		{
-			Page->Unload ();
-			Page = NULL;
-		}
-		if (pagename[0])
-		{
-			Page = TexMan[pagename];
-		}
-	}
-}
-
-//==========================================================================
-//
 // D_DoAdvanceDemo
 //
 //==========================================================================
@@ -1399,12 +1201,6 @@ void D_DoAdvanceDemo (void)
 	if (P_CheckMapData("TITLEMAP"))
 	{
 		G_InitNew ("TITLEMAP", true);
-		return;
-	}
-
-	if (gameinfo.gametype == GAME_Strife)
-	{
-		D_DoStrifeAdvanceDemo ();
 		return;
 	}
 

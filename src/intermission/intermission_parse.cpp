@@ -219,51 +219,6 @@ bool FIntermissionActionFader::ParseKey(FScanner &sc)
 	else return Super::ParseKey(sc);
 }
 
-//==========================================================================
-//
-// FIntermissionActionWiper
-//
-//==========================================================================
-
-FIntermissionActionWiper::FIntermissionActionWiper()
-{
-	mSize = sizeof(FIntermissionActionWiper);
-	mClass = WIPER_ID;
-	mWipeType = GS_FORCEWIPE;
-}
-
-bool FIntermissionActionWiper::ParseKey(FScanner &sc)
-{
-	struct WipeType
-	{
-		const char *Name;
-		gamestate_t Type;
-	}
-	const FT[] = {
-		{ "Crossfade", GS_FORCEWIPEFADE },
-		{ "Melt", GS_FORCEWIPEMELT },
-		{ "Burn", GS_FORCEWIPEBURN },
-		{ "Default", GS_FORCEWIPE },
-		{ NULL, GS_FORCEWIPE }
-	};
-
-	if (sc.Compare("WipeType"))
-	{
-		sc.MustGetToken('=');
-		sc.MustGetToken(TK_Identifier);
-		int v = sc.MatchString(&FT[0].Name, sizeof(FT[0]));
-		if (v != -1) mWipeType = FT[v].Type;
-		return true;
-	}
-	else return Super::ParseKey(sc);
-}
-
-//==========================================================================
-//
-// FIntermissionActionFader
-//
-//==========================================================================
-
 FIntermissionActionTextscreen::FIntermissionActionTextscreen()
 {
 	mSize = sizeof(FIntermissionActionTextscreen);
@@ -501,7 +456,6 @@ void FMapInfoParser::ParseIntermissionAction(FIntermissionDescriptor *desc)
 	}
 	else if (sc.Compare("Wiper"))
 	{
-		ac = new FIntermissionActionWiper;
 	}
 	else if (sc.Compare("TextScreen"))
 	{
@@ -875,8 +829,6 @@ void F_StartFinale (const char *music, int musicorder, int cdtrack, unsigned int
 		if (ending)
 		{
 			desc->mLink = endsequence;
-			FIntermissionActionWiper *wiper = new FIntermissionActionWiper;
-			desc->mActions.Push(wiper);
 		}
 
 		F_StartIntermission(desc, true, ending? FSTATE_EndingGame : FSTATE_ChangingLevel);
