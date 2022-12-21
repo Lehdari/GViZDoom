@@ -51,5 +51,5 @@ TEST(TestActions, AllActions)
     ASSERT_LE(doomGame.getGameState<GameState::Z>(), 0.001);
     ASSERT_GE(doomGame.getGameState<GameState::Angle>(), 120.00);
     ASSERT_LE(doomGame.getGameState<GameState::Angle>(), 120.99);
-    ASSERT_FALSE(doomGame.getGameState<GameState::PlayerDead>>());
+    ASSERT_FALSE(doomGame.getGameState<GameState::PlayerDead>());
 }
