@@ -140,10 +140,6 @@ public:
 	void FillSimplePoly(FTexture *tex, FVector2 *points, int npoints,
 		double originx, double originy, double scalex, double scaley,
 		DAngle rotation, const FColormap &colormap, PalEntry flatcolor, int lightlevel, int bottomclip) override;
-	bool WipeStartScreen(int type);
-	void WipeEndScreen();
-	bool WipeDo(int ticks);
-	void WipeCleanup();
 	HRESULT GetHR ();
 	bool Is8BitMode() { return false; }
     virtual int GetTrueHeight() { return TrueHeight; }
