@@ -11,6 +11,10 @@
 #pragma once
 
 
+#include <vector>
+#include <string>
+
+
 namespace gvizdoom {
 
 // GameConfig class encapsulates all information required for DoomGame initialization
@@ -36,6 +40,10 @@ struct GameConfig {
     int     skill           {3};
     int     episode         {1};
     int     map             {1};
+
+    // WAD parameters
+    //const std::string& iwadFileName; // TODO
+    std::vector<std::string>    pwadFileNames   {};
 };
 
 } // namespace gvizdoom

@@ -2449,7 +2449,11 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
     // Load zdoom.pk3 alone so that we can get access to the internal gameinfos before
     // the IWAD is known.
 
-    GetCmdLineFiles(_pwads);
+    //GetCmdLineFiles(_pwads);
+    _pwads.Clear();
+    for (auto& pwad : gameConfig.pwadFileNames) {
+        _pwads.Push(FString(pwad.c_str()));
+    }
     FString iwad = CheckGameInfo(_pwads);
 
     // The IWAD selection dialogue does not show in fullscreen so if the
