@@ -58,6 +58,9 @@ void DoomGame::restart(const GameConfig& gameConfig)
 
 bool DoomGame::update(const Action& action)
 {
+    if (_gameState.get<GameState::LevelFinished>())
+        return true;
+    
     _doomLoop.Iter(_context, _gameState, action);
 
     // Print periodically or upon interesting changes info of the
@@ -98,7 +101,7 @@ bool DoomGame::update(const Action& action)
     }
 #endif
 
-    return false;
+    return _gameState.get<GameState::LevelFinished>();
 }
 
 int DoomGame::getStatus() const
