@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 
-include(precompiled_headers)
 
 if( COMMAND cmake_policy )
 	cmake_policy( SET CMP0003 NEW )
@@ -13,7 +12,7 @@ include( CheckIncludeFile )
 include( CheckIncludeFiles )
 include( CheckLibraryExists )
 include( FindPkgConfig )
-include( TargetArch )
+include( ../cmake/TargetArch.cmake )
 
 if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	option( NO_STRIP "Do not strip Release or MinSizeRel builds" )
@@ -172,7 +171,7 @@ else()
 	# Non-Windows version also needs SDL except native OS X backend
 	if( NOT APPLE OR NOT OSX_COCOA_BACKEND )
 		find_package( SDL2 REQUIRED )
-		include_directories( "${SDL2_INCLUDE_DIR}" )
+		include_directories( "${SDL2_INCLUDE_DIRS}" )
 		set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SDL2_LIBRARY}" )
 	endif()
 
@@ -742,10 +741,6 @@ set( NOT_COMPILED_SOURCE_FILES
 	zcc-parse.h
 )
 
-# This is disabled for now because I cannot find a way to give the .pch file a different name.
-# Visual C++ 2015 seems hell-bent of only allowing one .pch file with the same name as the executable.
-#enable_precompiled_headers( g_pch2.h FASTMATH_PCH_SOURCES )
-
 # Enable fast math for some sources
 set( FASTMATH_SOURCES
 	swrenderer/r_all.cpp
@@ -1110,7 +1105,6 @@ set(GVIZDOOM_TESTS_SOURCES
 	gvizdoom_tests/TestGameState.cpp
 )
 
-enable_precompiled_headers( g_pch.h PCH_SOURCES )
 
 add_library(gvizdoom SHARED
 	${HEADER_FILES}
@@ -1150,11 +1144,28 @@ target_include_directories(gvizdoom
 PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/../include/gvizdoom
 	${CMAKE_CURRENT_SOURCE_DIR}/../include
+	${CMAKE_CURRENT_SOURCE_DIR}
+PRIVATE
+	doom
+	g_statusbar
+	g_shared
+	g_inventory
+	sound
+	textures
+	sound/oplsynth
+	sound/timidity
+	sound/wildmidi
+	xlat
+	scripting
+	scripting/vm
+	${CMAKE_BINARY_DIR}/gdtoa
+	${SYSTEM_SOURCES_DIR}
 )
 
 target_link_libraries(gvizdoom
 PUBLIC
 	${ZDOOM_LIBS} gdtoa dumb lzma
+	${SDL2_LIBRARIES} # TODO remove
 )
 
 target_compile_definitions(gvizdoom
@@ -1176,6 +1187,8 @@ endif()
 
 set_target_properties(gvizdoom PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${ZDOOM_OUTPUT_DIR} )
 
+add_dependencies(gvizdoom gzdoom_pk3)
+
 # Setup GViZDoom client application
 add_executable(gvizdoom_client
 	${GVIZDOOM_CLIENT_SOURCES}
@@ -1193,7 +1206,7 @@ PUBLIC
 target_link_libraries(gvizdoom_client
 PUBLIC
 	gvizdoom
-	${SDL2_LIBRARY}
+	${SDL2_LIBRARIES}
 	${OpenCV_LIBS} # TODO opencv temp
 )
 
@@ -1257,24 +1270,6 @@ endif()
 
 #target_link_libraries( zdoom ${ZDOOM_LIBS} gdtoa dumb lzma )
 
-include_directories( .
-	doom
-	g_statusbar
-	g_shared
-	g_inventory
-	sound
-	textures
-	sound/oplsynth
-	sound/timidity
-	sound/wildmidi
-	xlat
-	scripting
-	scripting/vm
-	${CMAKE_BINARY_DIR}/gdtoa
-	${SYSTEM_SOURCES_DIR}
-    ../include
-    ../include/gvizdoom
-)
 
 #add_dependencies( zdoom revision_check )
 
@@ -1322,7 +1317,7 @@ include_directories( .
 #
 add_custom_command(TARGET gvizdoom POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_if_different
-	${CMAKE_SOURCE_DIR}/assets/soundfont/gzdoom.sf2 $<TARGET_FILE_DIR:gvizdoom>/assets/soundfonts/gzdoom.sf2)
+	${PROJECT_SOURCE_DIR}/assets/soundfont/gzdoom.sf2 $<TARGET_FILE_DIR:gvizdoom>/assets/soundfonts/gzdoom.sf2)
 
 #if( CMAKE_COMPILER_IS_GNUCXX )
 #	# GCC misoptimizes this file

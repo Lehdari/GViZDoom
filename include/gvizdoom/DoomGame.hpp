@@ -16,7 +16,7 @@
 #include "gvizdoom/GameState.hpp"
 #include "gvizdoom/Context.hpp"
 #include "gvizdoom/HeadlessFrameBuffer.hpp"
-#include "d_main.h"
+#include "doom/d_main.h"
 
 
 namespace gvizdoom {

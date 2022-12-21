@@ -6,6 +6,10 @@
 
 // Unfortunately, the Scale function still gets badly handled on 32 bit x86 platforms so it's the last remaining piece of inline assembly 
 
+#if defined(__GNUG__)
+    #define __forceinline __attribute__((always_inline)) inline
+#endif
+
 // GCC inlines
 #if defined(__GNUC__) && defined(__i386__) && !defined(__clang__) && !defined(__PIC__)
 #ifndef alloca

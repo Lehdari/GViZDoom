@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "v_video.h"
+#include "doom/v_video.h"
 #include <vector>
 
 

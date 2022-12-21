@@ -3,7 +3,7 @@
 #ifndef __RESFILE_H
 #define __RESFILE_H
 
-#include "files.h"
+#include "doom/files.h"
 
 class FResourceFile;
 class FTexture;

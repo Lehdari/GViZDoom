@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <type_traits>
 #include "doomtype.h"
-#include "i_system.h"
+#include "posix/i_system.h"
 
 class PClass;
 class PType;
@@ -398,7 +398,7 @@ static inline void GC::WriteBarrier(DObject *pointed)
 
 #include "memarena.h"
 extern FMemArena ClassDataAllocator;
-#include "symbols.h"
+#include "scripting/symbols.h"
 #include "dobjtype.h"
 
 inline bool DObject::IsKindOf (const PClass *base) const

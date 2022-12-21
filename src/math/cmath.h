@@ -1,7 +1,7 @@
 #ifndef __CMATH_H
 #define __CMATH_H
 
-#include "xs_Float.h"
+#include "doom/xs_Float.h"
 
 #define USE_CUSTOM_MATH	// we want repreducably reliable results, even at the cost of performance
 #define USE_FAST_MATH	// use faster table-based sin and cos variants with limited precision (sufficient for Doom gameplay)

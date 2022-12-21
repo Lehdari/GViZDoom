@@ -34,7 +34,7 @@
 #define __solaris__ 1
 #endif
 
-#include "doomtype.h"
+#include "doom/doomtype.h"
 
 struct ticcmd_t;
 struct WadStuff;
