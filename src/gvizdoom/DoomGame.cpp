@@ -58,7 +58,8 @@ void DoomGame::restart(const GameConfig& gameConfig)
 
 bool DoomGame::update(const Action& action)
 {
-    if (_gameState.get<GameState::LevelFinished>())
+    if (_gameState.get<GameState::LevelFinished>() or
+        _gameState.get<GameState::PlayerDead>())
         return true;
     
     _doomLoop.Iter(_context, _gameState, action);
@@ -101,7 +102,8 @@ bool DoomGame::update(const Action& action)
     }
 #endif
 
-    return _gameState.get<GameState::LevelFinished>();
+    return _gameState.get<GameState::LevelFinished>() or
+        _gameState.get<GameState::PlayerDead>();
 }
 
 int DoomGame::getStatus() const
