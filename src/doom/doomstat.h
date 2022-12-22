@@ -197,19 +197,10 @@ extern int BorderTopRefresh;
 
 
 EXTERN_CVAR (Float, mouse_sensitivity)
-//?
+
 // debug flag to cancel adaptiveness
 extern	bool	 		singletics; 	
-
 extern	int 			bodyqueslot;
-
-
-
-// Needed to store the number of the dummy sky flat.
-// Used for rendering,
-//	as well as tracking projectiles etc.
-
-
 
 // ---- [RH] ----
 EXTERN_CVAR (Int, developer)

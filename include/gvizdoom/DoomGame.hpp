@@ -42,7 +42,8 @@ public:
     int getScreenHeight() const;
     const uint8_t* getPixelsBGRA() const;
     float* getPixelsDepth() const;
-
+    bool isInteractive() const;
+    
     template <GameState T_GameState>
     const typename GameStateInfo<T_GameState>::Type& getGameState()
     {

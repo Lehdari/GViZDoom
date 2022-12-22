@@ -180,7 +180,7 @@ public:
 };
 
 struct DoomMain {
-    int Init(bool interactive);
+    int Init(bool singletics_in, bool interactive_in);
     void ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& gameConfig);
     void Cleanup();
 

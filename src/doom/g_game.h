@@ -89,10 +89,10 @@ void G_DoReborn (int playernum, bool freshbot);
 void G_DoPlayerPop(int playernum);
 
 // Adds pitch to consoleplayer's viewpitch and clamps it
-void G_AddViewPitch (int look, bool mouse = false);
+void G_AddViewPitch (int look, bool mouse = false, bool interactive = false);
 
 // Adds to consoleplayer's viewangle if allowed
-void G_AddViewAngle (int yaw, bool mouse = false);
+void G_AddViewAngle (int yaw, bool mouse = false, bool interactive = false);
 
 #define BODYQUESIZE 	32
 class AActor;

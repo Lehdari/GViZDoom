@@ -11,8 +11,6 @@
 #include "gvizdoom_client/App.hpp"
 #include "gvizdoom/gzdoom_main_wrapper.hpp"
 
-//#include "CLI/CLI.hpp" // TODO
-
 using namespace gvizdoom;
 
 
@@ -53,14 +51,6 @@ void render(RenderContext& renderContext, App::Context& appContext)
 
 int main(int argc, char** argv)
 {
-    bool interactive = true;
-#if 0 // TODO
-    // Parse CLI args
-    CLI::App cliParser{"GVizDoom Client"};
-    cliParser.add_option("-i,--interactive", interactive, "Interactive mode: human player, keyboard and mouse input");
-    CLI11_PARSE(cliParser, argc, argv);
-#endif
-
     // Setup app and render context
     App::Settings appSettings;
     appSettings.handleEvents = &handleEvents;
@@ -68,7 +58,15 @@ int main(int argc, char** argv)
 
     RenderContext renderContext;
 
-    GameConfig gameConfig{argc, argv, interactive, 640, 480, true, GameConfig::HUD_STATUSBAR, 2, 3, 1, 1};
+    constexpr bool interactive{false};
+    constexpr bool singletics{true};
+    if (not interactive and not singletics)
+    {
+        printf("AI play with multi tics is not supported\n");
+        return 1;
+    }
+
+    GameConfig gameConfig{argc, argv, interactive, singletics, 640, 480, true, GameConfig::HUD_STATUSBAR, 2, 3, 1, 1};
     App app(appSettings, &renderContext, gameConfig);
     app.loop();
 

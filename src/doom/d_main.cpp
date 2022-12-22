@@ -235,7 +235,13 @@ TArray<FString> allwads;
 bool devparm;				// started game with -devparm
 const char *D_DrawIcon;	// [RH] Patch name of icon to draw on next refresh
 int NoWipe;				// [RH] Allow wipe? (Needs to be set each time)
-bool singletics = false;	// debug flag to cancel adaptiveness
+
+// debug flag to cancel adaptiveness. Multitics = some prediction will happen.
+// singletics = process each tic one by one.
+// See: Iter()
+bool singletics{false};
+bool interactive{false};
+
 FString startmap;
 bool autostart;
 FString StoredWarp;
@@ -338,14 +344,17 @@ void D_PostEvent (const event_t *ev)
 			int look = int(ev->y * m_pitch * mouse_sensitivity * 16.0);
 			if (invertmouse)
 				look = -look;
-			G_AddViewPitch (look, true);
+
+			G_AddViewPitch (look, true, interactive);
 			events[eventhead].y = 0;
 		}
+
 		if (!Button_Strafe.bDown && !lookstrafe)
 		{
-			G_AddViewAngle (int(ev->x * m_yaw * mouse_sensitivity * 8.0), true);
+			G_AddViewAngle (int(ev->x * m_yaw * mouse_sensitivity * 8.0), true, interactive);
 			events[eventhead].x = 0;
 		}
+
 		if ((events[eventhead].x | events[eventhead].y) == 0)
 		{
 			return;
@@ -945,6 +954,7 @@ void D_ErrorCleanup ()
 	G_NewInit ();
 	M_ClearMenus ();
 	singletics = false;
+    interactive = false;
 	playeringame[0] = 1;
 	players[0].playerstate = PST_LIVE;
 	gameaction = ga_fullconsole;
@@ -984,7 +994,9 @@ void DoomLoop::Init()
 #endif
 }
 
-void DoomLoop::Iter(gvizdoom::Context& context, gvizdoom::GameStateContainer& out_gameState, const gvizdoom::Action& action)
+void DoomLoop::Iter(gvizdoom::Context& context,
+    gvizdoom::GameStateContainer& out_gameState,
+    const gvizdoom::Action& action)
 {
     try
     {
@@ -1002,19 +1014,28 @@ void DoomLoop::Iter(gvizdoom::Context& context, gvizdoom::GameStateContainer& ou
             I_StartTic ();
             D_ProcessEvents ();
 
-            // Edit the button statuses before building the tic command
-            Button_Forward.bDown = action.isSet(gvizdoom::Action::Key::ACTION_FORWARD);
-            Button_Attack.bDown = action.isSet(gvizdoom::Action::Key::ACTION_ATTACK);
-            Button_AltAttack.bDown = action.isSet(gvizdoom::Action::Key::ACTION_ALTATTACK);
-            Button_Back.bDown = action.isSet(gvizdoom::Action::Key::ACTION_BACK);
-            Button_MoveLeft.bDown = action.isSet(gvizdoom::Action::Key::ACTION_LEFT);
-            Button_MoveRight.bDown = action.isSet(gvizdoom::Action::Key::ACTION_RIGHT);
-            
-            
-            Button_Reload.bDown = action.isSet(gvizdoom::Action::Key::ACTION_RELOAD);
-            Button_Use.bDown = action.isSet(gvizdoom::Action::Key::ACTION_USE);
+            // Use `action` to fake key presses
+            // Should not be mixed with human player inputs
+            // Faking key presses (for example for AI play) has only
+            // been implemented for `singletics==true`
+            if (not interactive)
+            {
+                // Reset button states to prevent user keyboard or mouse
+                // inputs from messing up the AI game 
+                ResetButtonStates();
 
-            G_AddViewAngle(action.angle(), false);
+                // Edit the button statuses before building the tic command
+                Button_Forward.bDown = action.isSet(gvizdoom::Action::Key::ACTION_FORWARD);
+                Button_Attack.bDown = action.isSet(gvizdoom::Action::Key::ACTION_ATTACK);
+                Button_AltAttack.bDown = action.isSet(gvizdoom::Action::Key::ACTION_ALTATTACK);
+                Button_Back.bDown = action.isSet(gvizdoom::Action::Key::ACTION_BACK);
+                Button_MoveLeft.bDown = action.isSet(gvizdoom::Action::Key::ACTION_LEFT);
+                Button_MoveRight.bDown = action.isSet(gvizdoom::Action::Key::ACTION_RIGHT);
+                
+                Button_Reload.bDown = action.isSet(gvizdoom::Action::Key::ACTION_RELOAD);
+                Button_Use.bDown = action.isSet(gvizdoom::Action::Key::ACTION_USE);
+                G_AddViewAngle(action.angle(), false, interactive);
+            }
 
             G_BuildTiccmd(&netcmds[consoleplayer][maketic%BACKUPTICS]);
             
@@ -2162,9 +2183,19 @@ static void CheckCmdLine()
 //
 //==========================================================================
 
-int DoomMain::Init(bool interactive)
+int DoomMain::Init(bool singletics_in,
+    bool interactive_in)
 {
-    singletics = !interactive;
+    // For AI, we want to _always_ have `singletics`
+    // For human play we mostly want to stick with multitics
+    // (= `singletics=false`)
+    // but using human play + `singletics` should be possible
+    // For now we have hardcoded `singletics` to be always on
+    // since this should be mostly used with AI and human should be
+    // able to test with `singletics` (TODO: fix bugs)
+    singletics = singletics_in;
+    interactive = interactive_in;
+
     const char* wad;
     const char* batchout = Args->CheckValue("-errorlog");
 
@@ -2228,8 +2259,8 @@ int DoomMain::Init(bool interactive)
 void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& gameConfig)
 {
     // reinit from here
-
-    singletics = !gameConfig.interactive;
+    singletics = gameConfig.singletics;
+    interactive = gameConfig.interactive;
 
     // use static rng seed
     rngseed = 69420;

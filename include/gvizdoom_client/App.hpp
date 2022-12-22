@@ -89,7 +89,7 @@ private:
     SDL_Window*     _window;
     SDL_Renderer*   _renderer;
     SDL_Texture*    _texture;
-    bool            _quit; // flag for quitting the application
+    bool            _quit;          // flag for quitting the application
     uint32_t        _lastTicks;
     uint32_t        _frameTicks;
     SDLActionMapper _actionMapper;
