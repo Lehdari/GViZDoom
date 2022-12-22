@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "d_main.h"
+#include "doom/d_main.h"
 
 
 int gzdoom_main_init(int argc, char **argv);

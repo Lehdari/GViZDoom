@@ -23,7 +23,7 @@
 
 #include "doomerrors.h"
 #include "m_argv.h"
-#include "d_main.h"
+#include "doom/d_main.h"
 #include "i_system.h"
 #include "c_console.h"
 #include "errors.h"
