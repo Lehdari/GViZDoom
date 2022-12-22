@@ -170,6 +170,10 @@ void DoomGame::reinit()
     _context.frameBuffer = std::make_unique<HeadlessFrameBuffer>(
         _gameConfig.videoWidth, _gameConfig.videoHeight, _gameConfig.videoTrueColor);
 
+    // Reset the game states blocking updates
+    _gameState.set<GameState::LevelFinished>(false);
+    _gameState.set<GameState::PlayerDead>(false);
+
     _doomMain.ReInit(_context, _gameConfig);
     // Override cvars with values from gameConfig
     initHUD();
