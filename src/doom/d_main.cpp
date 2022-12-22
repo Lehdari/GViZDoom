@@ -2229,6 +2229,8 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
 {
     // reinit from here
 
+    singletics = !gameConfig.interactive;
+
     // use static rng seed
     rngseed = 69420;
     FRandom::StaticClearRandom ();
