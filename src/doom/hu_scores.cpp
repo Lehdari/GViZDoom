@@ -260,11 +260,11 @@ static void HU_DoDrawScores (player_t *player, player_t *sortedplayers[MAXPLAYER
 
 	HU_GetPlayerWidths(maxnamewidth, maxscorewidth, maxiconheight);
 	height = SmallFont->GetHeight() * CleanYfac;
-	lineheight = MAX(height, maxiconheight * CleanYfac);
+	lineheight = DOOM_MAX(height, maxiconheight * CleanYfac);
 	ypadding = (lineheight - height + 1) / 2;
 
 	bottom = StatusBar->GetTopOfStatusbar();
-	y = MAX(48*CleanYfac, (bottom - MAXPLAYERS * (height + CleanYfac + 1)) / 2);
+	y = DOOM_MAX(48 * CleanYfac, (bottom - MAXPLAYERS * (height + CleanYfac + 1)) / 2);
 
 	HU_DrawTimeRemaining (bottom - height);
 
@@ -291,7 +291,7 @@ static void HU_DoDrawScores (player_t *player, player_t *sortedplayers[MAXPLAYER
 			}
 		}
 
-		int scorexwidth = SCREENWIDTH / MAX(8, numTeams);
+		int scorexwidth = SCREENWIDTH / DOOM_MAX(8, numTeams);
 		int numscores = 0;
 		int scorex;
 

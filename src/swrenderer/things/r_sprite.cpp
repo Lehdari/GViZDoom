@@ -301,7 +301,7 @@ namespace swrenderer
 		}
 #endif
 
-		vis->Light.SetColormap(thread->Light->SpriteGlobVis(foggy) / MAX(tz, MINZ), spriteshade, basecolormap, fullbright, invertcolormap, fadeToBlack);
+		vis->Light.SetColormap(thread->Light->SpriteGlobVis(foggy) / DOOM_MAX(tz, MINZ), spriteshade, basecolormap, fullbright, invertcolormap, fadeToBlack);
 
 		thread->SpriteList->Push(vis);
 	}

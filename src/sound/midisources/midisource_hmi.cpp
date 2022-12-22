@@ -225,7 +225,7 @@ void HMISong::SetupForHMI(int len)
 			tracklen = GetInt(MusHeader + track_dir + i*4 + 4) - start;
 		}
 		// Clamp incomplete tracks to the end of the file.
-		tracklen = MIN(tracklen, len - start);
+		tracklen = DOOM_MIN(tracklen, len - start);
 		if (tracklen <= 0)
 		{
 			continue;
@@ -312,7 +312,7 @@ void HMISong::SetupForHMP(int len)
 		track_data += tracklen;
 
 		// Clamp incomplete tracks to the end of the file.
-		tracklen = MIN(tracklen, len - start);
+		tracklen = DOOM_MIN(tracklen, len - start);
 		if (tracklen <= 0)
 		{
 			continue;

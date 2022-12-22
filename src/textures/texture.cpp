@@ -372,8 +372,8 @@ void FTexture::CreatePixelsBgraWithMipmaps()
 	int buffersize = 0;
 	for (int i = 0; i < levels; i++)
 	{
-		int w = MAX(Width >> i, 1);
-		int h = MAX(Height >> i, 1);
+		int w = DOOM_MAX(Width >> i, 1);
+		int h = DOOM_MAX(Height >> i, 1);
 		buffersize += w * h;
 	}
 	PixelsBgra.resize(buffersize, 0xffff0000);
@@ -387,7 +387,7 @@ int FTexture::MipmapLevels() const
 	int heightbits = 0;
 	while ((Height >> heightbits) != 0) heightbits++;
 
-	return MAX(widthbits, heightbits);
+	return DOOM_MAX(widthbits, heightbits);
 }
 
 void FTexture::GenerateBgraMipmaps()
@@ -432,20 +432,20 @@ void FTexture::GenerateBgraMipmaps()
 		Color4f *dest = src + Width * Height;
 		for (int i = 1; i < levels; i++)
 		{
-			int srcw = MAX(Width >> (i - 1), 1);
-			int srch = MAX(Height >> (i - 1), 1);
-			int w = MAX(Width >> i, 1);
-			int h = MAX(Height >> i, 1);
+			int srcw = DOOM_MAX(Width >> (i - 1), 1);
+			int srch = DOOM_MAX(Height >> (i - 1), 1);
+			int w = DOOM_MAX(Width >> i, 1);
+			int h = DOOM_MAX(Height >> i, 1);
 
 			// Downscale
 			for (int x = 0; x < w; x++)
 			{
 				int sx0 = x * 2;
-				int sx1 = MIN((x + 1) * 2, srcw - 1);
+				int sx1 = DOOM_MIN((x + 1) * 2, srcw - 1);
 				for (int y = 0; y < h; y++)
 				{
 					int sy0 = y * 2;
-					int sy1 = MIN((y + 1) * 2, srch - 1);
+					int sy1 = DOOM_MIN((y + 1) * 2, srch - 1);
 
 					Color4f src00 = src[sy0 + sx0 * srch];
 					Color4f src01 = src[sy1 + sx0 * srch];
@@ -495,14 +495,14 @@ void FTexture::GenerateBgraMipmaps()
 		uint32_t *dest = PixelsBgra.data() + Width * Height;
 		for (int i = 1; i < levels; i++)
 		{
-			int w = MAX(Width >> i, 1);
-			int h = MAX(Height >> i, 1);
+			int w = DOOM_MAX(Width >> i, 1);
+			int h = DOOM_MAX(Height >> i, 1);
 			for (int j = 0; j < w * h; j++)
 			{
-				uint32_t a = (uint32_t)clamp(powf(MAX(src[j].a, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
-				uint32_t r = (uint32_t)clamp(powf(MAX(src[j].r, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
-				uint32_t g = (uint32_t)clamp(powf(MAX(src[j].g, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
-				uint32_t b = (uint32_t)clamp(powf(MAX(src[j].b, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
+				uint32_t a = (uint32_t)clamp(powf(DOOM_MAX(src[j].a, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
+				uint32_t r = (uint32_t)clamp(powf(DOOM_MAX(src[j].r, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
+				uint32_t g = (uint32_t)clamp(powf(DOOM_MAX(src[j].g, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
+				uint32_t b = (uint32_t)clamp(powf(DOOM_MAX(src[j].b, 0.0f), 1.0f / 2.2f) * 255.0f + 0.5f, 0.0f, 255.0f);
 				dest[j] = (a << 24) | (r << 16) | (g << 8) | b;
 			}
 			src += w * h;
@@ -518,20 +518,20 @@ void FTexture::GenerateBgraMipmapsFast()
 	int levels = MipmapLevels();
 	for (int i = 1; i < levels; i++)
 	{
-		int srcw = MAX(Width >> (i - 1), 1);
-		int srch = MAX(Height >> (i - 1), 1);
-		int w = MAX(Width >> i, 1);
-		int h = MAX(Height >> i, 1);
+		int srcw = DOOM_MAX(Width >> (i - 1), 1);
+		int srch = DOOM_MAX(Height >> (i - 1), 1);
+		int w = DOOM_MAX(Width >> i, 1);
+		int h = DOOM_MAX(Height >> i, 1);
 
 		for (int x = 0; x < w; x++)
 		{
 			int sx0 = x * 2;
-			int sx1 = MIN((x + 1) * 2, srcw - 1);
+			int sx1 = DOOM_MIN((x + 1) * 2, srcw - 1);
 
 			for (int y = 0; y < h; y++)
 			{
 				int sy0 = y * 2;
-				int sy1 = MIN((y + 1) * 2, srch - 1);
+				int sy1 = DOOM_MIN((y + 1) * 2, srch - 1);
 
 				uint32_t src00 = src[sy0 + sx0 * srch];
 				uint32_t src01 = src[sy1 + sx0 * srch];
@@ -864,7 +864,7 @@ PalEntry FTexture::averageColor(const uint32_t *data, int size, int maxout)
 	g = g / size;
 	b = b / size;
 
-	int maxv = MAX(MAX(r, g), b);
+	int maxv = DOOM_MAX(DOOM_MAX(r, g), b);
 
 	if (maxv && maxout)
 	{
@@ -892,7 +892,7 @@ PalEntry FTexture::GetSkyCapColor(bool bottom)
 		const uint32_t *buffer = (const uint32_t *)bitmap.GetPixels();
 		if (buffer)
 		{
-			CeilingSkyColor = averageColor((uint32_t *)buffer, w * MIN(30, h), 0);
+			CeilingSkyColor = averageColor((uint32_t *)buffer, w * DOOM_MIN(30, h), 0);
 			if (h>30)
 			{
 				FloorSkyColor = averageColor(((uint32_t *)buffer) + (h - 30)*w, w * 30, 0);

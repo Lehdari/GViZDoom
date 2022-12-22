@@ -161,7 +161,7 @@ void FTextureManager::AddTiles (const FString &pathprefix, const void *tiles, in
 			}
 
 			speed = (anm >> 24) & 15;
-			speed = MAX (1, (1 << speed) * 1000 / 120);	// Convert from 120 Hz to 1000 Hz.
+			speed = DOOM_MAX(1, (1 << speed) * 1000 / 120);	// Convert from 120 Hz to 1000 Hz.
 
 			AddSimpleAnim (texnum, picanm[pic] & 63, type, speed);
 		}

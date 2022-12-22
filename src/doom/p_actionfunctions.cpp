@@ -2737,14 +2737,14 @@ DEFINE_ACTION_FUNCTION(AActor, A_SpawnItem)
 	if (missile == NULL)
 	{
 		if (numret > 0) ret[0].SetInt(false);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	}
 
 	// Don't spawn monsters if this actor has been massacred
 	if (self->DamageType == NAME_Massacre && (GetDefaultByType(missile)->flags3 & MF3_ISMONSTER))
 	{
 		if (numret > 0) ret[0].SetInt(true);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	}
 
 	if (ACTION_CALL_FROM_PSPRITE())
@@ -2755,12 +2755,12 @@ DEFINE_ACTION_FUNCTION(AActor, A_SpawnItem)
 		if (weapon == NULL)
 		{
 			if (numret > 0) ret[0].SetInt(true);
-			return MIN(numret, 2);
+			return DOOM_MIN(numret, 2);
 		}
 		if (useammo && !weapon->DepleteAmmo(weapon->bAltFire))
 		{
 			if (numret > 0) ret[0].SetInt(true);
-			return MIN(numret, 2);
+			return DOOM_MIN(numret, 2);
 		}
 	}
 
@@ -2770,7 +2770,7 @@ DEFINE_ACTION_FUNCTION(AActor, A_SpawnItem)
 	bool res = InitSpawnedItem(self, mo, flags);	// for an inventory item's use state
 	if (numret > 0) ret[0].SetInt(res);
 	if (numret > 1) ret[1].SetObject(mo);
-	return MIN(numret, 2);
+	return DOOM_MIN(numret, 2);
 
 }
 
@@ -2801,18 +2801,18 @@ DEFINE_ACTION_FUNCTION(AActor, A_SpawnItemEx)
 	if (missile == NULL) 
 	{
 		if (numret > 0) ret[0].SetInt(false);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	}
 	if (chance > 0 && pr_spawnitemex() < chance)
 	{
 		if (numret > 0) ret[0].SetInt(true);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	}
 	// Don't spawn monsters if this actor has been massacred
 	if (self->DamageType == NAME_Massacre && (GetDefaultByType(missile)->flags3 & MF3_ISMONSTER))
 	{
 		if (numret > 0) ret[0].SetInt(true);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	}
 
 	DVector2 pos;
@@ -2862,7 +2862,7 @@ DEFINE_ACTION_FUNCTION(AActor, A_SpawnItemEx)
 	}
 	if (numret > 0) ret[0].SetInt(res);
 	if (numret > 1) ret[1].SetObject(mo);
-	return MIN(numret, 2);
+	return DOOM_MIN(numret, 2);
 }
 
 //===========================================================================
@@ -2886,7 +2886,7 @@ DEFINE_ACTION_FUNCTION(AActor, A_ThrowGrenade)
 	if (missile == NULL)
 	{
 		if (numret > 0) ret[0].SetInt(false);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	}
 	if (ACTION_CALL_FROM_PSPRITE())
 	{
@@ -2896,12 +2896,12 @@ DEFINE_ACTION_FUNCTION(AActor, A_ThrowGrenade)
 		if (weapon == NULL)
 		{
 			if (numret > 0) ret[0].SetInt(true);
-			return MIN(numret, 2);
+			return DOOM_MIN(numret, 2);
 		}
 		if (useammo && !weapon->DepleteAmmo(weapon->bAltFire))
 		{
 			if (numret > 0) ret[0].SetInt(true);
-			return MIN(numret, 2);
+			return DOOM_MIN(numret, 2);
 		}
 	}
 
@@ -2944,12 +2944,12 @@ DEFINE_ACTION_FUNCTION(AActor, A_ThrowGrenade)
 
 		if (numret > 0) ret[0].SetInt(true);
 		if (numret > 1) ret[1].SetObject(bo);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	} 
 	else
 	{
 		if (numret > 0) ret[0].SetInt(false);
-		return MIN(numret, 2);
+		return DOOM_MIN(numret, 2);
 	}
 }
 
@@ -3651,9 +3651,9 @@ DEFINE_ACTION_FUNCTION(AActor, A_Burst)
 	// base the number of shards on the size of the dead thing, so bigger
 	// things break up into more shards than smaller things.
 	// An self with radius 20 and height 64 creates ~40 chunks.
-	numChunks = MAX<int> (4, int(self->radius * self->Height)/32);
+	numChunks = DOOM_MAX<int>(4, int(self->radius * self->Height) / 32);
 	i = (pr_burst.Random2()) % (numChunks/4);
-	for (i = MAX (24, numChunks + i); i >= 0; i--)
+	for (i = DOOM_MAX(24, numChunks + i); i >= 0; i--)
 	{
 		double xo = (pr_burst() - 128) * self->radius / 128;
 		double yo = (pr_burst() - 128) * self->radius / 128;
@@ -4258,7 +4258,7 @@ DEFINE_ACTION_FUNCTION(AActor, CheckIfTargetInLOS)
 		else { target = viewport; viewport = self; }
 	}
 
-	fov = MIN<DAngle>(fov, 360.);
+	fov = DOOM_MIN<DAngle>(fov, 360.);
 
 	if (fov > 0)
 	{
@@ -5241,7 +5241,7 @@ DEFINE_ACTION_FUNCTION(AActor, A_WolfAttack)
 
 	// Target can dodge if it can see enemy
 	DAngle angle = absangle(self->target->Angles.Yaw, self->target->AngleTo(self));
-	bool dodge = (P_CheckSight(self->target, self) && angle < 30. * 256. / 360.);	// 30 byteangles ~ 21°
+	bool dodge = (P_CheckSight(self->target, self) && angle < 30. * 256. / 360.);	// 30 byteangles ~ 21ï¿½
 
 	// Distance check is simplistic
 	DVector2 vec = self->Vec2To(self->target);
@@ -6612,11 +6612,11 @@ DEFINE_ACTION_FUNCTION(AActor, A_FaceMovementDirection)
 			{
 				if (pdelta > 0)
 				{
-					current -= MIN(pitchlimit, pdelta);
+					current -= DOOM_MIN(pitchlimit, pdelta);
 				}
 				else //if (pdelta < 0)
 				{
-					current += MIN(pitchlimit, -pdelta);
+					current += DOOM_MIN(pitchlimit, -pdelta);
 				}
 				mobj->SetPitch(current, !!(flags & FMDF_INTERPOLATE));
 			}

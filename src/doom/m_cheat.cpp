@@ -598,7 +598,7 @@ void cht_SetInv(player_t *player, const char *string, int amount, bool beyond)
 			cht_Suicide(player);
 			return;
 		}
-		if (!beyond) amount = MIN(amount, player->mo->GetMaxHealth(true));
+		if (!beyond) amount = DOOM_MIN(amount, player->mo->GetMaxHealth(true));
 		player->health = player->mo->health = amount;
 	}
 	else

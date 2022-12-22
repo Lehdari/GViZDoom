@@ -56,7 +56,7 @@ OPLmusicBlock::OPLmusicBlock()
 	scoredata = NULL;
 	NextTickIn = 0;
 	LastOffset = 0;
-	NumChips = MIN(*opl_numchips, 2);
+	NumChips = DOOM_MIN(*opl_numchips, 2);
 	Looping = false;
 	FullPan = false;
 	io = NULL;
@@ -72,7 +72,7 @@ void OPLmusicBlock::ResetChips ()
 {
 	ChipAccess.Enter();
 	io->Reset ();
-	NumChips = io->Init(MIN(*opl_numchips, 2), FullPan);
+	NumChips = io->Init(DOOM_MIN(*opl_numchips, 2), FullPan);
 	ChipAccess.Leave();
 }
 
@@ -125,7 +125,7 @@ fail:	delete[] scoredata;
 		{
 			RawPlayer = DosBox1;
 			SamplesPerTick = OPL_SAMPLE_RATE / 1000;
-			ScoreLen = MIN<int>(ScoreLen - 24, LittleLong(((uint32_t *)scoredata)[4])) + 24;
+			ScoreLen = DOOM_MIN<int>(ScoreLen - 24, LittleLong(((uint32_t*) scoredata)[4])) + 24;
 		}
 		else if (((uint32_t *)scoredata)[2] == MAKE_ID(2,0,0,0))
 		{
@@ -145,7 +145,7 @@ fail:	delete[] scoredata;
 			RawPlayer = DosBox2;
 			SamplesPerTick = OPL_SAMPLE_RATE / 1000;
 			int headersize = 0x1A + scoredata[0x19];
-			ScoreLen = MIN<int>(ScoreLen - headersize, LittleLong(((uint32_t *)scoredata)[3]) * 2) + headersize;
+			ScoreLen = DOOM_MIN<int>(ScoreLen - headersize, LittleLong(((uint32_t*) scoredata)[3]) * 2) + headersize;
 		}
 		else
 		{
@@ -263,7 +263,7 @@ bool OPLmusicBlock::ServiceStream (void *buff, int numbytes)
 	{
 		double ticky = NextTickIn;
 		int tick_in = int(NextTickIn);
-		int samplesleft = MIN(numsamples, tick_in);
+		int samplesleft = DOOM_MIN(numsamples, tick_in);
 		size_t i;
 
 		if (samplesleft > 0)
@@ -369,7 +369,7 @@ void OPLmusicBlock::OffsetSamples(float *buff, int count)
 	}
 	else
 	{
-		ramp = MIN(count, MAX(196, largest_at));
+		ramp = DOOM_MIN(count, DOOM_MAX(196, largest_at));
 		step = (offset - LastOffset) / ramp;
 	}
 	offset = LastOffset;

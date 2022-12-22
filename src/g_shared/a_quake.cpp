@@ -224,8 +224,8 @@ double DEarthquake::GetModIntensity(double intensity, bool fake) const
 			{
 				// Defaults to middle of the road.
 				divider = m_CountdownStart;
-				scalar = (m_Flags & QF_MAX) ? MAX(m_Countdown, m_CountdownStart - m_Countdown)
-					: MIN(m_Countdown, m_CountdownStart - m_Countdown);
+				scalar = (m_Flags & QF_MAX) ? DOOM_MAX(m_Countdown, m_CountdownStart - m_Countdown)
+					: DOOM_MIN(m_Countdown, m_CountdownStart - m_Countdown);
 			}
 			scalar = (scalar > divider) ? divider : scalar;
 
@@ -325,20 +325,20 @@ int DEarthquake::StaticGetQuakeIntensities(AActor *victim, FQuakeJiggers &jigger
 
 				if (!(quake->m_Flags & QF_WAVE))
 				{
-					jiggers.RollIntensity = MAX(r, jiggers.RollIntensity) * falloff;
+					jiggers.RollIntensity = DOOM_MAX(r, jiggers.RollIntensity) * falloff;
 
 					intensity *= falloff;
 					if (quake->m_Flags & QF_RELATIVE)
 					{
-						jiggers.RelIntensity.X = MAX(intensity.X, jiggers.RelIntensity.X);
-						jiggers.RelIntensity.Y = MAX(intensity.Y, jiggers.RelIntensity.Y);
-						jiggers.RelIntensity.Z = MAX(intensity.Z, jiggers.RelIntensity.Z);
+						jiggers.RelIntensity.X = DOOM_MAX(intensity.X, jiggers.RelIntensity.X);
+						jiggers.RelIntensity.Y = DOOM_MAX(intensity.Y, jiggers.RelIntensity.Y);
+						jiggers.RelIntensity.Z = DOOM_MAX(intensity.Z, jiggers.RelIntensity.Z);
 					}
 					else
 					{
-						jiggers.Intensity.X = MAX(intensity.X, jiggers.Intensity.X);
-						jiggers.Intensity.Y = MAX(intensity.Y, jiggers.Intensity.Y);
-						jiggers.Intensity.Z = MAX(intensity.Z, jiggers.Intensity.Z);
+						jiggers.Intensity.X = DOOM_MAX(intensity.X, jiggers.Intensity.X);
+						jiggers.Intensity.Y = DOOM_MAX(intensity.Y, jiggers.Intensity.Y);
+						jiggers.Intensity.Z = DOOM_MAX(intensity.Z, jiggers.Intensity.Z);
 					}
 				}
 				else

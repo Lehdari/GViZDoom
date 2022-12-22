@@ -101,8 +101,8 @@ namespace swrenderer
 						break;
 
 					texdata.source += texdata.width * texdata.height;
-					texdata.width = MAX<uint32_t>(texdata.width / 2, 1);
-					texdata.height = MAX<uint32_t>(texdata.height / 2, 1);
+					texdata.width = DOOM_MAX<uint32_t>(texdata.width / 2, 1);
+					texdata.height = DOOM_MAX<uint32_t>(texdata.height / 2, 1);
 					level--;
 				}
 			}

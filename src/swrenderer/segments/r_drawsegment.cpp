@@ -104,21 +104,21 @@ namespace swrenderer
 
 			DrawSegmentGroup group;
 			group.BeginIndex = index;
-			group.EndIndex = MIN(index + groupSize, SegmentsCount());
+			group.EndIndex = DOOM_MIN(index + groupSize, SegmentsCount());
 			group.x1 = ds->x1;
 			group.x2 = ds->x2;
-			group.neardepth = MIN(ds->sz1, ds->sz2);
-			group.fardepth = MAX(ds->sz1, ds->sz2);
+			group.neardepth = DOOM_MIN(ds->sz1, ds->sz2);
+			group.fardepth = DOOM_MAX(ds->sz1, ds->sz2);
 
 			for (unsigned int groupIndex = group.BeginIndex + 1; groupIndex < group.EndIndex; groupIndex++)
 			{
 				ds = Segment(groupIndex);
-				group.x1 = MIN(group.x1, ds->x1);
-				group.x2 = MAX(group.x2, ds->x2);
-				group.neardepth = MIN(group.neardepth, ds->sz1);
-				group.neardepth = MIN(group.neardepth, ds->sz2);
-				group.fardepth = MAX(ds->sz1, group.fardepth);
-				group.fardepth = MAX(ds->sz2, group.fardepth);
+				group.x1 = DOOM_MIN(group.x1, ds->x1);
+				group.x2 = DOOM_MAX(group.x2, ds->x2);
+				group.neardepth = DOOM_MIN(group.neardepth, ds->sz1);
+				group.neardepth = DOOM_MIN(group.neardepth, ds->sz2);
+				group.fardepth = DOOM_MAX(ds->sz1, group.fardepth);
+				group.fardepth = DOOM_MAX(ds->sz2, group.fardepth);
 			}
 
 			for (int x = group.x1; x < group.x2; x++)

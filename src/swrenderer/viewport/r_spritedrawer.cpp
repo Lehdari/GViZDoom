@@ -113,12 +113,12 @@ namespace swrenderer
 				dc_count = dc_yh - dc_yl + 1;
 
 				fixed_t maxfrac = ((top + length) << FRACBITS) - 1;
-				dc_texturefrac = MAX(dc_texturefrac, 0);
-				dc_texturefrac = MIN(dc_texturefrac, maxfrac);
+				dc_texturefrac = DOOM_MAX(dc_texturefrac, 0);
+				dc_texturefrac = DOOM_MIN(dc_texturefrac, maxfrac);
 				if (dc_iscale > 0)
-					dc_count = MIN(dc_count, (maxfrac - dc_texturefrac + dc_iscale - 1) / dc_iscale);
+					dc_count = DOOM_MIN(dc_count, (maxfrac - dc_texturefrac + dc_iscale - 1) / dc_iscale);
 				else if (dc_iscale < 0)
-					dc_count = MIN(dc_count, (dc_texturefrac - dc_iscale) / (-dc_iscale));
+					dc_count = DOOM_MIN(dc_count, (dc_texturefrac - dc_iscale) / (-dc_iscale));
 
 				(thread->Drawers(dc_viewport)->*colfunc)(*this);
 			}
@@ -144,9 +144,9 @@ namespace swrenderer
 
 		double xmagnitude = 1.0; // To do: pass this into R_DrawMaskedColumn
 		double ymagnitude = fabs(uv_stepd);
-		double magnitude = MAX(ymagnitude, xmagnitude);
+		double magnitude = DOOM_MAX(ymagnitude, xmagnitude);
 		double min_lod = -1000.0;
-		double lod = MAX(log2(magnitude) + r_lod_bias, min_lod);
+		double lod = DOOM_MAX(log2(magnitude) + r_lod_bias, min_lod);
 		bool magnifying = lod < 0.0f;
 
 		int mipmap_offset = 0;
@@ -160,8 +160,8 @@ namespace swrenderer
 			{
 				mipmap_offset += mip_width * mip_height;
 				level--;
-				mip_width = MAX(mip_width >> 1, 1);
-				mip_height = MAX(mip_height >> 1, 1);
+				mip_width = DOOM_MAX(mip_width >> 1, 1);
+				mip_height = DOOM_MAX(mip_height >> 1, 1);
 			}
 		}
 		xoffset = (xpos >> FRACBITS) * mip_width;
@@ -171,7 +171,7 @@ namespace swrenderer
 		bool filter_nearest = (magnifying && !r_magfilter) || (!magnifying && !r_minfilter);
 		if (filter_nearest)
 		{
-			xoffset = MAX(MIN(xoffset, (mip_width << FRACBITS) - 1), 0);
+			xoffset = DOOM_MAX(DOOM_MIN(xoffset, (mip_width << FRACBITS) - 1), 0);
 
 			int tx = xoffset >> FRACBITS;
 			dc_source = (uint8_t*)(pixels + tx * mip_height);
@@ -181,10 +181,10 @@ namespace swrenderer
 		}
 		else
 		{
-			xoffset = MAX(MIN(xoffset - (FRACUNIT / 2), (mip_width << FRACBITS) - 1), 0);
+			xoffset = DOOM_MAX(DOOM_MIN(xoffset - (FRACUNIT / 2), (mip_width << FRACBITS) - 1), 0);
 
 			int tx0 = xoffset >> FRACBITS;
-			int tx1 = MIN(tx0 + 1, mip_width - 1);
+			int tx1 = DOOM_MIN(tx0 + 1, mip_width - 1);
 			dc_source = (uint8_t*)(pixels + tx0 * mip_height);
 			dc_source2 = (uint8_t*)(pixels + tx1 * mip_height);
 			dc_textureheight = mip_height;

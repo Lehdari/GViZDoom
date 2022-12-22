@@ -486,7 +486,7 @@ DEFINE_ACTION_FUNCTION(FKeyBindings, GetKeysForCommand)
 	self->GetKeysForCommand(cmd.GetChars(), &k1, &k2);
 	if (numret > 0) ret[0].SetInt(k1);
 	if (numret > 1) ret[1].SetInt(k2);
-	return MIN(numret, 2);
+	return DOOM_MIN(numret, 2);
 }
 
 //=============================================================================

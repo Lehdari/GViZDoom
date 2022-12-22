@@ -350,7 +350,8 @@ void OPLio::WriteVolume(uint32_t channel, struct GenMidiVoice *voice, uint32_t v
 {
 	if (voice != nullptr)
 	{
-		uint32_t full_volume = volumetable[MIN<uint32_t>(127, (uint32_t)((uint64_t)vol1*vol2*vol3) / (127 * 127))];
+		uint32_t full_volume = volumetable[DOOM_MIN<uint32_t>(127,
+            (uint32_t) ((uint64_t) vol1 * vol2 * vol3) / (127 * 127))];
 		int reg_volume2 = ((0x3f - voice->carrier.level) * full_volume) / 128;
 		reg_volume2 = (0x3f - reg_volume2) | voice->carrier.scale;
 		WriteOperator(OPL_REGS_LEVEL, channel, 1, reg_volume2);

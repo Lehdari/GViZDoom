@@ -736,7 +736,7 @@ FSerializer &FSerializer::Args(const char *key, int *args, int *defargs, int spe
 		{
 			if (val->IsArray())
 			{
-				unsigned int cnt = MIN<unsigned>(val->Size(), 5);
+				unsigned int cnt = DOOM_MIN<unsigned>(val->Size(), 5);
 				for (unsigned int i = 0; i < cnt; i++)
 				{
 					const rapidjson::Value &aval = (*val)[i];

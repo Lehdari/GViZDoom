@@ -807,7 +807,7 @@ void G_AddViewPitch (int look, bool mouse, bool interactive)
 		}
 		else
 		{
-			LocalViewPitch = MIN(LocalViewPitch + look, 0x78000000);
+			LocalViewPitch = DOOM_MIN(LocalViewPitch + look, 0x78000000);
 		}
 	}
 	else if (look < 0)
@@ -819,7 +819,7 @@ void G_AddViewPitch (int look, bool mouse, bool interactive)
 		}
 		else
 		{
-			LocalViewPitch = MAX(LocalViewPitch + look, -0x78000000);
+			LocalViewPitch = DOOM_MAX(LocalViewPitch + look, -0x78000000);
 		}
 	}
 	if (look != 0)

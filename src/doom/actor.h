@@ -1505,7 +1505,7 @@ public:
 	// Better have it in one place, if something needs to be changed about the formula.
 	double DistanceBySpeed(AActor *dest, double speed)
 	{
-		return MAX(1., Distance2D(dest) / speed);
+		return DOOM_MAX(1., Distance2D(dest) / speed);
 	}
 
 	int ApplyDamageFactor(FName damagetype, int damage) const;

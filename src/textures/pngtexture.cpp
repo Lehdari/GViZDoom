@@ -257,7 +257,7 @@ FPNGTexture::FPNGTexture (FileReader &lump, int lumpnum, const FString &filename
 			break;
 
 		case MAKE_ID('P','L','T','E'):
-			PaletteSize = MIN<int> (len / 3, 256);
+			PaletteSize = DOOM_MIN<int>(len / 3, 256);
 			StartOfPalette = (uint32_t)lump.Tell();
 			lump.Read (p.pngpal, PaletteSize * 3);
 			if (PaletteSize * 3 != (int)len)

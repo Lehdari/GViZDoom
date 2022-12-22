@@ -125,7 +125,7 @@ static uint32_t Zip_FindCentralDir(FileReader &fin)
 	uint32_t uPosFound=0;
 
 	FileSize = (uint32_t)fin.GetLength();
-	uMaxBack = MIN<uint32_t>(0xffff, FileSize);
+	uMaxBack = DOOM_MIN<uint32_t>(0xffff, FileSize);
 
 	uBackRead = 4;
 	while (uBackRead < uMaxBack)
@@ -138,7 +138,7 @@ static uint32_t Zip_FindCentralDir(FileReader &fin)
 			uBackRead += BUFREADCOMMENT;
 		uReadPos = FileSize - uBackRead;
 
-		uReadSize = MIN<uint32_t>((BUFREADCOMMENT + 4), (FileSize - uReadPos));
+		uReadSize = DOOM_MIN<uint32_t>((BUFREADCOMMENT + 4), (FileSize - uReadPos));
 
 		if (fin.Seek(uReadPos, FileReader::SeekSet) != 0) break;
 

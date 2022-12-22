@@ -43,12 +43,12 @@
 // Convert a shade and visibility to a clamped colormap index.
 // Result is not fixed point.
 // Change R_CalcTiltedLighting() when this changes.
-#define GETPALOOKUP(vis,shade) (clamp<int> (((shade)-FLOAT2FIXED(MIN(MAXLIGHTVIS,double(vis))))>>FRACBITS, 0, NUMCOLORMAPS-1))
+#define GETPALOOKUP(vis,shade) (clamp<int> (((shade)-FLOAT2FIXED(DOOM_MIN(MAXLIGHTVIS,double(vis))))>>FRACBITS, 0, NUMCOLORMAPS-1))
 
 // Calculate the light multiplier for dc_light/ds_light
 // This is used instead of GETPALOOKUP when ds_colormap/dc_colormap is set to the base colormap
 // Returns a value between 0 and 1 in fixed point
-#define LIGHTSCALE(vis,shade) FLOAT2FIXED(clamp((FIXED2DBL(shade) - (MIN(MAXLIGHTVIS,double(vis)))) / NUMCOLORMAPS, 0.0, (NUMCOLORMAPS-1)/(double)NUMCOLORMAPS))
+#define LIGHTSCALE(vis,shade) FLOAT2FIXED(clamp((FIXED2DBL(shade) - (DOOM_MIN(MAXLIGHTVIS,double(vis)))) / NUMCOLORMAPS, 0.0, (NUMCOLORMAPS-1)/(double)NUMCOLORMAPS))
 
 struct FSWColormap;
 

@@ -520,7 +520,7 @@ bool AActor::SuggestMissileAttack (double dist)
 	if (flags4 & MF4_MISSILEEVENMORE) dist *= 0.125;
 	
 	int mmc = int(MinMissileChance * G_SkillProperty(SKILLP_Aggressiveness));
-	return pr_checkmissilerange() >= MIN<int> (int(dist), mmc);
+	return pr_checkmissilerange() >= DOOM_MIN<int>(int(dist), mmc);
 }
 
 //=============================================================================
@@ -3076,12 +3076,12 @@ void A_Face(AActor *self, AActor *other, DAngle max_turn, DAngle max_pitch, DAng
 		{
 			if (self->Angles.Pitch > other_pitch)
 			{
-				max_pitch = MIN(max_pitch, (self->Angles.Pitch - other_pitch).Normalized360());
+				max_pitch = DOOM_MIN(max_pitch, (self->Angles.Pitch - other_pitch).Normalized360());
 				self->Angles.Pitch -= max_pitch;
 			}
 			else
 			{
-				max_pitch = MIN(max_pitch, (other_pitch - self->Angles.Pitch).Normalized360());
+				max_pitch = DOOM_MIN(max_pitch, (other_pitch - self->Angles.Pitch).Normalized360());
 				self->Angles.Pitch += max_pitch;
 			}
 		}
@@ -3254,7 +3254,7 @@ void ModifyDropAmount(AInventory *inv, int dropamount)
 		int amount = inv->IntVar("DropAmount");
 		if (amount <= 0)
 		{
-			amount = MAX(1, int(inv->Amount * dropammofactor));
+			amount = DOOM_MAX(1, int(inv->Amount * dropammofactor));
 		}
 		inv->Amount = amount;
 		inv->ItemFlags |= flagmask;

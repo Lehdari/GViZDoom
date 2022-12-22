@@ -401,7 +401,7 @@ bool SoftSynthMIDIDevice::ServiceStream (void *buff, int numbytes)
 	{
 		double ticky = NextTickIn;
 		int tick_in = int(NextTickIn);
-		int samplesleft = MIN(numsamples, tick_in);
+		int samplesleft = DOOM_MIN(numsamples, tick_in);
 
 		if (samplesleft > 0)
 		{

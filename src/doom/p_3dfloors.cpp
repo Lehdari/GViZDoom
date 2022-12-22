@@ -835,7 +835,7 @@ void P_LineOpening_XFloors (FLineOpening &open, AActor * thing, const line_t *li
 				open.topsec = lowestceilingsec;
 			}
 			
-			open.lowfloor = MIN(lowestfloor[0], lowestfloor[1]);
+			open.lowfloor = DOOM_MIN(lowestfloor[0], lowestfloor[1]);
 		}
     }
 }

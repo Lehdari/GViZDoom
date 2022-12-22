@@ -158,7 +158,7 @@ size_t SndFileDecoder::read(char *buffer, size_t bytes)
     // could be more.
     while(total < frames)
     {
-        size_t todo = MIN<size_t>(frames-total, 64/SndInfo.channels);
+        size_t todo = DOOM_MIN<size_t>(frames - total, 64 / SndInfo.channels);
         float tmp[64];
 
         size_t got = (size_t)sf_readf_float(SndFile, tmp, todo);

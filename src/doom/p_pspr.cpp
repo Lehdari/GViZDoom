@@ -690,7 +690,7 @@ void P_BobWeapon (player_t *player, float *x, float *y, double ticfrac)
 			}
 			else
 			{
-				float zoom = MAX(1.f, fabsf(curbob - bobtarget) / 40);
+				float zoom = DOOM_MAX(1.f, fabsf(curbob - bobtarget) / 40);
 				if (curbob > bobtarget)
 				{
 					curbob -= zoom;

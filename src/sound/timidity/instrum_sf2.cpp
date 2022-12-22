@@ -571,7 +571,7 @@ static void ParseGen(SFFile *sf2, FileReader &f, uint32_t chunkid, uint32_t chun
 	{
 		// Section 7.3, page 22:
 		//		the size of the PGEN sub-chunk in bytes will be equal to four
-		//		times the terminal preset’s wGenNdx plus four.
+		//		times the terminal presetï¿½s wGenNdx plus four.
 		if (numgens != sf2->PresetBags[sf2->NumPresetBags - 1].GenIndex + 1)
 		{
 			throw CBadForm();
@@ -627,7 +627,7 @@ static void ParseInst(SFFile *sf2, FileReader &f, uint32_t chunkid, uint32_t chu
 
 		// Section 7.6, page 25:
 		//		If the instrument bag indices are non-monotonic or if the terminal
-		//		instrument’s wInstBagNdx does not match the IBAG sub-chunk size, the
+		//		instrumentï¿½s wInstBagNdx does not match the IBAG sub-chunk size, the
 		//		file is structurally defective and should be rejected at load time.
 		if (inst != sf2->Instruments)
 		{
@@ -685,10 +685,10 @@ static void ParseShdr(SFFile *sf2, FileReader &f, uint32_t chunkid, uint32_t chu
 		}
 
 		// Clamp sample positions to the available sample data.
-		sample->Start = MIN(sample->Start, sf2->SizeSampleData - 1);
-		sample->End = MIN(sample->End, sf2->SizeSampleData - 1);
-		sample->StartLoop = MIN(sample->StartLoop, sf2->SizeSampleData - 1);
-		sample->EndLoop = MIN(sample->EndLoop, sf2->SizeSampleData - 1);
+		sample->Start = DOOM_MIN(sample->Start, sf2->SizeSampleData - 1);
+		sample->End = DOOM_MIN(sample->End, sf2->SizeSampleData - 1);
+		sample->StartLoop = DOOM_MIN(sample->StartLoop, sf2->SizeSampleData - 1);
+		sample->EndLoop = DOOM_MIN(sample->EndLoop, sf2->SizeSampleData - 1);
 
 		if (sample->Start >= sample->End)
 		{
@@ -1149,8 +1149,8 @@ void SFFile::TranslatePercussionPresetZone(SFPreset *preset, SFBag *pzone)
 			AddPresetGenerators(&perc.Generators, pzone->GenIndex, (pzone + 1)->GenIndex, preset);
 			perc.Generators.drumset = (uint8_t)preset->Program;
 			perc.Generators.key = key;
-			perc.Generators.velRange.Lo = MAX(pzone->VelRange.Lo, InstrBags[i].VelRange.Lo);
-			perc.Generators.velRange.Hi = MIN(pzone->VelRange.Hi, InstrBags[i].VelRange.Hi);
+			perc.Generators.velRange.Lo = DOOM_MAX(pzone->VelRange.Lo, InstrBags[i].VelRange.Lo);
+			perc.Generators.velRange.Hi = DOOM_MIN(pzone->VelRange.Hi, InstrBags[i].VelRange.Hi);
 			perc.Generators.sampleID = InstrBags[i].Target;
 			Percussion.Push(perc);
 		}
@@ -1387,12 +1387,12 @@ Instrument *SFFile::LoadPreset(Renderer *song, SFPreset *preset)
 				Sample *sp = ip->sample + k++;
 
 				// Set velocity range
-				sp->low_vel = MAX(InstrBags[j].VelRange.Lo, PresetBags[i].VelRange.Lo);
-				sp->high_vel = MIN(InstrBags[j].VelRange.Hi, PresetBags[i].VelRange.Hi);
+				sp->low_vel = DOOM_MAX(InstrBags[j].VelRange.Lo, PresetBags[i].VelRange.Lo);
+				sp->high_vel = DOOM_MIN(InstrBags[j].VelRange.Hi, PresetBags[i].VelRange.Hi);
 
 				// Set frequency range
-				sp->low_freq = note_to_freq(MAX(InstrBags[j].KeyRange.Lo, PresetBags[i].KeyRange.Lo));
-				sp->high_freq = note_to_freq(MIN(InstrBags[j].KeyRange.Hi, PresetBags[i].KeyRange.Hi));
+				sp->low_freq = note_to_freq(DOOM_MAX(InstrBags[j].KeyRange.Lo, PresetBags[i].KeyRange.Lo));
+				sp->high_freq = note_to_freq(DOOM_MIN(InstrBags[j].KeyRange.Hi, PresetBags[i].KeyRange.Hi));
 
 				gen = DefaultGenerators;
 				if (inst->bHasGlobalZone)
@@ -1428,10 +1428,11 @@ void SFFile::ApplyGeneratorsToRegion(SFGenComposite *gen, SFSample *sfsamp, Rend
 	int start, end;
 	start = gen->startAddrsOffset + gen->startAddrsCoarseOffset * 32768;
 	end = gen->endAddrsOffset + gen->endAddrsCoarseOffset * 32768;
-	start = MAX<int>(sfsamp->Start, sfsamp->Start + start);
-	end = MIN<int>(sfsamp->End, sfsamp->End + end);
-	sp->loop_start = MAX<int>(start, sfsamp->StartLoop + gen->startLoopAddrsOffset + gen->startLoopAddrsCoarseOffset * 32768);
-	sp->loop_end = MIN<int>(end, sfsamp->EndLoop + gen->endLoopAddrsOffset + gen->endLoopAddrsCoarseOffset * 32768);
+	start = DOOM_MAX<int>(sfsamp->Start, sfsamp->Start + start);
+	end = DOOM_MIN<int>(sfsamp->End, sfsamp->End + end);
+	sp->loop_start = DOOM_MAX<int>(start,
+        sfsamp->StartLoop + gen->startLoopAddrsOffset + gen->startLoopAddrsCoarseOffset * 32768);
+	sp->loop_end = DOOM_MIN<int>(end, sfsamp->EndLoop + gen->endLoopAddrsOffset + gen->endLoopAddrsCoarseOffset * 32768);
 
 	sp->loop_start = (sp->loop_start - start) << FRACTION_BITS;
 	sp->loop_end = (sp->loop_end - start) << FRACTION_BITS;

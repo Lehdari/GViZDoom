@@ -172,7 +172,7 @@ void SWCanvas::DrawTexture(DCanvas *canvas, FTexture *img, DrawParms &parms)
 
 		if (parms.windowleft > 0 || parms.windowright < parms.texwidth)
 		{
-			double wi = MIN(parms.windowright, parms.texwidth);
+			double wi = DOOM_MIN(parms.windowright, parms.texwidth);
 			double xscale = parms.destwidth / parms.texwidth;
 			x0 += parms.windowleft * xscale;
 			frac += FLOAT2FIXED(parms.windowleft);
@@ -311,7 +311,7 @@ void SWCanvas::FillSimplePoly(DCanvas *canvas, FTexture *tex, FVector2 *points, 
 		else
 		{
 			fixed_t xinc = FLOAT2FIXED((points[pt2].X - points[pt1].X) / (points[pt2].Y - points[pt1].Y));
-			int y3 = MIN(y2, bottomclip);
+			int y3 = DOOM_MIN(y2, bottomclip);
 			if (y1 < 0)
 			{
 				x += xinc * -y1;
@@ -342,7 +342,7 @@ void SWCanvas::FillSimplePoly(DCanvas *canvas, FTexture *tex, FVector2 *points, 
 		else
 		{
 			fixed_t xinc = FLOAT2FIXED((points[pt2].X - points[pt1].X) / (points[pt2].Y - points[pt1].Y));
-			int y3 = MIN(y2, bottomclip);
+			int y3 = DOOM_MIN(y2, bottomclip);
 			if (y1 < 0)
 			{
 				x += xinc * -y1;
@@ -354,8 +354,8 @@ void SWCanvas::FillSimplePoly(DCanvas *canvas, FTexture *tex, FVector2 *points, 
 				int x2 = spanend[y];
 				if (x2 > x1 && x2 > 0 && x1 < width)
 				{
-					x1 = MAX(x1, 0);
-					x2 = MIN(x2, width);
+					x1 = DOOM_MAX(x1, 0);
+					x2 = DOOM_MIN(x2, width);
 #if 0
 					memset(this->Buffer + y * this->Pitch + x1, (int)tex, x2 - x1);
 #else
@@ -677,10 +677,10 @@ void SWCanvas::Clear(DCanvas *canvas, int left, int top, int right, int bottom, 
 	{
 		return;
 	}
-	left = MAX(0, left);
-	right = MIN(Width, right);
-	top = MAX(0, top);
-	bottom = MIN(Height, bottom);
+	left = DOOM_MAX(0, left);
+	right = DOOM_MIN(Width, right);
+	top = DOOM_MAX(0, top);
+	bottom = DOOM_MIN(Height, bottom);
 
 	if (palcolor < 0)
 	{

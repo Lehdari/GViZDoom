@@ -146,36 +146,28 @@ IndexType BinarySearchFlexible (IndexType max, const KeyType key, IndexType noIn
 
 //==========================================================================
 //
-// MIN
+// DOOM_MIN
 //
 // Returns the minimum of a and b.
 //==========================================================================
 
-#ifdef MIN
-#undef MIN
-#endif
-
 template<class T>
 inline
-const T MIN (const T a, const T b)
+constexpr T DOOM_MIN (const T a, const T b)
 {
 	return a < b ? a : b;
 }
 
 //==========================================================================
 //
-// MAX
+// DOOM_MAX
 //
 // Returns the maximum of a and b.
 //==========================================================================
 
-#ifdef MAX
-#undef MAX
-#endif
-
 template<class T>
 inline
-const T MAX (const T a, const T b)
+constexpr T DOOM_MAX (const T a, const T b)
 {
 	return a > b ? a : b;
 }

@@ -102,7 +102,7 @@ void MD5Context::Update(FileReader &file, unsigned len)
 
 	while (len > 0)
 	{
-		t = MIN<long>(len, sizeof(readbuf));
+		t = DOOM_MIN<long>(len, sizeof(readbuf));
 		len -= t;
 		t = (long)file.Read(readbuf, t);
 		Update(readbuf, t);

@@ -1017,7 +1017,7 @@ namespace swrenderer
 			for (int x = x1; x < x2; ++x)
 			{
 				short top = (clip3d->fakeFloor && m3DFloor.type == Fake3DOpaque::FakeCeiling) ? clip3d->fakeFloor->ceilingclip[x] : ceilingclip[x];
-				short bottom = MIN(walltop.ScreenY[x], floorclip[x]);
+				short bottom = DOOM_MIN(walltop.ScreenY[x], floorclip[x]);
 				if (top < bottom)
 				{
 					mCeilingPlane->top[x] = top;
@@ -1039,7 +1039,7 @@ namespace swrenderer
 
 			for (int x = x1; x < x2; ++x)
 			{
-				short top = MAX(wallbottom.ScreenY[x], ceilingclip[x]);
+				short top = DOOM_MAX(wallbottom.ScreenY[x], ceilingclip[x]);
 				short bottom = (clip3d->fakeFloor && m3DFloor.type == Fake3DOpaque::FakeFloor) ? clip3d->fakeFloor->floorclip[x] : floorclip[x];
 				if (top < bottom)
 				{
@@ -1069,7 +1069,7 @@ namespace swrenderer
 			{
 				for (int x = x1; x < x2; ++x)
 				{
-					walllower.ScreenY[x] = MIN(MAX(walllower.ScreenY[x], ceilingclip[x]), wallbottom.ScreenY[x]);
+					walllower.ScreenY[x] = DOOM_MIN(DOOM_MAX(walllower.ScreenY[x], ceilingclip[x]), wallbottom.ScreenY[x]);
 				}
 				memcpy(clip3d->fakeFloor->floorclip + x1, walllower.ScreenY + x1, (x2 - x1) * sizeof(short));
 			}
@@ -1081,7 +1081,7 @@ namespace swrenderer
 			{
 				for (int x = x1; x < x2; ++x)
 				{
-					wallupper.ScreenY[x] = MAX(MIN(wallupper.ScreenY[x], floorclip[x]), walltop.ScreenY[x]);
+					wallupper.ScreenY[x] = DOOM_MAX(DOOM_MIN(wallupper.ScreenY[x], floorclip[x]), walltop.ScreenY[x]);
 				}
 				memcpy(clip3d->fakeFloor->ceilingclip + x1, wallupper.ScreenY + x1, (x2 - x1) * sizeof(short));
 			}
@@ -1104,7 +1104,7 @@ namespace swrenderer
 			{ // top wall
 				for (int x = x1; x < x2; ++x)
 				{
-					wallupper.ScreenY[x] = MAX(MIN(wallupper.ScreenY[x], floorclip[x]), walltop.ScreenY[x]);
+					wallupper.ScreenY[x] = DOOM_MAX(DOOM_MIN(wallupper.ScreenY[x], floorclip[x]), walltop.ScreenY[x]);
 				}
 				memcpy(ceilingclip + x1, wallupper.ScreenY + x1, (x2 - x1) * sizeof(short));
 			}
@@ -1117,7 +1117,7 @@ namespace swrenderer
 			{ // bottom wall
 				for (int x = x1; x < x2; ++x)
 				{
-					walllower.ScreenY[x] = MIN(MAX(walllower.ScreenY[x], ceilingclip[x]), wallbottom.ScreenY[x]);
+					walllower.ScreenY[x] = DOOM_MIN(DOOM_MAX(walllower.ScreenY[x], ceilingclip[x]), wallbottom.ScreenY[x]);
 				}
 				memcpy(floorclip + x1, walllower.ScreenY + x1, (x2 - x1) * sizeof(short));
 			}
@@ -1173,7 +1173,9 @@ namespace swrenderer
 			light_list = nullptr; // [SP] Don't draw dynlights if invul/lightamp active
 
 		RenderWallPart renderWallpart(Thread);
-		renderWallpart.Render(drawerargs, mFrontSector, mLineSegment, WallC, rw_pic, x1, x2, walltop.ScreenY, wallupper.ScreenY, mTopPart.TextureMid, walltexcoords.VStep, walltexcoords.UPos, yscale, MAX(mFrontCeilingZ1, mFrontCeilingZ2), MIN(mBackCeilingZ1, mBackCeilingZ2), false, wallshade, offset, rw_light, rw_lightstep, light_list, foggy, basecolormap);
+		renderWallpart.Render(drawerargs, mFrontSector, mLineSegment, WallC, rw_pic, x1, x2, walltop.ScreenY, wallupper.ScreenY, mTopPart.TextureMid, walltexcoords.VStep, walltexcoords.UPos, yscale,
+			DOOM_MAX(mFrontCeilingZ1, mFrontCeilingZ2),
+            DOOM_MIN(mBackCeilingZ1, mBackCeilingZ2), false, wallshade, offset, rw_light, rw_lightstep, light_list, foggy, basecolormap);
 	}
 
 	void SWRenderLine::RenderMiddleTexture(int x1, int x2)
@@ -1220,7 +1222,9 @@ namespace swrenderer
 			light_list = nullptr; // [SP] Don't draw dynlights if invul/lightamp active
 
 		RenderWallPart renderWallpart(Thread);
-		renderWallpart.Render(drawerargs, mFrontSector, mLineSegment, WallC, rw_pic, x1, x2, walltop.ScreenY, wallbottom.ScreenY, mMiddlePart.TextureMid, walltexcoords.VStep, walltexcoords.UPos, yscale, MAX(mFrontCeilingZ1, mFrontCeilingZ2), MIN(mFrontFloorZ1, mFrontFloorZ2), false, wallshade, offset, rw_light, rw_lightstep, light_list, foggy, basecolormap);
+		renderWallpart.Render(drawerargs, mFrontSector, mLineSegment, WallC, rw_pic, x1, x2, walltop.ScreenY, wallbottom.ScreenY, mMiddlePart.TextureMid, walltexcoords.VStep, walltexcoords.UPos, yscale,
+			DOOM_MAX(mFrontCeilingZ1, mFrontCeilingZ2),
+            DOOM_MIN(mFrontFloorZ1, mFrontFloorZ2), false, wallshade, offset, rw_light, rw_lightstep, light_list, foggy, basecolormap);
 	}
 
 	void SWRenderLine::RenderBottomTexture(int x1, int x2)
@@ -1268,7 +1272,9 @@ namespace swrenderer
 			light_list = nullptr; // [SP] Don't draw dynlights if invul/lightamp active
 
 		RenderWallPart renderWallpart(Thread);
-		renderWallpart.Render(drawerargs, mFrontSector, mLineSegment, WallC, rw_pic, x1, x2, walllower.ScreenY, wallbottom.ScreenY, mBottomPart.TextureMid, walltexcoords.VStep, walltexcoords.UPos, yscale, MAX(mBackFloorZ1, mBackFloorZ2), MIN(mFrontFloorZ1, mFrontFloorZ2), false, wallshade, offset, rw_light, rw_lightstep, light_list, foggy, basecolormap);
+		renderWallpart.Render(drawerargs, mFrontSector, mLineSegment, WallC, rw_pic, x1, x2, walllower.ScreenY, wallbottom.ScreenY, mBottomPart.TextureMid, walltexcoords.VStep, walltexcoords.UPos, yscale,
+			DOOM_MAX(mBackFloorZ1, mBackFloorZ2),
+            DOOM_MIN(mFrontFloorZ1, mFrontFloorZ2), false, wallshade, offset, rw_light, rw_lightstep, light_list, foggy, basecolormap);
 	}
 
 	////////////////////////////////////////////////////////////////////////////

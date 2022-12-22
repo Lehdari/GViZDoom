@@ -468,7 +468,7 @@ class DecompressorLZSS : public DecompressorBase
 				// Partial overlap: Copy in 2 or 3 chunks.
 				do
 				{
-					unsigned int copy = MIN<unsigned int>(len, pos+1);
+					unsigned int copy = DOOM_MIN<unsigned int>(len, pos + 1);
 					memcpy(Stream.InternalBuffer, copyStart, copy);
 					Stream.InternalBuffer += copy;
 					Stream.InternalOut += copy;
@@ -532,7 +532,7 @@ public:
 					break;
 			}
 
-			unsigned int copy = MIN<unsigned int>(Stream.InternalOut, AvailOut);
+			unsigned int copy = DOOM_MIN<unsigned int>(Stream.InternalOut, AvailOut);
 			if(copy > 0)
 			{
 				memcpy(Out, Stream.WindowData, copy);

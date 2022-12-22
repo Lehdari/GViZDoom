@@ -152,8 +152,8 @@ void R_InitSkyMap ()
 	// giving a total sky width of 1024 pixels. So if the sky texture is no wider than 1024,
 	// we map it to a cylinder with circumfrence 1024. For larger ones, we use the width of
 	// the texture as the cylinder's circumfrence.
-	sky1cyl = MAX(skytex1->GetWidth(), fixed_t(skytex1->Scale.X * 1024));
-	sky2cyl = MAX(skytex2->GetWidth(), fixed_t(skytex2->Scale.Y * 1024));
+	sky1cyl = DOOM_MAX(skytex1->GetWidth(), fixed_t(skytex1->Scale.X * 1024));
+	sky2cyl = DOOM_MAX(skytex2->GetWidth(), fixed_t(skytex2->Scale.Y * 1024));
 }
 
 

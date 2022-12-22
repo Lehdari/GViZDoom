@@ -400,7 +400,7 @@ void ADynamicLight::UpdateLocation()
 
 		if (lighttype == FlickerLight || lighttype == RandomFlickerLight || lighttype == PulseLight)
 		{
-			intensity = float(MAX(args[LIGHT_INTENSITY], args[LIGHT_SECONDARY_INTENSITY]));
+			intensity = float(DOOM_MAX(args[LIGHT_INTENSITY], args[LIGHT_SECONDARY_INTENSITY]));
 		}
 		else
 		{
