@@ -225,8 +225,8 @@ struct FUiEvent
 	FString KeyString;
 	int KeyChar;
 	// for mouse
-	int MouseX;
-	int MouseY;
+	int MouseX{0};
+	int MouseY{0};
 	// global (?)
 	bool IsShift;
 	bool IsCtrl;
@@ -244,8 +244,8 @@ struct FInputEvent
 	FString KeyString;
 	int KeyChar;
 	// for mouse
-	int MouseX;
-	int MouseY;
+	int MouseX{0};
+	int MouseY{0};
 
 	FInputEvent(const event_t *ev);
 };

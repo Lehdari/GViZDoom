@@ -12,6 +12,7 @@
 #include "gvizdoom/GameState.hpp"
 #include "gvizdoom/gzdoom_main_wrapper.hpp"
 #include "v_video.h"
+#include "DoomGame.hpp"
 
 
 //CVars for HUD config
@@ -142,6 +143,11 @@ float* DoomGame::getPixelsDepth() const
     return nullptr;
 }
 
+bool gvizdoom::DoomGame::isInteractive() const
+{
+    return _gameConfig.interactive;
+}
+
 DoomGame::DoomGame() :
     _status (-1)
 {
@@ -156,7 +162,8 @@ void DoomGame::init()
 
     // Doom main init
     gzdoom_main_init(_gameConfig.argc, _gameConfig.argv);
-    _status = _doomMain.Init(_gameConfig.interactive);
+    _status = _doomMain.Init(_gameConfig.singletics, _gameConfig.interactive);
+    
     if (_status != 0) {
         return;
     }

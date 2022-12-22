@@ -225,8 +225,8 @@ CVAR (Float,	m_side,			2.f,	CVAR_GLOBALCONFIG|CVAR_ARCHIVE)
 int 			turnheld;								// for accelerative turning 
  
 // mouse values are used once 
-int 			mousex;
-int 			mousey; 		
+int 			mousex{0};
+int 			mousey{0}; 		
 
 FString			savegamefile;
 FString			savedescription;
@@ -566,23 +566,23 @@ static inline int joyint(double val)
 //
 void G_BuildTiccmd (ticcmd_t *cmd)
 {
-	int 		strafe;
-	int 		speed;
-	int 		forward;
-	int 		side;
-	int			fly;
-
-	ticcmd_t	*base;
-
-	base = I_BaseTiccmd (); 			// empty, or external driver
+	ticcmd_t* base = I_BaseTiccmd (); 			// empty, or external driver
 	*cmd = *base;
 
+    // TODO: needed in non-net play?
 	cmd->consistancy = consistancy[consoleplayer][(maketic/ticdup)%BACKUPTICS];
 
-	strafe = Button_Strafe.bDown;
-	speed = Button_Speed.bDown ^ (int)cl_run;
+	int strafe = Button_Strafe.bDown;
 
-	forward = side = fly = 0;
+    // TODO: can this be always true?
+	int speed = Button_Speed.bDown ^ (int)cl_run;
+
+    // movement in cardinal directions (front, back, left, right)
+	int forward = 0;
+    int side = 0;
+
+    // TODO: disable this?
+    int fly = 0;
 
 	// [RH] only use two stage accelerative turning on the keyboard
 	//		and not the joystick, since we treat the joystick as
@@ -679,43 +679,15 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	if (Button_MoveUp.bDown)		cmd->ucmd.buttons |= BT_MOVEUP;
 	if (Button_ShowScores.bDown)	cmd->ucmd.buttons |= BT_SHOWSCORES;
 
-	// Handle joysticks/game controllers.
-	float joyaxes[NUM_JOYAXIS];
-
-	I_GetAxes(joyaxes);
-
-	// Remap some axes depending on button state.
-	if (Button_Strafe.bDown || (Button_Mlook.bDown && lookstrafe))
-	{
-		joyaxes[JOYAXIS_Side] = joyaxes[JOYAXIS_Yaw];
-		joyaxes[JOYAXIS_Yaw] = 0;
-	}
-	if (Button_Mlook.bDown)
-	{
-		joyaxes[JOYAXIS_Pitch] = joyaxes[JOYAXIS_Forward];
-		joyaxes[JOYAXIS_Forward] = 0;
-	}
-
-	if (joyaxes[JOYAXIS_Pitch] != 0)
-	{
-		G_AddViewPitch(joyint(joyaxes[JOYAXIS_Pitch] * 2048));
-	}
-	if (joyaxes[JOYAXIS_Yaw] != 0)
-	{
-		G_AddViewAngle(joyint(-1280 * joyaxes[JOYAXIS_Yaw]));
-	}
-
-	side -= joyint(sidemove[speed] * joyaxes[JOYAXIS_Side]);
-	forward += joyint(joyaxes[JOYAXIS_Forward] * forwardmove[speed]);
-	fly += joyint(joyaxes[JOYAXIS_Up] * 2048);
-
-	// Handle mice.
-	if (!Button_Mlook.bDown && !freelook)
-	{
-		forward += (int)((float)mousey * m_forward);
-	}
+#if 0
+    // Handle mice.
+    if (!Button_Mlook.bDown && !freelook)
+    {
+        forward += (int)((float)mousey * m_forward);
+    }
 
 	cmd->ucmd.pitch = LocalViewPitch >> 16;
+#endif
 
 	if (SendLand)
 	{
@@ -723,16 +695,20 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 		fly = -32768;
 	}
 
-	if (strafe || lookstrafe)
-		side += (int)((float)mousex * m_side);
+#if 0
+    if (strafe || lookstrafe)
+        side += (int)((float)mousex * m_side);
+#endif
 
-	mousex = mousey = 0;
+    side = 0;
+    mousex = mousey = 0;
 
 	// Build command.
 	if (forward > MAXPLMOVE)
 		forward = MAXPLMOVE;
 	else if (forward < -MAXPLMOVE)
 		forward = -MAXPLMOVE;
+    
 	if (side > MAXPLMOVE)
 		side = MAXPLMOVE;
 	else if (side < -MAXPLMOVE)
@@ -742,6 +718,8 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	cmd->ucmd.sidemove += side;
 	cmd->ucmd.yaw = LocalViewAngle >> 16;
 	cmd->ucmd.upmove = fly;
+
+    // Reset these after writing to command
 	LocalViewAngle = 0;
 	LocalViewPitch = 0;
 
@@ -751,11 +729,13 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 		sendturn180 = false;
 		cmd->ucmd.buttons |= BT_TURN180;
 	}
+
 	if (sendpause)
 	{
 		sendpause = false;
 		Net_WriteByte (DEM_PAUSE);
 	}
+
 	if (sendsave)
 	{
 		sendsave = false;
@@ -764,6 +744,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 		Net_WriteString (savedescription);
 		savegamefile = "";
 	}
+
 	if (SendItemUse == (const AInventory *)1)
 	{
 		Net_WriteByte (DEM_INVUSEALL);
@@ -775,6 +756,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 		Net_WriteLong (SendItemUse->InventoryID);
 		SendItemUse = NULL;
 	}
+
 	if (SendItemDrop != NULL)
 	{
 		Net_WriteByte (DEM_INVDROP);
@@ -790,17 +772,27 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 //[Graf Zahl] This really helps if the mouse update rate can't be increased!
 CVAR (Bool,		smooth_mouse,	false,	CVAR_GLOBALCONFIG|CVAR_ARCHIVE)
 
-void G_AddViewPitch (int look, bool mouse)
+void G_AddViewPitch (int look, bool mouse, bool interactive)
 {
+    // Never use this feature when playing with AI
+    if (not mouse and not interactive)
+    {
+        LocalViewPitch = 0;
+        return;
+    }
+
 	if (gamestate == GS_TITLELEVEL)
 	{
 		return;
 	}
+
+    // cursed: changing input vanlues
 	look <<= 16;
 	if (players[consoleplayer].playerstate != PST_DEAD &&		// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&			// No adjustment if no weapon.
 		players[consoleplayer].ReadyWeapon->FOVScale > 0)		// No adjustment if it is non-positive.
 	{
+        // cursed: changing input values
 		look = int(look * players[consoleplayer].ReadyWeapon->FOVScale);
 	}
 	if (!level.IsFreelookAllowed())
@@ -837,17 +829,29 @@ void G_AddViewPitch (int look, bool mouse)
 	}
 }
 
-void G_AddViewAngle (int yaw, bool mouse)
+void G_AddViewAngle (int yaw, bool mouse, bool interactive)
 {
+    // If we are playing with AI, don't allow using mouse to change
+    // view angle
+    if (mouse and not interactive)
+    {
+        LocalViewAngle = 0;
+        LocalKeyboardTurner = false;
+        return;
+    }
+
 	if (gamestate == GS_TITLELEVEL)
 	{
 		return;
 	}
+
+    // cursed: changing input arg values
 	yaw <<= 16;
 	if (players[consoleplayer].playerstate != PST_DEAD &&	// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&		// No adjustment if no weapon.
 		players[consoleplayer].ReadyWeapon->FOVScale > 0)	// No adjustment if it is non-positive.
 	{
+        // cursed: changing input arg values
 		yaw = int(yaw * players[consoleplayer].ReadyWeapon->FOVScale);
 	}
 	LocalViewAngle -= yaw;
@@ -1015,9 +1019,9 @@ bool G_Responder (event_t *ev)
 		break;
 
 	// [RH] mouse buttons are sent as key up/down events
-	case EV_Mouse: 
-		mousex = (int)(ev->x * mouse_sensitivity);
-		mousey = (int)(ev->y * mouse_sensitivity);
+	case EV_Mouse:
+        mousex = (int)(ev->x * mouse_sensitivity);
+        mousey = (int)(ev->y * mouse_sensitivity);
 		break;
 	}
 
@@ -1154,7 +1158,7 @@ void G_Ticker ()
 
 	// get commands, check consistancy, and build new consistancy check
     // 0,1,2,...,35
-	int buf = (gametic/ticdup) % BACKUPTICS;
+	const int buf = (gametic/ticdup) % BACKUPTICS;
 
 	// [RH] Include some random seeds and player stuff in the consistancy
 	// check, not just the player's x position like BOOM.

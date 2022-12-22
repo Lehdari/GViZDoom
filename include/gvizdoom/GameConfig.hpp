@@ -22,6 +22,7 @@ struct GameConfig {
     int     argc            {0}; // TODO remove raw CLI parameters, use high-level abstraction
     char**  argv            {nullptr};
     bool    interactive     {false};
+    bool    singletics      {true};
 
     // Video parameters
     int     videoWidth      {640};

@@ -64,7 +64,6 @@ void App::loop(void)
     }
 
     std::vector<Action> actions;
-#if 1
     {
         for (size_t i = 0; i < 50; ++i)
             actions.emplace_back(Action::Key::ACTION_ATTACK, 0);
@@ -73,9 +72,8 @@ void App::loop(void)
             actions.emplace_back(static_cast<int>(Action::Key::ACTION_FORWARD | Action::Key::ACTION_ATTACK), 100);
 
         for (size_t i = 0; i < 50; ++i)
-            actions.emplace_back(Action::Key::ACTION_FORWARD, 0);
+            actions.emplace_back(Action::Key::ACTION_FORWARD, 10);
     }
-#endif
     size_t actionIndex = 0LLU;
 
     // Application main loop
@@ -89,18 +87,25 @@ void App::loop(void)
         }
 #endif
 
-#if 0
-        if (actions.size() == 0 or actionIndex >= actions.size()) {
+        if (not doomGame.isInteractive() and
+            (actions.size() == 0 or actionIndex >= actions.size())) {
             printf("App: performed all actions\n\n");
             break;
         }
-#endif
+        
+
         // Update game
-        // _quit = doomGame.update(actionIndex < actions.size() ? actions.at(actionIndex++) : Action());
-        _quit = _quit || doomGame.update(_actionMapper);
+        if (doomGame.isInteractive()) {
+            _quit = doomGame.update(_actionMapper);
+        }
+        else {
+            _quit = doomGame.update(
+                actionIndex < actions.size() ? actions.at(actionIndex++) : Action()
+            );
+        }
 
         if (_quit) {
-            printf("App: got quit\n");
+            printf("App: Reached level exit or player died. Exiting gracefully.\n");
             break;
         }
 
