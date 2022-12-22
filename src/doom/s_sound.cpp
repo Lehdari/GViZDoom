@@ -901,11 +901,11 @@ static void CalcSectorSoundOrg(const DVector3 &listenpos, const sector_t *sec, i
 	// Set sound vertical position based on channel.
 	if (channum == CHAN_FLOOR)
 	{
-		pos.Y = (float)MIN<double>(sec->floorplane.ZatPoint(listenpos), listenpos.Z);
+		pos.Y = (float) DOOM_MIN<double>(sec->floorplane.ZatPoint(listenpos), listenpos.Z);
 	}
 	else if (channum == CHAN_CEILING)
 	{
-		pos.Y = (float)MAX<double>(sec->ceilingplane.ZatPoint(listenpos), listenpos.Z);
+		pos.Y = (float) DOOM_MAX<double>(sec->ceilingplane.ZatPoint(listenpos), listenpos.Z);
 	}
 	else if (channum == CHAN_INTERIOR)
 	{
@@ -1013,7 +1013,7 @@ static FSoundChan *S_StartSound(AActor *actor, const sector_t *sec, const FPolyO
 	sfx = &S_sfx[sound_id];
 
 	// Scale volume according to SNDINFO data.
-	volume = MIN(volume * sfx->Volume, 1.f);
+	volume = DOOM_MIN(volume * sfx->Volume, 1.f);
 	if (volume <= 0)
 		return NULL;
 

@@ -106,7 +106,7 @@ namespace swrenderer
 				for (int k = 0; k < 256; ++k)
 				{
 					uint8_t v = (((k + 2) * a) + 256) >> 14;
-					table[k] = MIN<uint8_t>(v, 64);
+					table[k] = DOOM_MIN<uint8_t>(v, 64);
 				}
 				table += 256;
 			}
@@ -209,8 +209,8 @@ namespace swrenderer
 	{
 		if (!r_fuzzscale)
 		{
-			int yl = MAX(args.FuzzY1(), 1);
-			int yh = MIN(args.FuzzY2(), fuzzviewheight);
+			int yl = DOOM_MAX(args.FuzzY1(), 1);
+			int yh = DOOM_MIN(args.FuzzY2(), fuzzviewheight);
 			if (yl <= yh)
 				fuzzpos = (fuzzpos + yh - yl + 1) % FUZZTABLE;
 		}

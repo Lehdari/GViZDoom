@@ -2114,7 +2114,7 @@ CCMD(skyfog)
 {
 	if (argv.argc()>1)
 	{
-		level.skyfog = MAX(0, (int)strtoull(argv[1], NULL, 0));
+		level.skyfog = DOOM_MAX(0, (int) strtoull(argv[1], NULL, 0));
 	}
 }
 

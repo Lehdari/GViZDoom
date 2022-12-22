@@ -155,7 +155,7 @@ namespace swrenderer
 		bool nolightfade = !foggy && ((level.flags3 & LEVEL3_NOLIGHTFADE));
 		if (nolightfade)
 		{
-			return (MAX(255 - lightlevel, 0) * NUMCOLORMAPS) << (FRACBITS - 8);
+			return (DOOM_MAX(255 - lightlevel, 0) * NUMCOLORMAPS) << (FRACBITS - 8);
 		}
 		else
 		{

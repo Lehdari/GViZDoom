@@ -1244,7 +1244,7 @@ void P_LoadSegs (MapData * map)
 
 			if (vnum1 >= numvertexes || vnum2 >= numvertexes)
 			{
-				throw badseg(0, i, MAX(vnum1, vnum2));
+				throw badseg(0, i, DOOM_MAX(vnum1, vnum2));
 			}
 
 			li->v1 = &level.vertexes[vnum1];
@@ -2330,7 +2330,7 @@ static void P_AllocateSideDefs (MapData *map, int count)
 	level.sides.Alloc(count);
 	memset(&level.sides[0], 0, count * sizeof(side_t));
 
-	sidetemp = new sidei_t[MAX<int>(count, level.vertexes.Size())];
+	sidetemp = new sidei_t[DOOM_MAX<int>(count, level.vertexes.Size())];
 	for (i = 0; i < count; i++)
 	{
 		sidetemp[i].a.special = sidetemp[i].a.tag = 0;
@@ -2362,7 +2362,7 @@ static void P_LoopSidedefs (bool firstloop)
 		delete[] sidetemp;
 	}
 	int numsides = level.sides.Size();
-	sidetemp = new sidei_t[MAX<int>(level.vertexes.Size(), numsides)];
+	sidetemp = new sidei_t[DOOM_MAX<int>(level.vertexes.Size(), numsides)];
 
 	for (i = 0; i < (int)level.vertexes.Size(); ++i)
 	{
@@ -3326,7 +3326,7 @@ void P_LoadReject (MapData * map, bool junk)
 	else
 	{
 		// Check if the reject has some actual content. If not, free it.
-		rejectsize = MIN (rejectsize, neededsize);
+		rejectsize = DOOM_MIN(rejectsize, neededsize);
 		level.rejectmatrix.Alloc(rejectsize);
 
 		map->Read (ML_REJECT, &level.rejectmatrix[0], rejectsize);

@@ -512,9 +512,9 @@ bool FRemapTable::AddDesaturation(int start, int end, double r1, double g1, doub
 							GPalette.BaseColors[c].g * 143 +
 							GPalette.BaseColors[c].b * 37) / 256.0;
 
-		PalEntry pe = PalEntry(	MIN(255, int(r1 + intensity*r2)), 
-								MIN(255, int(g1 + intensity*g2)), 
-								MIN(255, int(b1 + intensity*b2)));
+		PalEntry pe = PalEntry(DOOM_MIN(255, int(r1 + intensity * r2)),
+            DOOM_MIN(255, int(g1 + intensity * g2)),
+            DOOM_MIN(255, int(b1 + intensity * b2)));
 
 		int cc = GPalette.Remap[c];
 
@@ -814,7 +814,7 @@ int CreateBloodTranslation(PalEntry color)
 	trans->Remap[0] = 0;
 	for (i = 1; i < 256; i++)
 	{
-		int bright = MAX(MAX(GPalette.BaseColors[i].r, GPalette.BaseColors[i].g), GPalette.BaseColors[i].b);
+		int bright = DOOM_MAX(DOOM_MAX(GPalette.BaseColors[i].r, GPalette.BaseColors[i].g), GPalette.BaseColors[i].b);
 		PalEntry pe = PalEntry(255, color.r*bright/255, color.g*bright/255, color.b*bright/255);
 		int entry = ColorMatcher.Pick(pe.r, pe.g, pe.b);
 
@@ -1251,12 +1251,12 @@ static void R_CreatePlayerTranslation (float h, float s, float v, const FPlayerC
 		// Build rain/lifegem translation
 		if (alttable)
 		{
-			bases = MIN (bases*1.3f, 1.f);
-			basev = MIN (basev*1.3f, 1.f);
+			bases = DOOM_MIN(bases * 1.3f, 1.f);
+			basev = DOOM_MIN(basev * 1.3f, 1.f);
 			for (i = 145; i <= 168; i++)
 			{
-				s = MIN (bases, 0.8965f - 0.0962f*(float)(i - 161));
-				v = MIN (1.f, (0.2102f + 0.0489f*(float)(i - 144)) * basev);
+				s = DOOM_MIN(bases, 0.8965f - 0.0962f * (float) (i - 161));
+				v = DOOM_MIN(1.f, (0.2102f + 0.0489f * (float) (i - 144)) * basev);
 				HSVtoRGB (&r, &g, &b, h, s, v);
 				SetRemap(alttable, i, r, g, b);
 				SetPillarRemap(pillartable, i, h, s, v);
@@ -1273,7 +1273,7 @@ static void R_CreatePlayerTranslation (float h, float s, float v, const FPlayerC
 
 			// Build player sprite translation
 			//h = 45.f;
-			v = MAX (0.1f, v);
+			v = DOOM_MAX(0.1f, v);
 
 			for (i = start; i <= end; i++)
 			{
@@ -1287,7 +1287,7 @@ static void R_CreatePlayerTranslation (float h, float s, float v, const FPlayerC
 			float mv[18] = { .16f, .19f, .22f, .25f, .31f, .35f, .38f, .41f, .47f, .54f, .60f, .65f, .71f, .77f, .83f, .89f, .94f, 1.f };
 
 			// Build player sprite translation
-			v = MAX (0.1f, v);
+			v = DOOM_MAX(0.1f, v);
 
 			for (i = start; i <= end; i++)
 			{

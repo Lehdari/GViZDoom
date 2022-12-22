@@ -1389,7 +1389,7 @@ void APlayerPawn::FilterCoopRespawnInventory (APlayerPawn *oldplayer)
 					}
 					else if (item->Amount > 1)
 					{
-						item->Amount = MAX(item->Amount / 2, defitem->Amount);
+						item->Amount = DOOM_MAX(item->Amount / 2, defitem->Amount);
 					}
 				}
 			}

@@ -137,7 +137,7 @@ bool SkylineBinPack::RectangleFits(int skylineNodeIndex, int width, int height, 
 	y = skyLine[skylineNodeIndex].y;
 	while(widthLeft > 0)
 	{
-		y = MAX(y, skyLine[i].y);
+		y = DOOM_MAX(y, skyLine[i].y);
 		if (y + height > binHeight)
 			return false;
 		widthLeft -= skyLine[i].width;
@@ -158,7 +158,7 @@ int SkylineBinPack::ComputeWastedArea(int skylineNodeIndex, int width, int heigh
 			break;
 
 		int leftSide = skyLine[skylineNodeIndex].x;
-		int rightSide = MIN(rectRight, leftSide + skyLine[skylineNodeIndex].width);
+		int rightSide = DOOM_MIN(rectRight, leftSide + skyLine[skylineNodeIndex].width);
 		assert(y >= skyLine[skylineNodeIndex].y);
 		wastedArea += (rightSide - leftSide) * (y - skyLine[skylineNodeIndex].y);
 	}
@@ -185,7 +185,7 @@ void SkylineBinPack::AddWasteMapArea(int skylineNodeIndex, int width, int height
 			break;
 
 		int leftSide = skyLine[skylineNodeIndex].x;
-		int rightSide = MIN(rectRight, leftSide + skyLine[skylineNodeIndex].width);
+		int rightSide = DOOM_MIN(rectRight, leftSide + skyLine[skylineNodeIndex].width);
 		assert(y >= skyLine[skylineNodeIndex].y);
 
 		Rect waste;

@@ -1146,7 +1146,7 @@ static void P_SetupSectorDamage(sector_t *sector, int damage, int interval, int 
 	if (sector->damageamount == 0)
 	{
 		sector->damageamount = damage;
-		sector->damageinterval = MAX(1, interval);
+		sector->damageinterval = DOOM_MAX(1, interval);
 		sector->leakydamage = leakchance;
 		sector->damagetype = type;
 		sector->Flags = (sector->Flags & ~SECF_DAMAGEFLAGS) | (flags & SECF_DAMAGEFLAGS);

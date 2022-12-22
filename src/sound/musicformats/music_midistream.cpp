@@ -802,7 +802,7 @@ int MIDIStreamer::FillBuffer(int buffer_num, int max_events, uint32_t max_time)
 	{
 		// Be more responsive when unpausing by only playing each buffer
 		// for a third of the maximum time.
-		events[0] = MAX<uint32_t>(1, (max_time / 3) * source->getDivision() / source->getTempo());
+		events[0] = DOOM_MAX<uint32_t>(1, (max_time / 3) * source->getDivision() / source->getTempo());
 		events[1] = 0;
 		events[2] = MEVENT_NOP << 24;
 		events += 3;

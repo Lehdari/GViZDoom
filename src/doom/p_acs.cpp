@@ -2623,7 +2623,8 @@ bool FBehavior::Init(int lumpnum, FileReader * fr, int len)
 				// Use unsigned iterator here to avoid issue with GCC 4.9/5.x
 				// optimizer. Might be some undefined behavior in this code,
 				// but I don't know what it is.
-				unsigned int initsize = MIN<unsigned int> (ArrayStore[arraynum].ArraySize, (LittleLong(chunk[1])-4)/4);
+				unsigned int initsize = DOOM_MIN<unsigned int>(ArrayStore[arraynum].ArraySize,
+                    (LittleLong(chunk[1]) - 4) / 4);
 				int32_t *elems = ArrayStore[arraynum].Elements;
 				for (unsigned int j = 0; j < initsize; ++j)
 				{
@@ -2701,7 +2702,7 @@ bool FBehavior::Init(int lumpnum, FileReader * fr, int len)
 					{
 						int32_t *elems = ArrayStore[arraynum].Elements;
 						// Ending zeros may be left out.
-						for (int j = MIN(LittleLong(chunk[1])-5, ArrayStore[arraynum].ArraySize); j > 0; --j, ++elems, ++chunkData)
+						for (int j = DOOM_MIN(LittleLong(chunk[1]) - 5, ArrayStore[arraynum].ArraySize); j > 0; --j, ++elems, ++chunkData)
 						{
 							// For ATAG, a value of 0 = Integer, 1 = String, 2 = FunctionPtr
 							// Our implementation uses the same tags for both String and FunctionPtr
@@ -10558,7 +10559,7 @@ DLevelScript::DLevelScript (AActor *who, line_t *where, int num, const ScriptPtr
 	assert(code->VarCount >= code->ArgCount);
 	Localvars.Resize(code->VarCount);
 	memset(&Localvars[0], 0, code->VarCount * sizeof(int32_t));
-	for (int i = 0; i < MIN<int>(argcount, code->ArgCount); ++i)
+	for (int i = 0; i < DOOM_MIN<int>(argcount, code->ArgCount); ++i)
 	{
 		Localvars[i] = args[i];
 	}

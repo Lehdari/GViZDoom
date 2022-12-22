@@ -789,7 +789,7 @@ DEFINE_ACTION_FUNCTION(FWeaponSlots, LocateWeapon)
 	if (numret >= 1) ret[0].SetInt(retv);
 	if (numret >= 2) ret[1].SetInt(slot);
 	if (numret >= 3) ret[2].SetInt(index);
-	return MIN(numret, 3);
+	return DOOM_MIN(numret, 3);
 }
 
 //===========================================================================

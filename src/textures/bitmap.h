@@ -393,7 +393,7 @@ struct bCopyAlpha
 struct bOverlay
 {	
 	static __forceinline void OpC(uint8_t &d, uint8_t s, uint8_t a, FCopyInfo *i) { d = (s*a + d*(255-a))/255; }
-	static __forceinline void OpA(uint8_t &d, uint8_t s, FCopyInfo *i) { d = MAX(s,d); }
+	static __forceinline void OpA(uint8_t &d, uint8_t s, FCopyInfo *i) { d = DOOM_MAX(s, d); }
 	static __forceinline bool ProcessAlpha0() { return false; }
 };
 
@@ -406,21 +406,24 @@ struct bBlend
 
 struct bAdd
 {
-	static __forceinline void OpC(uint8_t &d, uint8_t s, uint8_t a, FCopyInfo *i) { d = MIN<int>((d*BLENDUNIT + s*i->alpha) >> BLENDBITS, 255); }
+	static __forceinline void OpC(uint8_t &d, uint8_t s, uint8_t a, FCopyInfo *i) { d = DOOM_MIN<int>(
+            (d * BLENDUNIT + s * i->alpha) >> BLENDBITS, 255); }
 	static __forceinline void OpA(uint8_t &d, uint8_t s, FCopyInfo *i) { d = s; }
 	static __forceinline bool ProcessAlpha0() { return false; }
 };
 
 struct bSubtract
 {
-	static __forceinline void OpC(uint8_t &d, uint8_t s, uint8_t a, FCopyInfo *i) { d = MAX<int>((d*BLENDUNIT - s*i->alpha) >> BLENDBITS, 0); }
+	static __forceinline void OpC(uint8_t &d, uint8_t s, uint8_t a, FCopyInfo *i) { d = DOOM_MAX<int>(
+            (d * BLENDUNIT - s * i->alpha) >> BLENDBITS, 0); }
 	static __forceinline void OpA(uint8_t &d, uint8_t s, FCopyInfo *i) { d = s; }
 	static __forceinline bool ProcessAlpha0() { return false; }
 };
 
 struct bReverseSubtract
 {
-	static __forceinline void OpC(uint8_t &d, uint8_t s, uint8_t a, FCopyInfo *i) { d = MAX<int>((-d*BLENDUNIT + s*i->alpha) >> BLENDBITS, 0); }
+	static __forceinline void OpC(uint8_t &d, uint8_t s, uint8_t a, FCopyInfo *i) { d = DOOM_MAX<int>(
+            (-d * BLENDUNIT + s * i->alpha) >> BLENDBITS, 0); }
 	static __forceinline void OpA(uint8_t &d, uint8_t s, FCopyInfo *i) { d = s; }
 	static __forceinline bool ProcessAlpha0() { return false; }
 };

@@ -129,7 +129,7 @@ MUSSong2::MUSSong2 (FileReader &reader)
 	}
 
 	MusBuffer = (uint8_t *)MusHeader + LittleShort(MusHeader->SongStart);
-	MaxMusP = MIN<int>(LittleShort(MusHeader->SongLen), len - LittleShort(MusHeader->SongStart));
+	MaxMusP = DOOM_MIN<int>(LittleShort(MusHeader->SongLen), len - LittleShort(MusHeader->SongStart));
 	Division = 140;
 	Tempo = InitialTempo = 1000000;
 }
@@ -325,7 +325,7 @@ uint32_t *MUSSong2::MakeEvents(uint32_t *events, uint32_t *max_event_p, uint32_t
 				if (mid1 == 7)
 				{ // Clamp volume to 127, since DMX apparently allows 8-bit volumes.
 				  // Fix courtesy of Gez, courtesy of Ben Ryves.
-					mid2 = VolumeControllerChange(channel, MIN<int>(mid2, 0x7F));
+					mid2 = VolumeControllerChange(channel, DOOM_MIN<int>(mid2, 0x7F));
 				}
 			}
 			break;

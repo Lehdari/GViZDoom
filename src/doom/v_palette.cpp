@@ -317,7 +317,7 @@ void ReadPalette(int lumpnum, uint8_t *buffer)
 	memset(buffer, 0, 768);
 	if (memcmp(lumpmem, "JASC-PAL", 8))
 	{
-		memcpy(buffer, lumpmem, MIN<size_t>(768, lump.GetSize()));
+		memcpy(buffer, lumpmem, DOOM_MIN<size_t>(768, lump.GetSize()));
 	}
 	else
 	{
@@ -327,7 +327,7 @@ void ReadPalette(int lumpnum, uint8_t *buffer)
 		sc.MustGetString();
 		sc.MustGetNumber();	// version - ignore
 		sc.MustGetNumber();	
-		int colors = MIN(256, sc.Number) * 3;
+		int colors = DOOM_MIN(256, sc.Number) * 3;
 		for (int i = 0; i < colors; i++)
 		{
 			sc.MustGetNumber();

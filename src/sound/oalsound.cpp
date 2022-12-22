@@ -780,7 +780,7 @@ OpenALSoundRenderer::OpenALSoundRenderer()
 	// Make sure one source is capable of stereo output with the rest doing
 	// mono, without running out of voices
 	attribs.Push(ALC_MONO_SOURCES);
-	attribs.Push(MAX<ALCint>(*snd_channels, 2) - 1);
+	attribs.Push(DOOM_MAX<ALCint>(*snd_channels, 2) - 1);
 	attribs.Push(ALC_STEREO_SOURCES);
 	attribs.Push(1);
 	if(ALC.SOFT_HRTF)
@@ -890,7 +890,7 @@ OpenALSoundRenderer::OpenALSoundRenderer()
 	// At least Apple's OpenAL implementation returns zeroes,
 	// although it can generate reasonable number of sources.
 
-	const int numChannels = MAX<int>(*snd_channels, 2);
+	const int numChannels = DOOM_MAX<int>(*snd_channels, 2);
 	int numSources = numMono + numStereo;
 
 	if (0 == numSources)
@@ -898,7 +898,7 @@ OpenALSoundRenderer::OpenALSoundRenderer()
 		numSources = numChannels;
 	}
 
-	Sources.Resize(MIN<int>(numChannels, numSources));
+	Sources.Resize(DOOM_MIN<int>(numChannels, numSources));
 	for(unsigned i = 0;i < Sources.Size();i++)
 	{
 		alGenSources(1, &Sources[i]);
@@ -1738,7 +1738,7 @@ FISoundChannel *OpenALSoundRenderer::StartSound3D(SoundHandle sfx, SoundListener
 			 * distance that corresponds to the area radius. */
 			alSourcef(source, AL_SOURCE_RADIUS, (chanflags&SNDF_AREA) ?
 				// Clamp in case the max distance is <= the area radius
-				1.f/MAX<float>(GetRolloff(rolloff, AREA_SOUND_RADIUS), 0.00001f) : 0.f
+				1.f/ DOOM_MAX<float>(GetRolloff(rolloff, AREA_SOUND_RADIUS), 0.00001f) : 0.f
 			);
 		}
 		else if((chanflags&SNDF_AREA) && dist_sqr < AREA_SOUND_RADIUS*AREA_SOUND_RADIUS)

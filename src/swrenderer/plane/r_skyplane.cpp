@@ -149,7 +149,7 @@ namespace swrenderer
 				skyflip = l->args[2] ? 0u : ~0u;
 
 				int frontxscale = int(frontskytex->Scale.X * 1024);
-				frontcyl = MAX(frontskytex->GetWidth(), frontxscale);
+				frontcyl = DOOM_MAX(frontskytex->GetWidth(), frontxscale);
 				if (skystretch)
 				{
 					skymid = skymid * frontskytex->GetScaledHeightDouble() / SKYSTRETCH_HEIGHT;

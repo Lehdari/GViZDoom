@@ -500,7 +500,7 @@ void AActor::LinkToWorld(FLinkContext *ctx, bool spawningmapthing, sector_t *sec
 		// at sector_t->touching_thinglist) are broken. When a node is
 		// added, new sector links are created.
 		touching_sectorlist = P_CreateSecNodeList(this, radius, ctx != nullptr? ctx->sector_list : nullptr, &sector_t::touching_thinglist);	// Attach to thing
-		if (renderradius >= 0) touching_rendersectors = P_CreateSecNodeList(this, MAX(radius, renderradius), ctx != nullptr ? ctx->render_list : nullptr, &sector_t::touching_renderthings);
+		if (renderradius >= 0) touching_rendersectors = P_CreateSecNodeList(this, DOOM_MAX(radius, renderradius), ctx != nullptr ? ctx->render_list : nullptr, &sector_t::touching_renderthings);
 		else
 		{
 			touching_rendersectors = nullptr;
@@ -532,10 +532,10 @@ void AActor::LinkToWorld(FLinkContext *ctx, bool spawningmapthing, sector_t *sec
 			}
 			else
 			{ // [RH] Link into every block this actor touches, not just the center one
-				x1 = MAX(0, x1);
-				y1 = MAX(0, y1);
-				x2 = MIN(level.blockmap.bmapwidth - 1, x2);
-				y2 = MIN(level.blockmap.bmapheight - 1, y2);
+				x1 = DOOM_MAX(0, x1);
+				y1 = DOOM_MAX(0, y1);
+				x2 = DOOM_MIN(level.blockmap.bmapwidth - 1, x2);
+				y2 = DOOM_MIN(level.blockmap.bmapheight - 1, y2);
 				for (int y = y1; y <= y2; ++y)
 				{
 					for (int x = x1; x <= x2; ++x)

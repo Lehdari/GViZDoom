@@ -393,7 +393,7 @@ void AActor::UpdateRenderSectorList()
 		{
 			int bx = level.blockmap.GetBlockX(X());
 			int by = level.blockmap.GetBlockY(Y());
-			FBoundingBox bb(X(), Y(), MIN(radius*1.5, 128.));	// Don't go further than 128 map units, even for large actors
+			FBoundingBox bb(X(), Y(), DOOM_MIN(radius * 1.5, 128.));	// Don't go further than 128 map units, even for large actors
 			// Are there any portals near the actor's position?
 			if (level.blockmap.isValidBlock(bx, by) && PortalBlockmap(bx, by).neighborContainsLines)
 			{

@@ -1235,7 +1235,7 @@ DEFINE_ACTION_FUNCTION(_TexMan, GetSize)
 	else x = y = -1;
 	if (numret > 0) ret[0].SetInt(x);
 	if (numret > 1) ret[1].SetInt(y);
-	return MIN(numret, 2);
+	return DOOM_MIN(numret, 2);
 }
 
 //==========================================================================

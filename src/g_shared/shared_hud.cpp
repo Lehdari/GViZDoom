@@ -557,8 +557,8 @@ static void GetAmmoTextLengths(player_t *CPlayer, int& ammocur, int& ammomax)
 			: ammoitem;
 		assert(nullptr != inv);
 
-		ammocur = MAX(ammocur, nullptr == ammoitem ? 0 : ammoitem->Amount);
-		ammomax = MAX(ammomax, inv->MaxAmount);
+		ammocur = DOOM_MAX(ammocur, nullptr == ammoitem ? 0 : ammoitem->Amount);
+		ammomax = DOOM_MAX(ammomax, inv->MaxAmount);
 	}
 
 	ammocur = GetDigitCount(ammocur);
@@ -735,7 +735,7 @@ DEFINE_ACTION_FUNCTION(DBaseStatusBar, GetInventoryIcon)
 	FTextureID icon = GetInventoryIcon(item, flags, &applyscale);
 	if (numret >= 1) ret[0].SetInt(icon.GetIndex());
 	if (numret >= 2) ret[1].SetInt(applyscale);
-	return MIN(numret, 2);
+	return DOOM_MIN(numret, 2);
 }
 
 static void DrawOneWeapon(player_t * CPlayer, int x, int & y, AWeapon * weapon)
@@ -1059,15 +1059,15 @@ static void DrawLatency()
 	localdelay = ((localdelay / BACKUPTICS) * ticdup) * (1000 / TICRATE);
 	arbitratordelay = ((arbitratordelay / BACKUPTICS) * ticdup) * (1000 / TICRATE);
 	int color = CR_GREEN;
-	if (MAX(localdelay, arbitratordelay) > 200)
+	if (DOOM_MAX(localdelay, arbitratordelay) > 200)
 	{
 		color = CR_YELLOW;
 	}
-	if (MAX(localdelay, arbitratordelay) > 400)
+	if (DOOM_MAX(localdelay, arbitratordelay) > 400)
 	{
 		color = CR_ORANGE;
 	}
-	if (MAX(localdelay, arbitratordelay) >= ((BACKUPTICS / 2 - 1) * ticdup) * (1000 / TICRATE))
+	if (DOOM_MAX(localdelay, arbitratordelay) >= ((BACKUPTICS / 2 - 1) * ticdup) * (1000 / TICRATE))
 	{
 		color = CR_RED;
 	}

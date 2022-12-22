@@ -236,8 +236,8 @@ namespace swrenderer
 		texturemid = WallSpriteTile->TopOffset + (zpos - thread->Viewport->viewpoint.Pos.Z) / yscale;
 
 		// Clip sprite to drawseg
-		x1 = MAX<int>(clipper->x1, x1);
-		x2 = MIN<int>(clipper->x2, x2);
+		x1 = DOOM_MAX<int>(clipper->x1, x1);
+		x2 = DOOM_MIN<int>(clipper->x2, x2);
 		if (x1 >= x2)
 		{
 			return;

@@ -253,7 +253,7 @@ struct FCommandBuffer
 		{ // The cursor is in front of the visible part of the line
 			n = CursorPos;
 		}
-		StartPos = MAX(0, n);
+		StartPos = DOOM_MAX(0, n);
 	}
 
 	unsigned WordBoundaryRight()
@@ -1458,7 +1458,7 @@ static bool C_HandleKey (event_t *ev, FCommandBuffer &buffer)
 			{ // Scroll console buffer down
 				if (ev->subtype == EV_GUI_WheelDown)
 				{
-					RowAdjust = MAX (0, RowAdjust - 3);
+					RowAdjust = DOOM_MAX(0, RowAdjust - 3);
 				}
 				else
 				{
@@ -2087,7 +2087,7 @@ static bool C_TabCompleteList ()
 				}
 			}
 			nummatches++;
-			maxwidth = MAX (maxwidth, strlen (TabCommands[i].TabName.GetChars()));
+			maxwidth = DOOM_MAX(maxwidth, strlen(TabCommands[i].TabName.GetChars()));
 		}
 	}
 	if (nummatches > 1)

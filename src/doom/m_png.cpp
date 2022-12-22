@@ -247,7 +247,7 @@ bool M_AppendPNGText (FileWriter *file, const char *keyword, const char *text)
 {
 	struct { uint32_t len, id; char key[80]; } head;
 	int len = (int)strlen (text);
-	int keylen = MIN ((int)strlen (keyword), 79);
+	int keylen = DOOM_MIN((int) strlen(keyword), 79);
 	uint32_t crc;
 
 	head.len = BigLong(len + keylen + 1);
@@ -330,7 +330,7 @@ char *M_GetPNGText (PNGHandle *png, const char *keyword)
 		if (strncmp (keyword, png->TextChunks[i], 80) == 0)
 		{
 			// Woo! A match was found!
-			keylen = MIN<size_t> (80, strlen (keyword) + 1);
+			keylen = DOOM_MIN<size_t>(80, strlen(keyword) + 1);
 			textlen = strlen (png->TextChunks[i] + keylen) + 1;
 			char *str = new char[textlen];
 			strcpy (str, png->TextChunks[i] + keylen);
@@ -352,7 +352,7 @@ bool M_GetPNGText (PNGHandle *png, const char *keyword, char *buffer, size_t buf
 		if (strncmp (keyword, png->TextChunks[i], 80) == 0)
 		{
 			// Woo! A match was found!
-			keylen = MIN<size_t> (80, strlen (keyword) + 1);
+			keylen = DOOM_MIN<size_t>(80, strlen(keyword) + 1);
 			strncpy (buffer, png->TextChunks[i] + keylen, buffsize);
 			return true;
 		}
@@ -567,7 +567,7 @@ bool M_ReadIDAT (FileReader &file, uint8_t *buffer, int width, int height, int p
 		if (stream.avail_in == 0 && chunklen > 0)
 		{
 			stream.next_in = chunkbuffer;
-			stream.avail_in = (uInt)file.Read (chunkbuffer, MIN<uint32_t>(chunklen,sizeof(chunkbuffer)));
+			stream.avail_in = (uInt)file.Read (chunkbuffer, DOOM_MIN<uint32_t>(chunklen, sizeof(chunkbuffer)));
 			chunklen -= stream.avail_in;
 		}
 

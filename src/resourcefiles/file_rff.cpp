@@ -229,7 +229,7 @@ int FRFFLump::FillCache()
 
 	if (Flags & LUMPF_BLOODCRYPT)
 	{
-		int cryptlen = MIN<int> (LumpSize, 256);
+		int cryptlen = DOOM_MIN<int>(LumpSize, 256);
 		uint8_t *data = (uint8_t *)Cache;
 		
 		for (int i = 0; i < cryptlen; ++i)

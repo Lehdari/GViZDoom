@@ -140,9 +140,9 @@ int AddSpecialColormap(float r1, float g1, float b1, float r2, float g2, float b
 							GPalette.BaseColors[c].g * 143 +
 							GPalette.BaseColors[c].b * 37) / 256.0;
 
-		PalEntry pe = PalEntry(	MIN(255, int(r1 + intensity*r2)), 
-								MIN(255, int(g1 + intensity*g2)), 
-								MIN(255, int(b1 + intensity*b2)));
+		PalEntry pe = PalEntry(DOOM_MIN(255, int(r1 + intensity * r2)),
+            DOOM_MIN(255, int(g1 + intensity * g2)),
+            DOOM_MIN(255, int(b1 + intensity * b2)));
 
 		cm->Colormap[c] = ColorMatcher.Pick(pe);
 	}
@@ -150,9 +150,9 @@ int AddSpecialColormap(float r1, float g1, float b1, float r2, float g2, float b
 	// This table is used by the texture composition code
 	for(int i = 0;i < 256; i++)
 	{
-		cm->GrayscaleToColor[i] = PalEntry(	MIN(255, int(r1 + i*r2)), 
-											MIN(255, int(g1 + i*g2)), 
-											MIN(255, int(b1 + i*b2)));
+		cm->GrayscaleToColor[i] = PalEntry(DOOM_MIN(255, int(r1 + i * r2)),
+            DOOM_MIN(255, int(g1 + i * g2)),
+            DOOM_MIN(255, int(b1 + i * b2)));
 	}
 	return SpecialColormaps.Size() - 1;
 }
@@ -246,7 +246,7 @@ void R_InitColormaps ()
 				g /= 256;
 				b /= 256;
 				// The calculated average is too dark so brighten it according to the palettes's overall brightness
-				int maxcol = MAX<int>(MAX<int>(palette_brightness, r), MAX<int>(g, b));
+				int maxcol = DOOM_MAX<int>(DOOM_MAX<int>(palette_brightness, r), DOOM_MAX<int>(g, b));
 				
 				fakecmaps[j].blend = PalEntry (255, r * 255 / maxcol, g * 255 / maxcol, b * 255 / maxcol);
 			}

@@ -94,8 +94,8 @@ int GetUIScale(int altval)
 	// block scales that result in something larger than the current screen.
 	int vmax = screen->GetHeight() / 200;
 	int hmax = screen->GetWidth() / 320;
-	int max = MAX(vmax, hmax);
-	return MAX(1,MIN(scaleval, max));
+	int max = DOOM_MAX(vmax, hmax);
+	return DOOM_MAX(1, DOOM_MIN(scaleval, max));
 }
 
 // [RH] Stretch values to make a 320x200 image best fit the screen
@@ -227,7 +227,7 @@ DEFINE_ACTION_FUNCTION(_Screen, GetClipRect)
 	if (numret > 1) ret[1].SetInt(y);
 	if (numret > 2) ret[2].SetInt(w);
 	if (numret > 3) ret[3].SetInt(h);
-	return MIN(numret, 4);
+	return DOOM_MIN(numret, 4);
 }
 
 DEFINE_ACTION_FUNCTION(_Screen, GetViewWindow)
@@ -237,7 +237,7 @@ DEFINE_ACTION_FUNCTION(_Screen, GetViewWindow)
 	if (numret > 1) ret[1].SetInt(viewwindowy);
 	if (numret > 2) ret[2].SetInt(viewwidth);
 	if (numret > 3) ret[3].SetInt(viewheight);
-	return MIN(numret, 4);
+	return DOOM_MIN(numret, 4);
 }
 
 bool DCanvas::SetTextureParms(DrawParms *parms, FTexture *img, double xx, double yy) const
@@ -577,7 +577,7 @@ bool DCanvas::ParseDrawTextureTags(FTexture *img, double x, double y, uint32_t t
 			break;
 
 		case DTA_Alpha:
-			parms->Alpha = (float)(MIN<double>(1., ListGetDouble(tags)));
+			parms->Alpha = (float)(DOOM_MIN<double>(1., ListGetDouble(tags)));
 			break;
 
 		case DTA_AlphaChannel:
@@ -896,7 +896,7 @@ DEFINE_ACTION_FUNCTION(_Screen, VirtualToRealCoords)
 	screen->VirtualToRealCoords(x, y, w, h, vw, vh, vbottom, handleaspect);
 	if (numret >= 1) ret[0].SetVector2(DVector2(x, y));
 	if (numret >= 2) ret[1].SetVector2(DVector2(w, h));
-	return MIN(numret, 2);
+	return DOOM_MIN(numret, 2);
 }
 
 void DCanvas::VirtualToRealCoordsInt(int &x, int &y, int &w, int &h,

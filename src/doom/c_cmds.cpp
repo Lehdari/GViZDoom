@@ -529,7 +529,7 @@ CCMD (puke)
 			return;
 		}
 		int arg[4] = { 0, 0, 0, 0 };
-		int argn = MIN<int>(argc - 2, countof(arg)), i;
+		int argn = DOOM_MIN<int>(argc - 2, countof(arg)), i;
 
 		for (i = 0; i < argn; ++i)
 		{
@@ -576,7 +576,7 @@ CCMD (pukename)
 				always = true;
 				argstart = 3;
 			}
-			argn = MIN<int>(argc - argstart, countof(arg));
+			argn = DOOM_MIN<int>(argc - argstart, countof(arg));
 			for (i = 0; i < argn; ++i)
 			{
 				arg[i] = atoi(argv[argstart + i]);

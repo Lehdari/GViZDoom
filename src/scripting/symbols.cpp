@@ -323,7 +323,7 @@ PField *PSymbolTable::AddField(FName name, PType *type, uint32_t flags, unsigned
 	// its fields.
 	if (Align != nullptr)
 	{
-		*Align = MAX(*Align, type->Align);
+		*Align = DOOM_MAX(*Align, type->Align);
 	}
 
 	if (AddSymbol(field) == nullptr)

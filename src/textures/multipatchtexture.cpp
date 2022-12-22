@@ -495,7 +495,7 @@ int FMultiPatchTexture::CopyTrueColorPixels(FBitmap *bmp, int x, int y, int rota
 		FBitmap tbmp;
 		if (tbmp.Create(Width, Height))
 		{
-			retv = MAX(retv, CopyTrueColorPixels(&tbmp, 0, 0, 0));
+			retv = DOOM_MAX(retv, CopyTrueColorPixels(&tbmp, 0, 0, 0));
 			bmp->CopyPixelDataRGB(x, y, tbmp.GetPixels(), Width, Height,
 				4, tbmp.GetPitch(), rotate, CF_BGRA, inf);
 		}

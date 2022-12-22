@@ -98,7 +98,7 @@ void P_TouchSpecialThing (AActor *special, AActor *toucher)
 
 	// The pickup is at or above the toucher's feet OR
 	// The pickup is below the toucher.
-	if (delta > toucher->Height || delta < MIN(-32., -special->Height))
+	if (delta > toucher->Height || delta < DOOM_MIN(-32., -special->Height))
 	{ // out of reach
 		return;
 	}
@@ -1509,7 +1509,7 @@ static int DamageMobj (AActor *target, AActor *inflictor, AActor *source, int da
 				}
 			}
 			target->CallDie (source, inflictor, flags);
-			return MAX(0, damage);
+			return DOOM_MAX(0, damage);
 		}
 	}
 
@@ -1521,7 +1521,7 @@ static int DamageMobj (AActor *target, AActor *inflictor, AActor *source, int da
 		if (target->health <= woundhealth)
 		{
 			target->SetState (woundstate);
-			return MAX(0, damage);
+			return DOOM_MAX(0, damage);
 		}
 	}
 
@@ -1621,7 +1621,7 @@ dopain:
 	{
 		return 0; //NOW we return -1!
 	}
-	return MAX(0, damage);
+	return DOOM_MAX(0, damage);
 }
 
 DEFINE_ACTION_FUNCTION(AActor, DamageMobj)

@@ -499,7 +499,7 @@ DVector2 DBaseStatusBar::GetHUDScale() const
 	// Since status bars and HUDs can be designed for non 320x200 screens this needs to be factored in here.
 	// The global scaling factors are for resources at 320x200, so if the actual ones are higher resolution
 	// the resulting scaling factor needs to be reduced accordingly.
-	int realscale = MAX<int>(1, (320 * scale) / HorizontalResolution);
+	int realscale = DOOM_MAX<int>(1, (320 * scale) / HorizontalResolution);
 	return{ double(realscale), double(realscale * (hud_aspectscale ? 1.2 : 1.)) };
 }
 
@@ -1505,7 +1505,7 @@ DEFINE_ACTION_FUNCTION(DBaseStatusBar, StatusbarToRealCoords)
 	if (numret > 1) ret[1].SetFloat(y);
 	if (numret > 2) ret[2].SetFloat(w);
 	if (numret > 3) ret[3].SetFloat(h);
-	return MIN(4, numret);
+	return DOOM_MIN(4, numret);
 }
 
 
@@ -1551,7 +1551,7 @@ void DBaseStatusBar::DrawGraphic(FTextureID texture, double x, double y, int fla
 				if (boxwidth <= 0 || (boxheight > 0 && scale2 < scale1))
 					scale1 = scale2;
 			}
-			else scale1 = MIN(scale1, scale2);
+			else scale1 = DOOM_MIN(scale1, scale2);
 
 			boxwidth = texwidth * scale1;
 			boxheight = texheight * scale1;
@@ -1954,7 +1954,7 @@ DEFINE_ACTION_FUNCTION(DBaseStatusBar, TransformRect)
 	if (numret > 1) ret[1].SetFloat(y);
 	if (numret > 2) ret[2].SetFloat(w);
 	if (numret > 3) ret[3].SetFloat(h);
-	return MIN(4, numret);
+	return DOOM_MIN(4, numret);
 }
 
 //============================================================================

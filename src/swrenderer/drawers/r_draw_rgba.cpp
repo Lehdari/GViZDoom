@@ -265,8 +265,8 @@ namespace swrenderer
 	void DrawScaledFuzzColumnRGBACommand::Execute(DrawerThread *thread)
 	{
 		int x = _x;
-		int yl = MAX(_yl, 1);
-		int yh = MIN(_yh, _fuzzviewheight);
+		int yl = DOOM_MAX(_yl, 1);
+		int yh = DOOM_MIN(_yh, _fuzzviewheight);
 
 		int count = thread->count_for_thread(yl, yh - yl + 1);
 		if (count <= 0) return;
@@ -327,8 +327,8 @@ namespace swrenderer
 
 	void DrawFuzzColumnRGBACommand::Execute(DrawerThread *thread)
 	{
-		int yl = MAX(_yl, 1);
-		int yh = MIN(_yh, _fuzzviewheight);
+		int yl = DOOM_MAX(_yl, 1);
+		int yh = DOOM_MIN(_yh, _fuzzviewheight);
 
 		int count = thread->count_for_thread(yl, yh - yl + 1);
 
@@ -351,7 +351,7 @@ namespace swrenderer
 			if (available % fuzzstep != 0)
 				next_wrap++;
 
-			int cnt = MIN(count, next_wrap);
+			int cnt = DOOM_MIN(count, next_wrap);
 			count -= cnt;
 			do
 			{
@@ -893,7 +893,7 @@ namespace swrenderer
 		uint32_t *dest = thread->dest_for_thread(_dest_y, _pitch, _dest);
 		int pitch = _pitch * thread->num_cores;
 
-		int particle_texture_index = MIN<int>(gl_particles_style, NUM_PARTICLE_TEXTURES - 1);
+		int particle_texture_index = DOOM_MIN<int>(gl_particles_style, NUM_PARTICLE_TEXTURES - 1);
 		const uint32_t *source = &particle_texture[particle_texture_index][(_fracposx >> FRACBITS) * PARTICLE_TEXTURE_SIZE];
 		uint32_t particle_alpha = _alpha;
 

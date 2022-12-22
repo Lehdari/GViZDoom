@@ -284,7 +284,7 @@ class CommandDrawImage : public SBarInfoCommandFlowControl
 					if (Slots[armorType] > 0 && SlotsIncrement[armorType] > 0)
 					{
 						//combine the alpha values
-						alpha *= MIN(1., Slots[armorType] / SlotsIncrement[armorType]);
+						alpha *= DOOM_MIN(1., Slots[armorType] / SlotsIncrement[armorType]);
 						texture = statusBar->Images[image];
 					}
 					else
@@ -2767,7 +2767,7 @@ class CommandDrawBar : public SBarInfoCommand
 
 			if(max != 0 && value > 0)
 			{
-				value = MIN(value / max, 1.);
+				value = DOOM_MIN(value / max, 1.);
 			}
 			else
 				value = 0;
@@ -2776,7 +2776,7 @@ class CommandDrawBar : public SBarInfoCommand
 				// [BL] Since we used a percentage (in order to get the most fluid animation)
 				//      we need to establish a cut off point so the last pixel won't hang as the animation slows
 				if(pixel == -1 && statusBar->Images[foreground])
-					pixel = MAX(1 / 65536., 1./statusBar->Images[foreground]->GetWidth());
+					pixel = DOOM_MAX(1 / 65536., 1. / statusBar->Images[foreground]->GetWidth());
 
 				if(fabs(drawValue - value) < pixel)
 					drawValue = value;

@@ -9131,7 +9131,7 @@ ExpEmit FxVMFunctionCall::Emit(VMFunctionBuilder *build)
 		}
 		else if (vmfunc->Proto->ReturnTypes.Size() > 0)
 		{ // Call, expecting one result
-			build->Emit(OP_CALL_K, funcaddr, count, MAX(1, AssignCount));
+			build->Emit(OP_CALL_K, funcaddr, count, DOOM_MAX(1, AssignCount));
 			goto handlereturns;
 		}
 		else
@@ -9157,7 +9157,7 @@ ExpEmit FxVMFunctionCall::Emit(VMFunctionBuilder *build)
 		}
 		else if (vmfunc->Proto->ReturnTypes.Size() > 0)
 		{ // Call, expecting one result
-			build->Emit(OP_CALL, funcreg.RegNum, count, MAX(1, AssignCount));
+			build->Emit(OP_CALL, funcreg.RegNum, count, DOOM_MAX(1, AssignCount));
 			goto handlereturns;
 		}
 		else

@@ -1233,7 +1233,9 @@ public:
 			wrapper->StatusbarToRealCoords(dx, dy, w, h);
 
 			if(clearDontDraw)
-				screen->Clear(static_cast<int>(MAX<double>(dx, dcx)), static_cast<int>(MAX<double>(dy, dcy)), static_cast<int>(MIN<double>(dcr,w+MAX<double>(dx, dcx))), static_cast<int>(MIN<double>(dcb,MAX<double>(dy, dcy)+h)), GPalette.BlackIndex, 0);
+				screen->Clear(static_cast<int>(DOOM_MAX<double>(dx, dcx)), static_cast<int>(DOOM_MAX<double>(dy, dcy)), static_cast<int>(DOOM_MIN<double>(
+                    dcr, w + DOOM_MAX<double>(dx, dcx))), static_cast<int>(DOOM_MIN<double>(
+                    dcb, DOOM_MAX<double>(dy, dcy) + h)), GPalette.BlackIndex, 0);
 			else
 			{
 				if(alphaMap)
@@ -1243,8 +1245,8 @@ public:
 						DTA_DestHeightF, h,
 						DTA_ClipLeft, static_cast<int>(dcx),
 						DTA_ClipTop, static_cast<int>(dcy),
-						DTA_ClipRight, static_cast<int>(MIN<double>(INT_MAX, dcr)),
-						DTA_ClipBottom, static_cast<int>(MIN<double>(INT_MAX, dcb)),
+						DTA_ClipRight, static_cast<int>(DOOM_MIN<double>(INT_MAX, dcr)),
+						DTA_ClipBottom, static_cast<int>(DOOM_MIN<double>(INT_MAX, dcb)),
 						DTA_TranslationIndex, translate ? GetTranslation() : 0,
 						DTA_ColorOverlay, dim ? DIM_OVERLAY : 0,
 						DTA_CenterBottomOffset, (offsetflags & SBarInfoCommand::CENTER_BOTTOM) == SBarInfoCommand::CENTER_BOTTOM,
@@ -1260,8 +1262,8 @@ public:
 						DTA_DestHeightF, h,
 						DTA_ClipLeft, static_cast<int>(dcx),
 						DTA_ClipTop, static_cast<int>(dcy),
-						DTA_ClipRight, static_cast<int>(MIN<double>(INT_MAX, dcr)),
-						DTA_ClipBottom, static_cast<int>(MIN<double>(INT_MAX, dcb)),
+						DTA_ClipRight, static_cast<int>(DOOM_MIN<double>(INT_MAX, dcr)),
+						DTA_ClipBottom, static_cast<int>(DOOM_MIN<double>(INT_MAX, dcb)),
 						DTA_TranslationIndex, translate ? GetTranslation() : 0,
 						DTA_ColorOverlay, dim ? DIM_OVERLAY : 0,
 						DTA_CenterBottomOffset, (offsetflags & SBarInfoCommand::CENTER_BOTTOM) == SBarInfoCommand::CENTER_BOTTOM,
@@ -1307,7 +1309,9 @@ public:
 			}
 
 			if(clearDontDraw)
-				screen->Clear(static_cast<int>(rcx), static_cast<int>(rcy), static_cast<int>(MIN<double>(rcr, rcx+w)), static_cast<int>(MIN<double>(rcb, rcy+h)), GPalette.BlackIndex, 0);
+				screen->Clear(static_cast<int>(rcx), static_cast<int>(rcy), static_cast<int>(DOOM_MIN<double>(rcr,
+                    rcx + w)), static_cast<int>(DOOM_MIN<double>(
+                    rcb, rcy + h)), GPalette.BlackIndex, 0);
 			else
 			{
 				if(alphaMap)

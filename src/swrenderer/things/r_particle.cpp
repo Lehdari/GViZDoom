@@ -120,8 +120,10 @@ namespace swrenderer
 		// calculate edges of the shape
 		double psize = particle->size / 8.0;
 
-		x1 = MAX<int>(renderportal->WindowLeft, thread->Viewport->viewwindow.centerx + xs_RoundToInt((tx - psize) * xscale));
-		x2 = MIN<int>(renderportal->WindowRight, thread->Viewport->viewwindow.centerx + xs_RoundToInt((tx + psize) * xscale));
+		x1 = DOOM_MAX<int>(renderportal->WindowLeft,
+			thread->Viewport->viewwindow.centerx + xs_RoundToInt((tx - psize) * xscale));
+		x2 = DOOM_MIN<int>(renderportal->WindowRight,
+            thread->Viewport->viewwindow.centerx + xs_RoundToInt((tx + psize) * xscale));
 
 		if (x1 >= x2)
 			return;
@@ -297,7 +299,7 @@ namespace swrenderer
 				if (ds->CurrentPortalUniq == CurrentPortalUniq)
 				{
 					RenderDrawSegment renderer(thread);
-					renderer.Render(ds, MAX<int>(ds->x1, x1), MIN<int>(ds->x2, x2), clip3DFloor);
+					renderer.Render(ds, DOOM_MAX<int>(ds->x1, x1), DOOM_MIN<int>(ds->x2, x2), clip3DFloor);
 				}
 			}
 		}

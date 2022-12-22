@@ -399,7 +399,7 @@ int GuillotineBinPack::ScoreBestShortSideFit(int width, int height, const Rect &
 {
 	int leftoverHoriz = abs(freeRect.width - width);
 	int leftoverVert = abs(freeRect.height - height);
-	int leftover = MIN(leftoverHoriz, leftoverVert);
+	int leftover = DOOM_MIN(leftoverHoriz, leftoverVert);
 	return leftover;
 }
 
@@ -407,7 +407,7 @@ int GuillotineBinPack::ScoreBestLongSideFit(int width, int height, const Rect &f
 {
 	int leftoverHoriz = abs(freeRect.width - width);
 	int leftoverVert = abs(freeRect.height - height);
-	int leftover = MAX(leftoverHoriz, leftoverVert);
+	int leftover = DOOM_MAX(leftoverHoriz, leftoverVert);
 	return leftover;
 }
 

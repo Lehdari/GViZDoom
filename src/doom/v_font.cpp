@@ -919,7 +919,7 @@ int FFont::StringWidth(const uint8_t *string) const
 		}
 	}
 
-	return MAX(maxw, w);
+	return DOOM_MAX(maxw, w);
 }
 
 DEFINE_ACTION_FUNCTION(FFont, StringWidth)
@@ -986,7 +986,7 @@ void FFont::Preload() const
 	{
 		return;
 	}
-	for (int i = MAX(FirstChar, 0x21); i < MIN(LastChar, 0x7e); ++i)
+	for (int i = DOOM_MAX(FirstChar, 0x21); i < DOOM_MIN(LastChar, 0x7e); ++i)
 	{
 		int foo;
 		FTexture *pic = GetChar(i, &foo);
@@ -1907,7 +1907,7 @@ void FFontChar2::MakeTexture ()
 				if (runlen != 0)
 				{
 					uint8_t color = lump.ReadUInt8();
-					color = MIN (color, max);
+					color = DOOM_MIN(color, max);
 					if (SourceRemap != NULL)
 					{
 						color = SourceRemap[color];
@@ -1935,7 +1935,7 @@ void FFontChar2::MakeTexture ()
 					{
 						uint8_t color = lump.ReadUInt8();
 						setlen = (-code) + 1;
-						setval = MIN (color, max);
+						setval = DOOM_MIN(color, max);
 						if (SourceRemap != NULL)
 						{
 							setval = SourceRemap[setval];

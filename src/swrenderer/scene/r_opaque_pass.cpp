@@ -637,7 +637,7 @@ namespace swrenderer
 				if (!(clip3d->fakeFloor->fakeFloor->flags & FF_RENDERPLANES)) continue;
 				if (clip3d->fakeFloor->fakeFloor->alpha == 0) continue;
 				if (clip3d->fakeFloor->fakeFloor->flags & FF_THISINSIDE && clip3d->fakeFloor->fakeFloor->flags & FF_INVERTSECTOR) continue;
-				fixed_t fakeAlpha = MIN<fixed_t>(Scale(clip3d->fakeFloor->fakeFloor->alpha, OPAQUE, 255), OPAQUE);
+				fixed_t fakeAlpha = DOOM_MIN<fixed_t>(Scale(clip3d->fakeFloor->fakeFloor->alpha, OPAQUE, 255), OPAQUE);
 				if (clip3d->fakeFloor->validcount != validcount)
 				{
 					clip3d->fakeFloor->validcount = validcount;
@@ -699,7 +699,7 @@ namespace swrenderer
 				if (!(clip3d->fakeFloor->fakeFloor->flags & FF_RENDERPLANES)) continue;
 				if (clip3d->fakeFloor->fakeFloor->alpha == 0) continue;
 				if (!(clip3d->fakeFloor->fakeFloor->flags & FF_THISINSIDE) && (clip3d->fakeFloor->fakeFloor->flags & (FF_SWIMMABLE | FF_INVERTSECTOR)) == (FF_SWIMMABLE | FF_INVERTSECTOR)) continue;
-				fixed_t fakeAlpha = MIN<fixed_t>(Scale(clip3d->fakeFloor->fakeFloor->alpha, OPAQUE, 255), OPAQUE);
+				fixed_t fakeAlpha = DOOM_MIN<fixed_t>(Scale(clip3d->fakeFloor->fakeFloor->alpha, OPAQUE, 255), OPAQUE);
 
 				if (clip3d->fakeFloor->validcount != validcount)
 				{

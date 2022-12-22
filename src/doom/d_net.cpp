@@ -237,7 +237,7 @@ static struct TicSpecial
 	{
 		int i;
 
-		specialsize = MAX(specialsize * 2, needed + 30);
+		specialsize = DOOM_MAX(specialsize * 2, needed + 30);
 
 		DPrintf (DMSG_NOTIFY, "Expanding special size to %zu\n", specialsize);
 
@@ -1168,7 +1168,7 @@ void NetUpdate (void)
 			netbuffer[k++] = lowtic;
 		}
 
-		numtics = MAX(0, lowtic - realstart);
+		numtics = DOOM_MAX(0, lowtic - realstart);
 		if (numtics > BACKUPTICS)
 			I_Error ("NetUpdate: Node %d missed too many tics", i);
 
@@ -1177,7 +1177,7 @@ void NetUpdate (void)
 		case 0:
 		default: 
 			resendto[i] = lowtic; break;
-		case 1: resendto[i] = MAX(0, lowtic - 1); break;
+		case 1: resendto[i] = DOOM_MAX(0, lowtic - 1); break;
 		case 2: resendto[i] = nettics[i]; break;
 		}
 
@@ -2722,7 +2722,7 @@ static void RunScript(uint8_t **stream, APlayerPawn *pawn, int snum, int argn, i
 			arg[i] = argval;
 		}
 	}
-	P_StartScript(pawn, NULL, snum, level.MapName, arg, MIN<int>(countof(arg), argn), ACS_NET | always);
+	P_StartScript(pawn, NULL, snum, level.MapName, arg, DOOM_MIN<int>(countof(arg), argn), ACS_NET | always);
 }
 
 void Net_SkipCommand (int type, uint8_t **stream)

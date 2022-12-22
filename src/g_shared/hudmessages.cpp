@@ -350,7 +350,7 @@ void DHUDMessage::ResetText (const char *text)
 		for (; Lines[NumLines].Width >= 0; NumLines++)
 		{
 			Height += Font->GetHeight ();
-			Width = MAX<int> (Width, Lines[NumLines].Width);
+			Width = DOOM_MAX<int>(Width, Lines[NumLines].Width);
 		}
 	}
 }

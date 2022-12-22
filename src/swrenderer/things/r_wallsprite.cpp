@@ -140,7 +140,7 @@ namespace swrenderer
 		vis->wallc = wallc;
 		vis->foggy = foggy;
 
-		vis->Light.SetColormap(thread->Light->SpriteGlobVis(foggy) / MAX(tz, MINZ), spriteshade, basecolormap, false, false, false);
+		vis->Light.SetColormap(thread->Light->SpriteGlobVis(foggy) / DOOM_MAX(tz, MINZ), spriteshade, basecolormap, false, false, false);
 
 		thread->SpriteList->Push(vis);
 	}
@@ -153,8 +153,8 @@ namespace swrenderer
 		double iyscale;
 		bool sprflipvert;
 
-		x1 = MAX<int>(spr->x1, spr->wallc.sx1);
-		x2 = MIN<int>(spr->x2, spr->wallc.sx2);
+		x1 = DOOM_MAX<int>(spr->x1, spr->wallc.sx1);
+		x2 = DOOM_MIN<int>(spr->x2, spr->wallc.sx2);
 		if (x1 >= x2)
 			return;
 

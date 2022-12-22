@@ -123,9 +123,9 @@ namespace swrenderer
 
 			// Texture mipmap and filter selection:
 			double ymagnitude = fabs(uv_stepd);
-			double magnitude = MAX(ymagnitude, xmagnitude);
+			double magnitude = DOOM_MAX(ymagnitude, xmagnitude);
 			double min_lod = -1000.0;
-			double lod = MAX(log2(magnitude) + r_lod_bias, min_lod);
+			double lod = DOOM_MAX(log2(magnitude) + r_lod_bias, min_lod);
 			bool magnifying = lod < 0.0f;
 
 			int mipmap_offset = 0;
@@ -140,8 +140,8 @@ namespace swrenderer
 				{
 					mipmap_offset += mip_width * mip_height;
 					level--;
-					mip_width = MAX(mip_width >> 1, 1);
-					mip_height = MAX(mip_height >> 1, 1);
+					mip_width = DOOM_MAX(mip_width >> 1, 1);
+					mip_height = DOOM_MAX(mip_height >> 1, 1);
 				}
 				xoffset = (xpos >> FRACBITS) * mip_width;
 			}
@@ -301,7 +301,7 @@ namespace swrenderer
 					uint32_t next_uv_wrap = available / sampler.uv_step;
 					if (available % sampler.uv_step != 0)
 						next_uv_wrap++;
-					uint32_t count = MIN(left, next_uv_wrap);
+					uint32_t count = DOOM_MIN(left, next_uv_wrap);
 
 					drawerargs.SetTexture(sampler.source, sampler.source2, sampler.height);
 					drawerargs.SetTextureUPos(sampler.texturefracx);

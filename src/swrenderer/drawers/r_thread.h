@@ -65,7 +65,7 @@ public:
 	int count_for_thread(int first_line, int count)
 	{
 		int c = (count - skipped_by_thread(first_line) + num_cores - 1) / num_cores;
-		return MAX(c, 0);
+		return DOOM_MAX(c, 0);
 	}
 
 	// Calculate the dest address for the first line to be rendered by this thread

@@ -309,7 +309,7 @@ void DCanvas::Dim (PalEntry color)
 	if (gameinfo.gametype == GAME_Hexen && gamestate == GS_DEMOSCREEN)
 	{ // On the Hexen title screen, the default dimming is not
 		// enough to make the menus readable.
-		amount = MIN<float> (1.f, amount*2.f);
+		amount = DOOM_MIN<float>(1.f, amount * 2.f);
 	}
 	// Add the cvar's dimming on top of the color passed to the function
 	if (color.a != 0)
@@ -1277,8 +1277,8 @@ void V_UpdateModeSize (int width, int height)
 		}
 		else
 		{
-			CleanXfac_1 = MAX(CleanXfac - 1, 1);
-			CleanYfac_1 = MAX(CleanYfac - 1, 1);
+			CleanXfac_1 = DOOM_MAX(CleanXfac - 1, 1);
+			CleanYfac_1 = DOOM_MAX(CleanYfac - 1, 1);
 			// On larger screens this is not enough so make sure it's at most 3/4 of the screen's width
 			while (CleanXfac_1 * 320 > screen->GetWidth()*3/4 && CleanXfac_1 > 2)
 			{
@@ -1342,11 +1342,11 @@ void V_CalcCleanFacs (int designwidth, int designheight, int realwidth, int real
 	}
 	// Use whichever pair of cwidth/cheight or width/height that produces less difference
 	// between CleanXfac and CleanYfac.
-	cx1 = MAX(cwidth / designwidth, 1);
-	cy1 = MAX(cheight / designheight, 1);
-	cx2 = MAX(realwidth / designwidth, 1);
-	cy2 = MAX(realheight / designheight, 1);
-	if (abs(cx1 - cy1) <= abs(cx2 - cy2) || MAX(cx1, cx2) >= 4)
+	cx1 = DOOM_MAX(cwidth / designwidth, 1);
+	cy1 = DOOM_MAX(cheight / designheight, 1);
+	cx2 = DOOM_MAX(realwidth / designwidth, 1);
+	cy2 = DOOM_MAX(realheight / designheight, 1);
+	if (abs(cx1 - cy1) <= abs(cx2 - cy2) || DOOM_MAX(cx1, cx2) >= 4)
 	{ // e.g. 640x360 looks better with this.
 		*cleanx = cx1;
 		*cleany = cy1;

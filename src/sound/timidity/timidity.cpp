@@ -734,7 +734,7 @@ Renderer::Renderer(float sample_rate, const char *args)
 	if (def_instr_name.IsNotEmpty())
 		set_default_instrument(def_instr_name);
 
-	voices = MAX(*midi_voices, 16);
+	voices = DOOM_MAX(*midi_voices, 16);
 	voice = new Voice[voices];
 	drumchannels = DEFAULT_DRUMCHANNELS;
 #if 0
