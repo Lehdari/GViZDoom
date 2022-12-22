@@ -700,7 +700,6 @@ void G_BuildTiccmd (ticcmd_t *cmd)
         side += (int)((float)mousex * m_side);
 #endif
 
-    side = 0;
     mousex = mousey = 0;
 
 	// Build command.
