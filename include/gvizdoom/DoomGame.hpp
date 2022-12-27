@@ -30,6 +30,7 @@ public:
     DoomGame& operator=(DoomGame&&) = delete;
 
     static DoomGame& instance();
+    const GameConfig& getGameConfig() const;
 
     void init(GameConfig&& gameConfig);
     void init(const GameConfig& gameConfig);

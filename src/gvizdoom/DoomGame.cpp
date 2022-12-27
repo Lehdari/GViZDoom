@@ -32,6 +32,11 @@ DoomGame& DoomGame::instance()
     return singletonInstance;
 }
 
+const GameConfig& DoomGame::getGameConfig() const
+{
+    return _gameConfig;
+}
+
 void DoomGame::init(GameConfig&& gameConfig)
 {
     _gameConfig = gameConfig;
