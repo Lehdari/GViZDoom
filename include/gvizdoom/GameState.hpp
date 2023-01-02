@@ -11,25 +11,26 @@
 #pragma once
 
 #include <type_traits>
+#include "gvizdoom/MathTypes.hpp"
 
-#define GVIZDOOM_GAMESTATES(GAMESTATE) \
-    GAMESTATE(bool,  LevelFinished)    \
-    GAMESTATE(int,   NumberOfKills)    \
-    GAMESTATE(int,   Health)           \
-    GAMESTATE(int,   Armor)            \
-    GAMESTATE(bool,  AttackDown)       \
-    GAMESTATE(bool,  UseDown)          \
-    GAMESTATE(int,   WeaponState)      \
-    GAMESTATE(int,   ItemCount)        \
-    GAMESTATE(int,   SecretCount)      \
-    GAMESTATE(int,   DamageCount)      \
-    GAMESTATE(int,   BonusCount)       \
-    GAMESTATE(bool,  OnGround)         \
-    GAMESTATE(float, X)                \
-    GAMESTATE(float, Y)                \
-    GAMESTATE(float, Z)                \
-    GAMESTATE(float, Angle)            \
-    GAMESTATE(bool,  PlayerDead)       \
+#define GVIZDOOM_GAMESTATES(GAMESTATE)              \
+    GAMESTATE(bool,             LevelFinished)      \
+    GAMESTATE(int,              NumberOfKills)      \
+    GAMESTATE(int,              Health)             \
+    GAMESTATE(int,              Armor)              \
+    GAMESTATE(bool,             AttackDown)         \
+    GAMESTATE(bool,             UseDown)            \
+    GAMESTATE(int,              WeaponState)        \
+    GAMESTATE(int,              ItemCount)          \
+    GAMESTATE(int,              SecretCount)        \
+    GAMESTATE(int,              DamageCount)        \
+    GAMESTATE(int,              BonusCount)         \
+    GAMESTATE(bool,             OnGround)           \
+    GAMESTATE(gvizdoom::Vec3f,  PlayerPos)          \
+    GAMESTATE(float,            PlayerAngle)        \
+    GAMESTATE(bool,             PlayerDead)         \
+    GAMESTATE(gvizdoom::Vec2f,  ExitPos)            \
+
 
 namespace gvizdoom {
 
