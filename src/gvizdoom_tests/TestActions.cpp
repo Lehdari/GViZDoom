@@ -43,13 +43,13 @@ TEST(TestActions, AllActions)
     ASSERT_EQ(doomGame.getGameState<GameState::DamageCount>(), 0);
     ASSERT_EQ(doomGame.getGameState<GameState::BonusCount>(), 0);
     ASSERT_EQ(doomGame.getGameState<GameState::OnGround>(), true);
-    ASSERT_GE(doomGame.getGameState<GameState::X>(), -943.999);
-    ASSERT_LE(doomGame.getGameState<GameState::X>(), -943.0);
-    ASSERT_GE(doomGame.getGameState<GameState::Y>(), 1600.0);
-    ASSERT_LE(doomGame.getGameState<GameState::Y>(), 1600.0934);
-    ASSERT_GE(doomGame.getGameState<GameState::Z>(), -0.001);
-    ASSERT_LE(doomGame.getGameState<GameState::Z>(), 0.001);
-    ASSERT_GE(doomGame.getGameState<GameState::Angle>(), 120.00);
-    ASSERT_LE(doomGame.getGameState<GameState::Angle>(), 120.99);
+    ASSERT_GE(doomGame.getGameState<GameState::PlayerAngle>(), 120.00);
+    ASSERT_LE(doomGame.getGameState<GameState::PlayerAngle>(), 120.99);
+    ASSERT_GE(doomGame.getGameState<GameState::PlayerPos>()(0), -943.999);
+    ASSERT_LE(doomGame.getGameState<GameState::PlayerPos>()(0), -943.0);
+    ASSERT_GE(doomGame.getGameState<GameState::PlayerPos>()(1), 1600.0);
+    ASSERT_LE(doomGame.getGameState<GameState::PlayerPos>()(1), 1600.0934);
+    ASSERT_GE(doomGame.getGameState<GameState::PlayerPos>()(2), -0.001);
+    ASSERT_LE(doomGame.getGameState<GameState::PlayerPos>()(2), 0.001);
     ASSERT_FALSE(doomGame.getGameState<GameState::PlayerDead>());
 }

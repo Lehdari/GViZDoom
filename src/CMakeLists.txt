@@ -468,6 +468,8 @@ endif()
 find_package(OpenCV REQUIRED)
 # TODO end of opencv temp
 
+find_package(Eigen3 REQUIRED)
+
 # Start defining source files for ZDoom
 set( PLAT_WIN32_SOURCES
 	sound/mididevices/music_win_mididevice.cpp
@@ -1166,6 +1168,7 @@ target_link_libraries(gvizdoom
 PUBLIC
 	${ZDOOM_LIBS} gdtoa dumb lzma
 	${SDL2_LIBRARIES} # TODO remove
+    Eigen3::Eigen
 )
 
 target_compile_definitions(gvizdoom

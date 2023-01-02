@@ -1129,11 +1129,30 @@ void DoomLoop::Iter(gvizdoom::Context& context,
     out_gameState.set<gvizdoom::GameState::DamageCount>(player->damagecount);
     out_gameState.set<gvizdoom::GameState::BonusCount>(player->bonuscount);
     out_gameState.set<gvizdoom::GameState::OnGround>(player->onground);
-    out_gameState.set<gvizdoom::GameState::X>(pos.X);
-    out_gameState.set<gvizdoom::GameState::Y>(pos.Y);
-    out_gameState.set<gvizdoom::GameState::Z>(pos.Z);
-    out_gameState.set<gvizdoom::GameState::Angle>(pos.Angle().Degrees);
+    out_gameState.set<gvizdoom::GameState::PlayerPos>(gvizdoom::Vec3f(pos.X, pos.Y, pos.Z));
+    out_gameState.set<gvizdoom::GameState::PlayerAngle>(pos.Angle().Degrees);
     out_gameState.set<gvizdoom::GameState::PlayerDead>(players[consoleplayer].playerstate == PST_DEAD);
+
+    // Find the exit
+    {
+        bool foundExit = false;
+        for (const auto& s : level.sectors)
+        {
+            if (foundExit) break;
+
+            for (const auto& l : s.Lines)
+            {
+                if (l->special == 243 || l->special == 244)
+                {
+                    out_gameState.set<gvizdoom::GameState::ExitPos>(
+                        gvizdoom::Vec2f(0.5f * (l->v1->fX() + l->v2->fX()),
+                                        0.5f * (l->v1->fY() + l->v2->fY())));
+                    foundExit = true;
+                    break;
+                }
+            }
+        }
+    }
 }
 
 //==========================================================================
