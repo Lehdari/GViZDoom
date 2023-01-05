@@ -1013,13 +1013,13 @@ void DoomLoop::Iter(gvizdoom::Context& context,
         {
             I_StartTic ();
             D_ProcessEvents ();
+            ticcmd_t forceCmd;
 
             // Use `action` to fake key presses
             // Should not be mixed with human player inputs
             // Faking key presses (for example for AI play) has only
             // been implemented for `singletics==true`
-            if (not interactive)
-            {
+            if (not interactive) {
                 // Reset button states to prevent user keyboard or mouse
                 // inputs from messing up the AI game 
                 ResetButtonStates();
@@ -1035,16 +1035,18 @@ void DoomLoop::Iter(gvizdoom::Context& context,
                 Button_Reload.bDown = action.isSet(gvizdoom::Action::Key::ACTION_RELOAD);
                 Button_Use.bDown = action.isSet(gvizdoom::Action::Key::ACTION_USE);
                 G_AddViewAngle(action.angle(), false, interactive);
+                G_BuildTiccmd(&forceCmd);
             }
-
-            G_BuildTiccmd(&netcmds[consoleplayer][maketic%BACKUPTICS]);
+            else {
+                G_BuildTiccmd(&netcmds[consoleplayer][maketic%BACKUPTICS]);
+            }
             
             if (advancedemo)
                 D_DoAdvanceDemo ();
             
             C_Ticker ();
             M_Ticker ();
-            G_Ticker ();
+            G_Ticker(interactive ? nullptr : &forceCmd);
             // [RH] Use the consoleplayer's camera to update sounds
             S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
             gametic++;

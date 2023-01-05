@@ -1957,7 +1957,7 @@ void TryRunTics (void)
 			if (debugfile) fprintf (debugfile, "run tic %d\n", gametic);
 			C_Ticker ();
 			M_Ticker ();
-			G_Ticker();
+            G_Ticker(nullptr);
 			gametic++;
 
 			NetUpdate ();	// check for new console commands
