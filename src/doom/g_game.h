@@ -28,6 +28,9 @@
 #ifndef __G_GAME__
 #define __G_GAME__
 
+#include "d_protocol.h"
+
+
 struct event_t;
 
 
@@ -65,7 +68,7 @@ bool G_CheckDemoStatus (void);
 
 void G_WorldDone (void);
 
-void G_Ticker (void);
+void G_Ticker(ticcmd_t* forceInputCmd);
 bool G_Responder (event_t*	ev);
 
 void G_ScreenShot (char *filename);

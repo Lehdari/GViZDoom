@@ -1043,7 +1043,7 @@ bool G_Responder (event_t *ev)
 extern FTexture *Page;
 
 
-void G_Ticker ()
+void G_Ticker(ticcmd_t* forceInputCmd = nullptr)
 {
 	int i;
 	gamestate_t	oldgamestate;
@@ -1173,32 +1173,35 @@ void G_Ticker ()
     }
     else
     {
-        ticcmd_t *cmd = &players[playerIdx].cmd;
-        ticcmd_t *newcmd = &netcmds[playerIdx][buf];
+        ticcmd_t* cmd = &players[playerIdx].cmd;
 
-        if ((gametic % ticdup) == 0)
-        {
-            RunNetSpecs(playerIdx, buf);
-        }
-        
-        if (demorecording)
-        {
-            G_WriteDemoTiccmd (newcmd, playerIdx, buf);
-        }
+        if (forceInputCmd == nullptr) {
+            // Default (original) functionality
+            ticcmd_t* newcmd = &netcmds[playerIdx][buf];
 
-        players[playerIdx].oldbuttons = cmd->ucmd.buttons;
+            if ((gametic % ticdup) == 0) {
+                RunNetSpecs(playerIdx, buf);
+            }
 
-        // If the user alt-tabbed away, paused gets set to -1. In this case,
-        // we do not want to read more demo commands until paused is no
-        // longer negative.
-        // TODO: do not set paused if alt-tabbed
-        if (demoplayback)
-        {
-            G_ReadDemoTiccmd (cmd, playerIdx);
+            if (demorecording) {
+                G_WriteDemoTiccmd(newcmd, playerIdx, buf);
+            }
+
+            players[playerIdx].oldbuttons = cmd->ucmd.buttons;
+
+            // If the user alt-tabbed away, paused gets set to -1. In this case,
+            // we do not want to read more demo commands until paused is no
+            // longer negative.
+            // TODO: do not set paused if alt-tabbed
+            if (demoplayback) {
+                G_ReadDemoTiccmd(cmd, playerIdx);
+            } else {
+                memcpy(cmd, newcmd, sizeof(ticcmd_t));
+            }
         }
-        else
-        {
-            memcpy(cmd, newcmd, sizeof(ticcmd_t));
+        else {
+            // forced input (used by default in GViZDoom)
+            memcpy(cmd, forceInputCmd, sizeof(ticcmd_t));
         }
     }
 
