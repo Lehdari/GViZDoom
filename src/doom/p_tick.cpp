@@ -127,7 +127,7 @@ void P_Ticker (void)
 	}
 
 	// Since things will be moving, it's okay to interpolate them in the renderer.
-	r_NoInterpolate = false;
+	r_NoInterpolate = true; // NO IT'S NOT! >:D
 
 	P_ThinkParticles();	// [RH] make the particles think
 

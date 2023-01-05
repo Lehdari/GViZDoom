@@ -2312,6 +2312,9 @@ void P_PlayerThink (player_t *player)
 	// Don't interpolate the view for more than one tic
 	player->cheats &= ~CF_INTERPVIEW;
 
+    // Hard-disable the reactiontime for now
+    player->mo->reactiontime = 0;
+
 	IFVIRTUALPTR(player->mo, APlayerPawn, PlayerThink)
 	{
 		VMValue param = player->mo;
