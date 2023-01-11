@@ -213,5 +213,10 @@ void DoomGame::initHUD() const
             hud_althud = true;
             hud_althudscale = _gameConfig.hudScale;
             break;
+        case GameConfig::HUD_DISABLED:
+            screenblocks = 12;
+            hud_althud = false;
+            st_scale = _gameConfig.hudScale;
+            break;
     }
 }
