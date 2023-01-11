@@ -31,9 +31,10 @@ struct GameConfig {
 
     // HUD parameters
     enum HUDType : uint32_t {
-        HUD_STATUSBAR = 0, // original Doom HUD with mugshot and grey bar
-        HUD_FLOATING = 1, // more minimal HUD with floating icons and ammo/health/other amounts
-        HUD_ALTERNATIVE = 2 // alternative floating HUD with more info
+        HUD_STATUSBAR = 0,      // original Doom HUD with mugshot and grey bar
+        HUD_FLOATING = 1,       // more minimal HUD with floating icons and ammo/health/other amounts
+        HUD_ALTERNATIVE = 2,    // alternative floating HUD with more info
+        HUD_DISABLED = 3        // no HUD
     }       hudType         {HUD_STATUSBAR};
     int     hudScale        {2};
 
