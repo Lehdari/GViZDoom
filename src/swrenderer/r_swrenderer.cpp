@@ -156,11 +156,11 @@ void FSoftwareRenderer::Precache(uint8_t *texhitlist, TMap<PClassActor*, bool> &
 	}
 }
 
-void FSoftwareRenderer::RenderView(player_t *player)
+void FSoftwareRenderer::RenderView(player_t* player, bool renderWeapon)
 {
     mScene.MainThread()->Viewport->viewpoint = r_viewpoint;
     mScene.MainThread()->Viewport->viewwindow = r_viewwindow;
-    mScene.RenderView(player);
+    mScene.RenderView(player, renderWeapon);
     r_viewpoint = mScene.MainThread()->Viewport->viewpoint;
     r_viewwindow = mScene.MainThread()->Viewport->viewwindow;
 

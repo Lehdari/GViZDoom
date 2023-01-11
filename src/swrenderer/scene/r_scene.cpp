@@ -88,7 +88,7 @@ namespace swrenderer
 		clearcolor = color;
 	}
 
-	void RenderScene::RenderView(player_t *player)
+	void RenderScene::RenderView(player_t* player, bool renderWeapon)
 	{
 		auto viewport = MainThread()->Viewport.get();
 		viewport->RenderTarget = screen;
@@ -115,7 +115,7 @@ namespace swrenderer
 			}
 		}
 
-		RenderActorView(player->mo);
+        RenderActorView(player->mo, false, renderWeapon);
 
 		// Apply special colormap if the target cannot do it
 		if (CameraLight::Instance()->ShaderColormap() && viewport->RenderTarget->IsBgra() && !(r_shadercolormaps && screen->Accel2D))
@@ -130,7 +130,7 @@ namespace swrenderer
 		DrawerWaitCycles.Unclock();
 	}
 
-	void RenderScene::RenderActorView(AActor *actor, bool dontmaplines)
+	void RenderScene::RenderActorView(AActor* actor, bool dontmaplines, bool renderWeapon)
 	{
 		WallCycles.Reset();
 		PlaneCycles.Reset();
@@ -168,7 +168,8 @@ namespace swrenderer
 		}
 
 		RenderThreadSlices();
-		RenderPSprites();
+        if (renderWeapon)
+		    RenderPSprites();
 
 		MainThread()->Viewport->viewpoint.camera->renderflags = savedflags;
 		interpolator.RestoreInterpolations();
@@ -362,7 +363,7 @@ namespace swrenderer
 		viewactive = true;
 		viewport->SetViewport(MainThread(), width, height, MainThread()->Viewport->viewwindow.WidescreenRatio);
 
-		RenderActorView(actor, dontmaplines);
+        RenderActorView(actor, dontmaplines, true);
 		DrawerWaitCycles.Clock();
 		DrawerThreads::WaitForWorkers();
 		DrawerWaitCycles.Unclock();
