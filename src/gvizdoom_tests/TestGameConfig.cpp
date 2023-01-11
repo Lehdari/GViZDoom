@@ -25,7 +25,7 @@ using namespace gvizdoom;
 TEST(TestGameConfig, VideoParams)
 {
     auto& doomGame = DoomGame::instance();
-    GameConfig gameConfig{0, nullptr, false, false, 640, 480, true, GameConfig::HUD_STATUSBAR, 2, 3, 1, 4};
+    GameConfig gameConfig{0, nullptr, false, false, 640, 480, true, GameConfig::HUD_STATUSBAR, 2, true, 3, 1, 4};
 
     {
         // 640x480, truecolor

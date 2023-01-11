@@ -196,15 +196,14 @@ struct DoomMain {
 struct DoomLoop {
     void Init();
     void Iter(
-        gvizdoom::Context& context,
-        gvizdoom::GameStateContainer& out_gameState,
+        const gvizdoom::GameConfig& gameConfig, gvizdoom::Context& context, gvizdoom::GameStateContainer& out_gameState,
         const gvizdoom::Action& action);
 
     int _lasttic;
 };
 
 
-void D_Display(gvizdoom::Context& context);
+void D_Display(const gvizdoom::GameConfig& gameConfig, gvizdoom::Context& context);
 
 
 //
