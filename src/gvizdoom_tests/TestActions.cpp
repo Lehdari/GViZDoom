@@ -13,7 +13,7 @@ using namespace gvizdoom;
 TEST(TestActions, AllActions)
 {
     auto& doomGame = DoomGame::instance();
-    GameConfig gameConfig{0, nullptr, false, true, 640, 480, true, GameConfig::HUD_STATUSBAR, 2, 3, 1, 4};
+    GameConfig gameConfig{0, nullptr, false, true, 640, 480, true, GameConfig::HUD_STATUSBAR, 2, true, 3, 1, 4};
     doomGame.init(gameConfig);
 
     std::vector<Action> actions;
@@ -47,8 +47,8 @@ TEST(TestActions, AllActions)
     ASSERT_LE(doomGame.getGameState<GameState::PlayerAngle>(), 120.99);
     ASSERT_GE(doomGame.getGameState<GameState::PlayerPos>()(0), -943.999);
     ASSERT_LE(doomGame.getGameState<GameState::PlayerPos>()(0), -943.0);
-    ASSERT_GE(doomGame.getGameState<GameState::PlayerPos>()(1), 1600.0);
-    ASSERT_LE(doomGame.getGameState<GameState::PlayerPos>()(1), 1600.0934);
+    ASSERT_GE(doomGame.getGameState<GameState::PlayerPos>()(1), 1600.89);
+    ASSERT_LE(doomGame.getGameState<GameState::PlayerPos>()(1), 1600.91);
     ASSERT_GE(doomGame.getGameState<GameState::PlayerPos>()(2), -0.001);
     ASSERT_LE(doomGame.getGameState<GameState::PlayerPos>()(2), 0.001);
     ASSERT_FALSE(doomGame.getGameState<GameState::PlayerDead>());

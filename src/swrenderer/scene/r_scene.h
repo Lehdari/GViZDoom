@@ -50,7 +50,7 @@ namespace swrenderer
 
 		void SetClearColor(int color);
 		
-		void RenderView(player_t *player);
+		void RenderView(player_t* player, bool renderWeapon = true);
 		void RenderViewToCanvas(AActor *actor, DCanvas *canvas, int x, int y, int width, int height, bool dontmaplines = false);
 	
 		bool DontMapLines() const { return dontmaplines; }
@@ -58,7 +58,7 @@ namespace swrenderer
 		RenderThread *MainThread() { return Threads.front().get(); }
 
 	private:
-		void RenderActorView(AActor *actor, bool dontmaplines = false);
+		void RenderActorView(AActor* actor, bool dontmaplines = false, bool renderWeapon = true);
 		void RenderThreadSlices();
 		void RenderThreadSlice(RenderThread *thread);
 		void RenderPSprites();

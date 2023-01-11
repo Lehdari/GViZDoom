@@ -67,8 +67,8 @@ bool DoomGame::update(const Action& action)
     if (_gameState.get<GameState::LevelFinished>() or
         _gameState.get<GameState::PlayerDead>())
         return true;
-    
-    _doomLoop.Iter(_context, _gameState, action);
+
+    _doomLoop.Iter(_gameConfig, _context, _gameState, action);
 
     // Print periodically or upon interesting changes info of the
     // game state

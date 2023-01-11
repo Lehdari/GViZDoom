@@ -680,7 +680,7 @@ CVAR (Flag, compat_pushwindow,			compatflags2, COMPATF2_PUSHWINDOW);
 //
 //==========================================================================
 
-void D_Display(gvizdoom::Context& context)
+void D_Display(const gvizdoom::GameConfig& gameConfig, gvizdoom::Context& context)
 {
     DFrameBuffer* oldScreen = screen;
     if (context.frameBuffer != nullptr) {
@@ -801,7 +801,7 @@ void D_Display(gvizdoom::Context& context)
 			// [ZZ] execute event hook that we just started the frame
 			//E_RenderFrame();
 			//
-			Renderer->RenderView(&players[consoleplayer]);
+            Renderer->RenderView(&players[consoleplayer], gameConfig.renderWeapon);
 
 			if ((hw2d = screen->Begin2D(viewactive)))
 			{
@@ -994,7 +994,9 @@ void DoomLoop::Init()
 #endif
 }
 
-void DoomLoop::Iter(gvizdoom::Context& context,
+void DoomLoop::Iter(
+    const gvizdoom::GameConfig& gameConfig,
+    gvizdoom::Context& context,
     gvizdoom::GameStateContainer& out_gameState,
     const gvizdoom::Action& action)
 {
@@ -1071,7 +1073,7 @@ void DoomLoop::Iter(gvizdoom::Context& context,
 #endif
         // Update display, next frame, with current state.
         I_StartTic ();
-        D_Display(context);
+        D_Display(gameConfig, context);
 #if 0 // Not needed since the loop has been spliced and we can terminate it whenever we want
         if (wantToRestart)
         {
