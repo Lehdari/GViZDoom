@@ -58,15 +58,19 @@ int main(int argc, char** argv)
 
     RenderContext renderContext;
 
-    constexpr bool interactive{false};
-    constexpr bool singletics{true};
+    constexpr bool interactive{true};
+    constexpr bool singletics{false};
     if (not interactive and not singletics)
     {
         printf("AI play with multi tics is not supported\n");
         return 1;
     }
 
-    GameConfig gameConfig{argc, argv, interactive, singletics, 640, 480, true, GameConfig::HUD_STATUSBAR, 2, 3, 1, 1};
+    GameConfig gameConfig{argc, argv, interactive, singletics,
+        640, 480, true,
+        GameConfig::HUD_STATUSBAR, 2, true,
+        3, 1, 1
+    };
     App app(appSettings, &renderContext, gameConfig);
     app.loop();
 

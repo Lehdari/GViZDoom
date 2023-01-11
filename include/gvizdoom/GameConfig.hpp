@@ -37,6 +37,7 @@ struct GameConfig {
         HUD_DISABLED = 3        // no HUD
     }       hudType         {HUD_STATUSBAR};
     int     hudScale        {2};
+    bool    renderWeapon    {true};
 
     // Game parameters
     int     skill           {3};
