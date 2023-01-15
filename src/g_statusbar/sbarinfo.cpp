@@ -58,6 +58,7 @@
 #include "cmdlib.h"
 #include "g_levellocals.h"
 #include "vm.h"
+#include "logging.h"
 
 #define ARTIFLASH_OFFSET (statusBar->invBarOffset+6)
 enum
@@ -455,7 +456,7 @@ void SBarInfo::Load()
 		int lump = Wads.CheckNumForFullName(gameinfo.statusbar, true);
 		if(lump != -1)
 		{
-			if (!batchrun) Printf ("ParseSBarInfo: Loading default status bar definition.\n");
+            if (!batchrun) doom_logging::print("ParseSBarInfo: Loading default status bar definition.\n");
 			if(SBarInfoScript[SCRIPT_DEFAULT] == NULL)
 				SBarInfoScript[SCRIPT_DEFAULT] = new SBarInfo(lump);
 			else
@@ -465,7 +466,7 @@ void SBarInfo::Load()
 
 	if(Wads.CheckNumForName("SBARINFO") != -1)
 	{
-		if (!batchrun) Printf ("ParseSBarInfo: Loading custom status bar definition.\n");
+        if (!batchrun) doom_logging::print("ParseSBarInfo: Loading custom status bar definition.\n");
 		int lastlump, lump;
 		lastlump = 0;
 		while((lump = Wads.FindLump("SBARINFO", &lastlump)) != -1)
