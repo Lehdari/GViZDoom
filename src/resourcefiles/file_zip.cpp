@@ -42,6 +42,7 @@
 #include "w_zip.h"
 #include "i_system.h"
 #include "ancientzip.h"
+#include "logging.h"
 
 #define BUFREADCOMMENT (0x400)
 
@@ -360,9 +361,7 @@ bool FZipFile::Open(bool quiet)
 	// Resize the lump record array to its actual size
 	NumLumps -= skipped;
 	free(directory);
-
-	if (!quiet && !batchrun) Printf(TEXTCOLOR_NORMAL ", %d lumps\n", NumLumps);
-	
+	if (!quiet && !batchrun) doom_logging::print(TEXTCOLOR_NORMAL ", %d lumps\n", NumLumps);
 	PostProcessArchive(&Lumps[0], sizeof(FZipLump));
 	return true;
 }

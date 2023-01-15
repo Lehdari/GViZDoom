@@ -411,7 +411,6 @@ void I_Init()
 {
 	CheckCPUID(&CPU);
 	CalculateCPUSpeed();
-	DumpCPUInfo(&CPU);
 
 	atterm (I_ShutdownSound);
 	I_InitSound ();

@@ -41,6 +41,7 @@
 #include "gi.h"
 #include "i_system.h"
 #include "w_zip.h"
+#include "logging.h"
 
 //==========================================================================
 //
@@ -197,7 +198,7 @@ bool FWadFile::Open(bool quiet)
 
 	if (!quiet)
 	{
-		if (!batchrun) Printf(", %d lumps\n", NumLumps);
+        if (!batchrun) doom_logging::print(", %d lumps\n", NumLumps);
 
 		// don't bother with namespaces here. We won't need them.
 		SetNamespace("S_START", "S_END", ns_sprites);

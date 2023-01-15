@@ -45,6 +45,7 @@
 #include "cmdlib.h"
 #include "doomerrors.h"
 
+#include "logging.h"
 
 
 //==========================================================================
@@ -250,7 +251,7 @@ int FDirectory::AddDirectory(const char *dirpath)
 bool FDirectory::Open(bool quiet)
 {
 	NumLumps = AddDirectory(Filename);
-	if (!quiet) Printf(", %d lumps\n", NumLumps);
+    if (!quiet) doom_logging::print(", %d lumps\n", NumLumps);
 	PostProcessArchive(&Lumps[0], sizeof(FDirectoryLump));
 	return true;
 }

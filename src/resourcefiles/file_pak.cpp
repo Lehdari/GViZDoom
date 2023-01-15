@@ -36,6 +36,7 @@
 #include "cmdlib.h"
 #include "v_text.h"
 #include "w_wad.h"
+#include "logging.h"
 
 //==========================================================================
 //
@@ -104,10 +105,9 @@ bool FPakFile::Open(bool quiet)
 	Reader.Read (fileinfo, NumLumps * sizeof(dpackfile_t));
 
 	Lumps = new FUncompressedLump[NumLumps];
-
-	if (!quiet && !batchrun) Printf(", %d lumps\n", NumLumps);
-
-	for(uint32_t i = 0; i < NumLumps; i++)
+    if (!quiet && !batchrun) doom_logging::print(", %d lumps\n", NumLumps);
+	
+    for(uint32_t i = 0; i < NumLumps; i++)
 	{
 		Lumps[i].LumpNameSetup(fileinfo[i].name);
 		Lumps[i].Owner = this;

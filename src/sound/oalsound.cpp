@@ -51,6 +51,7 @@
 #include "i_music.h"
 #include "i_musicinterns.h"
 #include "cmdlib.h"
+#include "logging.h"
 
 FModule OpenALModule{"OpenAL"};
 
@@ -748,7 +749,7 @@ OpenALSoundRenderer::OpenALSoundRenderer()
 {
 	EnvFilters[0] = EnvFilters[1] = 0;
 
-	Printf("I_InitSound: Initializing OpenAL\n");
+    doom_logging::print("I_InitSound: Initializing OpenAL\n");
 
 	Device = InitDevice();
 	if (Device == NULL) return;
@@ -763,7 +764,8 @@ OpenALSoundRenderer::OpenALSoundRenderer()
 		current = alcGetString(Device, ALC_ALL_DEVICES_SPECIFIER);
 	if(alcGetError(Device) != ALC_NO_ERROR || !current)
 		current = alcGetString(Device, ALC_DEVICE_SPECIFIER);
-	Printf("  Opened device " TEXTCOLOR_ORANGE"%s\n", current);
+
+    doom_logging::print(" Opened device " TEXTCOLOR_ORANGE"%s\n", current);
 
 	ALCint major=0, minor=0;
 	alcGetIntegerv(Device, ALC_MAJOR_VERSION, 1, &major);
@@ -1006,9 +1008,8 @@ OpenALSoundRenderer::OpenALSoundRenderer()
 		}
 	}
 
-	if(EnvSlot)
-		Printf("  EFX enabled\n");
-
+    if (EnvSlot) doom_logging::print(" EFX enabled\n");
+    
 	if(AL.SOFT_source_resampler && strcmp(*snd_alresampler, "Default") != 0)
 	{
 		const ALint num_resamplers = alGetInteger(AL_NUM_RESAMPLERS_SOFT);
