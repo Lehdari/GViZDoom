@@ -33,6 +33,8 @@
 #include "cmdlib.h"
 #include "r_utility.h"
 #include "doomstat.h"
+#include "logging.h"
+
 
 // MACROS ------------------------------------------------------------------
 
@@ -174,9 +176,9 @@ int gzdoom_main_init(int argc, char **argv) // TODO can this stuff be moved to D
     }
 #endif // !__APPLE__
 
-    printf(GAMENAME" %s - %s - SDL version\nCompiled on %s\n",
+    doom_logging::print(GAMENAME" %s - %s - SDL version\nCompiled on %s\n",
         GetVersionString(), GetGitTime(), __DATE__);
-
+    
     seteuid (getuid ());
     std::set_new_handler (NewFailure);
 
@@ -194,7 +196,6 @@ int gzdoom_main_init(int argc, char **argv) // TODO can this stuff be moved to D
     }
     atterm (SDL_Quit);
 
-    printf("\n");
 #if 0
     try
     {

@@ -86,7 +86,7 @@
 #include "i_time.h"
 #include "Context.hpp"
 #include "gvizdoom/HeadlessFrameBuffer.hpp"
-
+#include "logging.h"
 
 EXTERN_CVAR(Bool, r_blendmethod)
 
@@ -1526,10 +1526,10 @@ void V_Init2(gvizdoom::Context& context)
 
 	if (!Video->SetResolution (width, height, 8))
 		I_FatalError ("Could not set resolution to %d x %d x %d", width, height, 8);
-	else
-		Printf ("Resolution: %d x %d\n", SCREENWIDTH, SCREENHEIGHT);
-
-	//screen->SetGamma (gamma);
+    else
+		doom_logging::print("Resolution: %d x %d\n", SCREENWIDTH, SCREENHEIGHT);
+	
+    //screen->SetGamma (gamma);
 	Renderer->RemapVoxels();
 	FBaseCVar::ResetColors ();
 	C_NewModeAdjust();

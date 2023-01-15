@@ -64,6 +64,7 @@
 #include "a_sharedglobal.h"
 #include "backend/vmbuilder.h"
 #include "stats.h"
+#include "logging.h"
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 void InitThingdef();
@@ -452,9 +453,9 @@ void LoadActors()
 	}
 
 	timer.Unclock();
-	if (!batchrun) Printf("script parsing took %.2f ms\n", timer.TimeMS());
-
-	// Now we may call the scripted OnDestroy method.
+    if (!batchrun) doom_logging::print("script parsing took %.2f ms\n", timer.TimeMS());
+	
+    // Now we may call the scripted OnDestroy method.
 	PClass::bVMOperational = true;
 	StateSourceLines.Clear();
 }

@@ -58,6 +58,7 @@
 #include "md5.h"
 #include "doomstat.h"
 #include "vm.h"
+#include "logging.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -253,7 +254,8 @@ void FWadCollection::AddFile (const char *filename, FileReader *wadr)
 	}
 	else wadreader = std::move(*wadr);
 
-	if (!batchrun) Printf (" adding %s", filename);
+    if (!batchrun) doom_logging::print(" adding %s", filename);
+
 	startlump = NumLumps;
 
 	FResourceFile *resfile;
