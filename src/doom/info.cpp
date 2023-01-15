@@ -57,6 +57,7 @@
 #include "events.h"
 #include "types.h"
 #include "vm.h"
+#include "logging.h"
 
 extern void LoadActors ();
 extern void InitBotStuff();
@@ -258,7 +259,7 @@ void PClassActor::StaticInit()
 		sprites.Push (temp);
 	}
 
-	if (!batchrun) Printf ("LoadActors: Load actor definitions.\n");
+    if (!batchrun) doom_logging::print("LoadActors: Load actor definitions.\n");
 	ClearStrifeTypes();
 	LoadActors ();
 	InitBotStuff();

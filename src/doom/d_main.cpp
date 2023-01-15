@@ -123,7 +123,7 @@
 #include "gvizdoom/Context.hpp"
 #include "gvizdoom/GameConfig.hpp"
 #include "gvizdoom/GameState.hpp"
-
+#include "logging.h"
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -848,8 +848,7 @@ void D_Display(const gvizdoom::GameConfig& gameConfig, gvizdoom::Context& contex
 				StatusBar->CallDraw (HUD_StatusBar);
 				StatusBar->DrawTopStuff (HUD_StatusBar);
 			}
-			//stb.Unclock();
-			//Printf("Stbar = %f\n", stb.TimeMS());
+
 			CT_Drawer ();
 			break;
 
@@ -2021,7 +2020,7 @@ static void D_DoomInit()
     rngseed = 69420; // use static rng seed
 	FRandom::StaticClearRandom ();
 
-	if (!batchrun) Printf ("M_LoadDefaults: Load system defaults.\n");
+    if (!batchrun) doom_logging::print("M_LoadDefaults: Load system defaults.\n");
 	M_LoadDefaults ();			// load before initing other systems
 }
 
@@ -2106,7 +2105,7 @@ static void CheckCmdLine()
 	int p;
 	const char *v;
 
-	if (!batchrun) Printf ("Checking cmd-line parameters...\n");
+    if (!batchrun) doom_logging::print("Checking cmd-line parameters...\n");
 	if (Args->CheckParm ("-nomonsters"))	flags |= DF_NO_MONSTERS;
 	if (Args->CheckParm ("-respawn"))		flags |= DF_MONSTERS_RESPAWN;
 	if (Args->CheckParm ("-fast"))			flags |= DF_FAST_MONSTERS;
@@ -2229,11 +2228,6 @@ int DoomMain::Init(bool singletics_in,
     } else if (batchout != NULL && *batchout != 0) {
         batchrun = true;
         execLogfile(batchout, true);
-        Printf("Command line: ");
-        for (int i = 0; i < Args->NumArgs(); i++) {
-            Printf("%s ", Args->GetArg(i));
-        }
-        Printf("\n");
     }
 
     if (Args->CheckParm("-hashfiles")) {
@@ -2359,7 +2353,7 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
         Printf("Notice: File hashing is incredibly verbose. Expect loading files to take much longer than usual.\n");
     }
 
-    if (!batchrun) Printf("W_Init: Init WADfiles.\n");
+    if (!batchrun) doom_logging::print("W_Init: Init WADfiles.\n");
     Wads.InitMultipleFiles(allwads);
     allwads.Clear();
     allwads.ShrinkToFit();
@@ -2388,21 +2382,21 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
     CT_Init();
 
     if (!restart) {
-        if (!batchrun) Printf("I_Init: Setting up machine state.\n");
+        if (!batchrun) doom_logging::print("I_Init: Setting up machine state.\n");
         I_Init();
         I_CreateRenderer();
     }
 
-    if (!batchrun) Printf("V_Init: allocate screen.\n");
+    if (!batchrun) doom_logging::print("V_Init: allocate screen.\n");
     V_Init(!!restart, context);
 
     // Base systems have been inited; enable cvar callbacks
     FBaseCVar::EnableCallbacks();
 
-    if (!batchrun) Printf("S_Init: Setting up sound.\n");
+    if (!batchrun) doom_logging::print("S_Init: Setting up sound.\n");
     S_Init();
 
-    if (!batchrun) Printf("ST_Init: Init startup screen.\n");
+    if (!batchrun) doom_logging::print("ST_Init: Init startup screen.\n");
     if (!restart) {
         StartScreen = FStartupScreen::CreateInstance(TexMan.GuesstimateNumTextures() + 5);
     } else {
@@ -2426,18 +2420,18 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
     S_ParseReverbDef();
 
     // [RH] Parse any SNDINFO lumps
-    if (!batchrun) Printf("S_InitData: Load sound definitions.\n");
+    if (!batchrun) doom_logging::print("S_InitData: Load sound definitions.\n");
     S_InitData();
 
     // [RH] Parse through all loaded mapinfo lumps
-    if (!batchrun) Printf("G_ParseMapInfo: Load map definitions.\n");
+    if (!batchrun) doom_logging::print("G_ParseMapInfo: Load map definitions.\n");
     G_ParseMapInfo(iwad_info->MapInfo);
     ReadStatistics();
 
     // MUSINFO must be parsed after MAPINFO
     S_ParseMusInfo();
 
-    if (!batchrun) Printf("Texman.Init: Init texture manager.\n");
+    if (!batchrun) doom_logging::print("Texman.Init: Init texture manager.\n");
     TexMan.Init();
     C_InitConback();
 
@@ -2445,7 +2439,7 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
     V_InitFonts();
 
     // [CW] Parse any TEAMINFO lumps.
-    if (!batchrun) Printf("ParseTeamInfo: Load team definitions.\n");
+    if (!batchrun) doom_logging::print("ParseTeamInfo: Load team definitions.\n");
     TeamLibrary.ParseTeamInfo();
 
     R_ParseTrnslate();
@@ -2466,11 +2460,11 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
 
     ParseGLDefs();
 
-    if (!batchrun) Printf("R_Init: Init %s refresh subsystem.\n", gameinfo.ConfigName.GetChars());
+    if (!batchrun) doom_logging::print("R_Init: Init %s refresh subsystem.\n", gameinfo.ConfigName.GetChars());
     StartScreen->LoadingStatus("Loading graphics", 0x3f);
     R_Init();
 
-    if (!batchrun) Printf("DecalLibrary: Load decals.\n");
+    if (!batchrun) doom_logging::print("DecalLibrary: Load decals.\n");
     DecalLibrary.ReadAllDecals();
 
     // Load embedded Dehacked patches
@@ -2499,7 +2493,7 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
     // Create replacements for dehacked pickups
     FinishDehPatch();
 
-    if (!batchrun) Printf("M_Init: Init menus.\n");
+    if (!batchrun) doom_logging::print("M_Init: Init menus.\n");
     M_Init();
 
     // clean up the compiler symbols which are not needed any longer.
@@ -2518,7 +2512,7 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
     bglobal.spawn_tries = 0;
     bglobal.wanted_botnum = bglobal.getspawned.Size();
 
-    if (!batchrun) Printf("P_Init: Init Playloop state.\n");
+    if (!batchrun) doom_logging::print("P_Init: Init Playloop state.\n");
     StartScreen->LoadingStatus("Init game engine", 0x3f);
     AM_StaticInit();
     P_Init();
@@ -2537,13 +2531,13 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
         for (int p = 0; p < 5; ++p) {
             const char* str = GStrings[startupString[p]];
             if (str != NULL && str[0] != '\0') {
-                Printf("%s\n", str);
+                doom_logging::print("%s\n", str);
             }
         }
     }
 
     if (!restart) {
-        if (!batchrun) Printf("D_CheckNetGame: Checking network game status.\n");
+        if (!batchrun) doom_logging::print("D_CheckNetGame: Checking network game status.\n");
         StartScreen->LoadingStatus("Checking network game status.", 0x3f);
         D_CheckNetGame();
     }

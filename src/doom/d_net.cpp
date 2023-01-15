@@ -70,6 +70,7 @@
 #include "g_levellocals.h"
 #include "events.h"
 #include "i_time.h"
+#include "logging.h"
 
 EXTERN_CVAR (Int, disableautosave)
 EXTERN_CVAR (Int, autosavecount)
@@ -1752,8 +1753,7 @@ void D_CheckNetGame (void)
 		Printf("Arbitrator selected " TEXTCOLOR_BLUE "%s" TEXTCOLOR_NORMAL " networking mode.\n", NetMode == NET_PeerToPeer ? "peer to peer" : "packet server");
 	}
 
-	if (!batchrun) Printf ("player %i of %i (%i nodes)\n",
-			consoleplayer+1, doomcom.numplayers, doomcom.numnodes);
+	if (!batchrun) doom_logging::print("player %i of %i (%i nodes)\n", consoleplayer+1, doomcom.numplayers, doomcom.numnodes);
 }
 
 

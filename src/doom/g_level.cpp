@@ -99,6 +99,8 @@
 
 #include <string.h>
 
+#include "logging.h"
+
 void STAT_StartNewGame(const char *lev);
 void STAT_ChangeLevel(const char *newl);
 
@@ -945,12 +947,14 @@ void G_DoLoadLevel (int position, bool autosave)
 
 	FString mapname = level.MapName;
 	mapname.ToLower();
-	Printf (
-			"\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36"
-			"\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n"
-			TEXTCOLOR_BOLD "%s - %s\n\n",
-			mapname.GetChars(), level.LevelName.GetChars());
 
+    doom_logging::print(
+        "\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36"
+        "\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n"
+        TEXTCOLOR_BOLD "%s - %s\n\n",
+        mapname.GetChars(), level.LevelName.GetChars()
+    );
+    
 	if (gamestate != GS_TITLELEVEL)
 	{
 		gamestate = GS_LEVEL; 
