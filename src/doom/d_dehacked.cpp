@@ -75,6 +75,9 @@
 #include "v_text.h"
 #include "backend/vmbuilder.h"
 #include "types.h"
+#include "logging.h"
+
+
 
 // [SO] Just the way Randy said to do it :)
 // [RH] Made this CVAR_SERVERINFO
@@ -2530,7 +2533,7 @@ bool D_LoadDehFile(const char *patchfile)
 
 static bool DoDehPatch()
 {
-	if (!batchrun) Printf("Adding dehacked patch %s\n", PatchName);
+	if (!batchrun) doom_logging::print("Adding dehacked patch %s\n", PatchName);
 
 	int cont;
 
@@ -2621,7 +2624,7 @@ static bool DoDehPatch()
 	UnloadDehSupp ();
 	delete[] PatchName;
 	delete[] PatchFile;
-	if (!batchrun) Printf ("Patch installed\n");
+	if (!batchrun) doom_logging::print("Patch installed\n");
 	return true;
 }
 
