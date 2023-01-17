@@ -23,7 +23,6 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	endif()
 endif()
 
-option( DYN_FLUIDSYNTH "Dynamically load fluidsynth" ON )
 option( DYN_OPENAL "Dynamically load OpenAL" ON )
 option( DYN_SNDFILE "Dynamically load libsndfile" ON )
 option( DYN_MPG123 "Dynamically load libmpg123" ON )
@@ -220,10 +219,6 @@ else()
 		find_package( MPG123 )
 	endif()
 endif()
-
-# Search for FluidSynth
-
-find_package( FluidSynth )
 
 # Decide on SSE setup
 
@@ -445,7 +440,6 @@ add_custom_target( revision_check ALL
 
 # Libraries ZDoom needs
 
-message( STATUS "Fluid synth libs: ${FLUIDSYNTH_LIBRARIES}" )
 set( ZDOOM_LIBS ${ZDOOM_LIBS} "${ZLIB_LIBRARIES}" "${JPEG_LIBRARIES}" "${BZIP2_LIBRARIES}" "${GME_LIBRARIES}" "${CMAKE_DL_LIBS}" )
 include_directories( "${ZLIB_INCLUDE_DIR}" "${BZIP2_INCLUDE_DIR}" "${LZMA_INCLUDE_DIR}" "${JPEG_INCLUDE_DIR}" "${GME_INCLUDE_DIR}" )
 
@@ -456,12 +450,6 @@ endif()
 if( MPG123_FOUND )
     set( ZDOOM_LIBS ${ZDOOM_LIBS} "${MPG123_LIBRARIES}" )
     include_directories( "${MPG123_INCLUDE_DIR}" )
-endif()
-if( NOT DYN_FLUIDSYNTH )
-	if( FLUIDSYNTH_FOUND )
-		set( ZDOOM_LIBS ${ZDOOM_LIBS} "${FLUIDSYNTH_LIBRARIES}" )
-		include_directories( "${FLUIDSYNTH_INCLUDE_DIR}" )
-	endif()
 endif()
 
 # TODO opencv temp
@@ -596,12 +584,6 @@ if( DYN_MPG123)
 	add_definitions( -DHAVE_MPG123 -DDYN_MPG123 )
 elseif( MPG123_FOUND )
 	add_definitions( -DHAVE_MPG123 )
-endif()
-
-if( DYN_FLUIDSYNTH )
-	add_definitions( -DHAVE_FLUIDSYNTH -DDYN_FLUIDSYNTH )
-elseif( FLUIDSYNTH_FOUND )
-	add_definitions( -DHAVE_FLUIDSYNTH )
 endif()
 
 option( SEND_ANON_STATS "Enable sending of anonymous hardware statistics" ON )
