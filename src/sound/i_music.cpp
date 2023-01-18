@@ -628,10 +628,7 @@ static bool ungzip(uint8_t *data, int complen, TArray<uint8_t> &newdata)
 
 void I_UpdateMusic()
 {
-	if (currSong != nullptr)
-	{
-		currSong->Update();
-	}
+    currSong = nullptr;
 }
 
 //==========================================================================
