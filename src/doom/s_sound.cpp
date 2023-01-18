@@ -470,18 +470,23 @@ void S_Start ()
 	// stop the old music if it has been paused.
 	// This ensures that the new music is started from the beginning
 	// if it's the same as the last one and it has been paused.
-	if (MusicPaused) S_StopMusic(true);
+	// if (MusicPaused) S_StopMusic(true);
+
+    S_StopMusic(true); // Hyrtsi: stop music always
 
 	// start new music for the level
-	MusicPaused = false;
+    // hyrtsi: do not.
+	MusicPaused = true;
 
 	// Don't start the music if loading a savegame, because the music is stored there.
 	// Don't start the music if revisiting a level in a hub for the same reason.
-	if (!savegamerestore && (level.info == nullptr || level.info->Snapshot.mBuffer == nullptr || !level.info->isValid()))
-	{
-		if (level.cdtrack == 0 || !S_ChangeCDMusic (level.cdtrack, level.cdid))
-			S_ChangeMusic (level.Music, level.musicorder);
-	}
+	// if (!savegamerestore && (level.info == nullptr || level.info->Snapshot.mBuffer == nullptr || !level.info->isValid()))
+	// {
+	// 	if (level.cdtrack == 0 || !S_ChangeCDMusic (level.cdtrack, level.cdid))
+	// 		S_ChangeMusic (level.Music, level.musicorder);
+	// }
+
+    S_ChangeMusic(nullptr, 0);
 }
 
 //==========================================================================
