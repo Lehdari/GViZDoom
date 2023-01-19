@@ -2171,44 +2171,9 @@ void P_FallingDamage (AActor *actor)
 	P_DamageMobj (actor, NULL, NULL, damage, NAME_Falling);
 }
 
-//----------------------------------------------------------------------------
-//
-// PROC P_CheckMusicChange
-//
-//----------------------------------------------------------------------------
-
-void P_CheckMusicChange(player_t *player)
-{
-	// MUSINFO stuff
-	if (player->MUSINFOtics >= 0 && player->MUSINFOactor != NULL)
-	{
-		if (--player->MUSINFOtics < 0)
-		{
-			if (player - players == consoleplayer)
-			{
-				if (player->MUSINFOactor->args[0] != 0)
-				{
-					FName *music = level.info->MusicMap.CheckKey(player->MUSINFOactor->args[0]);
-
-					if (music != NULL)
-					{
-						S_ChangeMusic(music->GetChars(), player->MUSINFOactor->args[1]);
-					}
-				}
-				else
-				{
-					S_ChangeMusic("*");
-				}
-			}
-			DPrintf(DMSG_NOTIFY, "MUSINFO change for player %d to %d\n", (int)(player - players), player->MUSINFOactor->args[0]);
-		}
-	}
-}
-
 DEFINE_ACTION_FUNCTION(APlayerPawn, CheckMusicChange)
 {
 	PARAM_SELF_PROLOGUE(APlayerPawn);
-	P_CheckMusicChange(self->player);
 	return 0;
 }
 

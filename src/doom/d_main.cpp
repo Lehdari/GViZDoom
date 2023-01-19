@@ -1285,7 +1285,6 @@ void D_DoAdvanceDemo (void)
 		gamestate = GS_DEMOSCREEN;
 		pagename = gameinfo.TitlePage;
 		pagetic = (int)(gameinfo.titleTime * TICRATE);
-		S_ChangeMusic (gameinfo.titleMusic, gameinfo.titleOrder, false);
 		demosequence = 3;
 		pagecount = 0;
 		C_HideConsole ();
@@ -2653,7 +2652,6 @@ void DoomMain::Cleanup()
     //
 
     // Music and sound should be stopped first
-    S_StopMusic(true);
     S_StopAllChannels ();
 
     M_ClearMenus();					// close menu if open

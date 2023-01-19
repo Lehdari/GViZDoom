@@ -51,7 +51,6 @@
 #include "c_dispatch.h"
 #include "i_system.h"
 #include "i_sound.h"
-#include "i_music.h"
 #include "m_argv.h"
 #include "m_misc.h"
 #include "w_wad.h"
@@ -107,8 +106,6 @@ CUSTOM_CVAR (Float, snd_sfxvolume, 1.f, CVAR_ARCHIVE|CVAR_GLOBALCONFIG|CVAR_NOIN
 		GSnd->SetSfxVolume (self);
 	}
 }
-
-class MIDIStreamer;
 
 class NullSoundRenderer : public SoundRenderer
 {
@@ -246,7 +243,6 @@ void I_InitSound ()
 	if (nosound || batchrun)
 	{
 		GSnd = new NullSoundRenderer;
-		I_InitMusic ();
 		return;
 	}
 
@@ -283,7 +279,6 @@ void I_InitSound ()
 		GSnd = new NullSoundRenderer;
 		Printf (TEXTCOLOR_RED"Sound init failed. Using nosound.\n");
 	}
-	I_InitMusic ();
 	snd_sfxvolume.Callback ();
 }
 
@@ -337,11 +332,9 @@ CCMD (snd_status)
 
 CCMD (snd_reset)
 {
-	I_ShutdownMusic();
 	S_EvictAllChannels();
 	I_CloseSound();
 	I_InitSound();
-	S_RestartMusic();
 	S_RestoreEvictedChannels();
 }
 

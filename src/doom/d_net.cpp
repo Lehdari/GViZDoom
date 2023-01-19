@@ -2184,7 +2184,6 @@ void Net_DoCommand (int type, uint8_t **stream, int player)
 
 	case DEM_MUSICCHANGE:
 		s = ReadString (stream);
-		S_ChangeMusic (s);
 		break;
 
 	case DEM_PRINT:
