@@ -85,7 +85,6 @@ public:
 typedef bool (*SoundStreamCallback)(SoundStream *stream, void *buff, int len, void *userdata);
 
 struct SoundDecoder;
-class MIDIDevice;
 
 struct FSoundLoadBuffer
 {

@@ -546,23 +546,6 @@ void P_SerializeSounds(FSerializer &arc)
 	DSeqNode::SerializeSequences (arc);
 	const char *name = NULL;
 	uint8_t order;
-	float musvol = level.MusicVolume;
-
-	if (arc.isWriting())
-	{
-		order = S_GetMusic(&name);
-	}
-	arc.StringPtr("musicname", name)
-		("musicorder", order)
-		("musicvolume", musvol);
-
-	if (arc.isReading())
-	{
-		if (!S_ChangeMusic(name, order))
-			if (level.cdtrack == 0 || !S_ChangeCDMusic(level.cdtrack, level.cdid))
-				S_ChangeMusic(level.Music, level.musicorder);
-		level.SetMusicVolume(musvol);
-	}
 }
 
 //==========================================================================

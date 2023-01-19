@@ -147,7 +147,6 @@ enum SICommands
 	SI_Registered,
 	SI_ArchivePath,
 	SI_MusicVolume,
-	SI_MidiDevice,
 	SI_IfDoom,
 	SI_IfHeretic,
 	SI_IfHexen,
@@ -189,10 +188,6 @@ struct FSavedPlayerSoundInfo
 	int lumpnum;
 	bool alias;
 };
-
-// This specifies whether Timidity or Windows playback is preferred for a certain song (only useful for Windows.)
-MusicAliasMap MusicAliases;
-MidiDeviceMap MidiDevices;
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
@@ -243,8 +238,6 @@ static const char *SICommandStrings[] =
 	"$map",
 	"$registered",
 	"$archivepath",
-	"$musicvolume",
-	"$mididevice",
 	"$ifdoom",
 	"$ifheretic",
 	"$ifhexen",
@@ -987,8 +980,6 @@ static void S_ClearSoundData()
 	PlayerSounds.Clear();
 	DefPlayerClass = 0;
 	DefPlayerClassName = "";
-	MusicAliases.Clear();
-	MidiDevices.Clear();
 	HexenMusic.Clear();
 }
 
@@ -1456,48 +1447,6 @@ static void S_AddSNDINFO (int lump)
 				FName alias = sc.String;
 				sc.MustGetString();
 				FName mapped = sc.String;
-
-				// only set the alias if the lump it maps to exists.
-				if (mapped == NAME_None || Wads.CheckNumForName(sc.String, ns_music) >= 0)
-				{
-					MusicAliases[alias] = mapped;
-				}
-				}
-				break;
-
-			case SI_MidiDevice: {
-				sc.MustGetString();
-				FName nm = sc.String;
-				FScanner::SavedPos save = sc.SavePos();
-				
-				sc.SetCMode(true);
-				sc.MustGetString();
-				MidiDeviceSetting devset;
-				if (sc.Compare("timidity")) devset.device = MDEV_TIMIDITY;
-				else if (sc.Compare("fmod") || sc.Compare("sndsys")) devset.device = MDEV_SNDSYS;
-				else if (sc.Compare("standard")) devset.device = MDEV_MMAPI;
-				else if (sc.Compare("opl")) devset.device = MDEV_OPL;
-				else if (sc.Compare("default")) devset.device = MDEV_DEFAULT;
-				else if (sc.Compare("fluidsynth")) devset.device = MDEV_FLUIDSYNTH;
-				else if (sc.Compare("gus")) devset.device = MDEV_GUS;
-				else if (sc.Compare("wildmidi")) devset.device = MDEV_WILDMIDI;
-				else sc.ScriptError("Unknown MIDI device %s\n", sc.String);
-
-				if (sc.CheckString(","))
-				{
-					sc.SetCMode(false);
-					sc.MustGetString();
-					devset.args = sc.String;
-				}
-				else
-				{
-					// This does not really do what one might expect, because the next token has already been parsed and can be a '$'.
-					// So in order to continue parsing without C-Mode, we need to reset and parse the last token again.
-					sc.SetCMode(false);
-					sc.RestorePos(save);
-					sc.MustGetString();
-				}
-				MidiDevices[nm] = devset;
 				}
 				break;
 

@@ -78,19 +78,6 @@ CVAR(Bool, nointerscrollabort, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
 void DIntermissionScreen::Init(FIntermissionAction *desc, bool first)
 {
 	int lumpnum;
-
-	if (desc->mCdTrack == 0 || !S_ChangeCDMusic (desc->mCdTrack, desc->mCdId))
-	{
-		if (desc->mMusic.IsEmpty())
-		{
-			// only start the default music if this is the first action in an intermission
-			if (first) S_ChangeMusic (gameinfo.finaleMusic, gameinfo.finaleOrder, desc->mMusicLooping);
-		}
-		else
-		{
-			S_ChangeMusic (desc->mMusic, desc->mMusicOrder, desc->mMusicLooping);
-		}
-	}
 	mDuration = desc->mDuration;
 
 	const char *texname = desc->mBackground;
@@ -834,8 +821,6 @@ void DIntermissionController::Ticker ()
 			switch (mGameState)
 			{
 			case FSTATE_InLevel:
-				if (level.cdtrack == 0 || !S_ChangeCDMusic (level.cdtrack, level.cdid))
-					S_ChangeMusic (level.Music, level.musicorder);
 				gamestate = GS_LEVEL;
 				P_ResumeConversation ();
 				viewactive = true;

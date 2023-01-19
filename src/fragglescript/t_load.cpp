@@ -176,17 +176,6 @@ void FScriptLoader::ParseInfoCmd(char *line, FString &scriptsrc)
 			sc.MustGetNumber();
 			level.partime=sc.Number;
 		}
-		else if (sc.Compare("music"))
-		{
-			bool FS_ChangeMusic(const char * string);
-
-			sc.MustGetStringName("=");
-			sc.MustGetString();
-			if (!FS_ChangeMusic(sc.String))
-			{
-				S_ChangeMusic(level.Music, level.musicorder);
-			}
-		}
 		else if (sc.Compare("skyname"))
 		{
 			sc.MustGetStringName("=");

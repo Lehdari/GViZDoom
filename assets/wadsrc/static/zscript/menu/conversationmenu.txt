@@ -220,7 +220,6 @@ class ConversationMenu : Menu
 	override void OnDestroy()
 	{
 		mDialogueLines.Destroy();
-		SetMusicVolume (1);
 		Super.OnDestroy();
 	}
 

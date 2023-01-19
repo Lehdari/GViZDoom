@@ -48,7 +48,6 @@
 #include "v_palette.h"
 #include "d_event.h"
 #include "d_gui.h"
-#include "i_music.h"
 #include "m_joy.h"
 #include "vm.h"
 

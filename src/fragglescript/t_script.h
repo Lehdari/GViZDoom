@@ -548,7 +548,6 @@ struct FParser
 	void SF_CloseDoor();
 	void SF_RunCommand();
 	void SF_LineTrigger();
-	void SF_ChangeMusic();
 	void SF_SetLineBlocking();
 	void SF_SetLineMonsterBlocking();
 	void SF_SetLineTexture();

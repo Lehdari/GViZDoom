@@ -47,7 +47,6 @@
 #include "a_keys.h"
 #include "p_enemy.h"
 #include "gstrings.h"
-#include "sound/i_music.h"
 #include "p_setup.h"
 #include "d_net.h"
 #include "g_level.h"
@@ -854,7 +853,6 @@ void P_StartConversation (AActor *npc, AActor *pc, bool facetalker, bool saveang
 	{
 		if (CurNode->SpeakerVoice != 0)
 		{
-			I_SetMusicVolume (dlg_musicvolume);
 			S_Sound (npc, CHAN_VOICE|CHAN_NOPAUSE, CurNode->SpeakerVoice, 1, ATTN_NORM);
 		}
 
@@ -1097,11 +1095,6 @@ static void HandleReply(player_t *player, bool isconsole, int nodenum, int reply
 		player->ConversationNPC = NULL;
 		player->ConversationPC = NULL;
 		player->ConversationNPCAngle = 0.;
-	}
-
-	if (isconsole)
-	{
-		I_SetMusicVolume (level.MusicVolume);
 	}
 }
 

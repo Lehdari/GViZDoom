@@ -46,7 +46,6 @@
 #include "v_palette.h"
 #include "d_event.h"
 #include "d_gui.h"
-#include "i_music.h"
 #include "m_joy.h"
 #include "gi.h"
 #include "i_sound.h"
@@ -55,7 +54,6 @@
 #include "types.h"
 #include "gameconfigfile.h"
 #include "m_argv.h"
-#include "i_soundfont.h"
 
 
 
@@ -1378,72 +1376,6 @@ static void InitCrosshairsList()
 
 //=============================================================================
 //
-// Initialize the music configuration submenus
-//
-//=============================================================================
-extern "C"
-{
-	extern int adl_getBanksCount();
-	extern const char *const *adl_getBankNames();
-}
-
-static void InitMusicMenus()
-{
-	DMenuDescriptor **advmenu = MenuDescriptors.CheckKey("AdvSoundOptions");
-	auto soundfonts = sfmanager.GetList();
-	std::tuple<const char *, int, const char *> sfmenus[] = { std::make_tuple("GusConfigMenu", SF_SF2 | SF_GUS, "midi_config"), 
-																std::make_tuple("WildMidiConfigMenu", SF_GUS, "wildmidi_config"), 
-																std::make_tuple("TimidityConfigMenu", SF_SF2 | SF_GUS, "timidity_config"), 
-																std::make_tuple("FluidPatchsetMenu", SF_SF2, "fluid_patchset") };
-
-	for (auto &p : sfmenus)
-	{
-		DMenuDescriptor **menu = MenuDescriptors.CheckKey(std::get<0>(p));
-
-		if (menu != nullptr)
-		{
-			if (soundfonts.Size() > 0)
-			{
-				for (auto &entry : soundfonts)
-				{
-					if (entry.type & std::get<1>(p))
-					{
-						FString display = entry.mName;
-						display.ReplaceChars("_", ' ');
-						auto it = CreateOptionMenuItemCommand(display, FStringf("%s \"%s\"", std::get<2>(p), entry.mName.GetChars()), true);
-						static_cast<DOptionMenuDescriptor*>(*menu)->mItems.Push(it);
-					}
-				}
-			}
-			else if (advmenu != nullptr)
-			{
-				// Remove the item for this submenu
-				auto d = static_cast<DOptionMenuDescriptor*>(*advmenu);
-				auto it = d->GetItem(std::get<0>(p));
-				if (it != nullptr) d->mItems.Delete(d->mItems.Find(it));
-			}
-		}
-	}
-
-	DMenuDescriptor **menu = MenuDescriptors.CheckKey("ADLBankMenu");
-
-	if (menu != nullptr)
-	{
-		int adl_banks_count = adl_getBanksCount();
-		if (adl_banks_count > 0)
-		{
-			const char *const *adl_bank_names = adl_getBankNames();
-			for (int i=0; i < adl_banks_count; i++)
-			{
-				auto it = CreateOptionMenuItemCommand(adl_bank_names[i], FStringf("adl_bank %d", i), true);
-				static_cast<DOptionMenuDescriptor*>(*menu)->mItems.Push(it);
-			}
-		}
-	}
-}
-
-//=============================================================================
-//
 // With the current workings of the menu system this cannot be done any longer
 // from within the respective CCMDs.
 //
@@ -1491,15 +1423,9 @@ void M_CreateMenus()
 	BuildEpisodeMenu();
 	BuildPlayerclassMenu();
 	InitCrosshairsList();
-	InitMusicMenus();
 	InitKeySections();
 
-	FOptionValues **opt = OptionValues.CheckKey(NAME_Mididevices);
-	if (opt != nullptr) 
-	{
-		I_BuildMIDIMenuList(*opt);
-	}
-	opt = OptionValues.CheckKey(NAME_Aldevices);
+    FOptionValues **opt = OptionValues.CheckKey(NAME_Aldevices);
 	if (opt != nullptr) 
 	{
 		I_BuildALDeviceList(*opt);

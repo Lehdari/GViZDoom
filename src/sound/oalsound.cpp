@@ -48,8 +48,6 @@
 #include "r_state.h"
 #include "w_wad.h"
 #include "i_module.h"
-#include "i_music.h"
-#include "i_musicinterns.h"
 #include "cmdlib.h"
 #include "logging.h"
 
@@ -1305,8 +1303,6 @@ std::pair<SoundHandle,bool> OpenALSoundRenderer::LoadSound(uint8_t *sfxdata, int
 	monoize = monoize && !AL.SOFT_source_spatialize;
 
 	reader.OpenMemory(sfxdata, length);
-
-	FindLoopTags(reader, &loop_start, &startass, &loop_end, &endass);
 
 	reader.Seek(0, FileReader::SeekSet);
 	std::unique_ptr<SoundDecoder> decoder(CreateDecoder(reader));
