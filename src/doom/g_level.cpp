@@ -87,7 +87,6 @@
 #include "vm.h"
 #include "events.h"
 #include "dobjgc.h"
-#include "i_music.h"
 
 #include "gi.h"
 
@@ -603,7 +602,6 @@ void G_ChangeLevel(const char *levelname, int position, int flags, int nextSkill
 
 	startpos = position;
 	gameaction = ga_completed;
-	level.SetMusicVolume(1.0);
 		
 	if (nextinfo != NULL) 
 	{
@@ -1949,34 +1947,11 @@ void FLevelLocals::AddScroller (int secnum)
 //
 //==========================================================================
 
-void FLevelLocals::SetInterMusic(const char *nextmap)
-{
-	auto mus = level.info->MapInterMusic.CheckKey(nextmap);
-	if (mus != nullptr)
-		S_ChangeMusic(mus->first, mus->second);
-	else if (level.info->InterMusic.IsNotEmpty())
-		S_ChangeMusic(level.info->InterMusic, level.info->intermusicorder);
-	else
-		S_ChangeMusic(gameinfo.intermissionMusic.GetChars(), gameinfo.intermissionOrder);
-}
-
 DEFINE_ACTION_FUNCTION(FLevelLocals, SetInterMusic)
 {
 	PARAM_SELF_STRUCT_PROLOGUE(FLevelLocals);
 	PARAM_STRING(map);
-	self->SetInterMusic(map);
 	return 0;
-}
-
-//==========================================================================
-//
-//
-//==========================================================================
-
-void FLevelLocals::SetMusicVolume(float f)
-{
-	MusicVolume = f;
-	I_SetMusicVolume(f);
 }
 
 //==========================================================================

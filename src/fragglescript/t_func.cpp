@@ -2103,42 +2103,6 @@ void FParser::SF_LineTrigger()
 
 //==========================================================================
 //
-//
-//
-//==========================================================================
-bool FS_ChangeMusic(const char * string)
-{
-	char buffer[40];
-
-	if (Wads.CheckNumForName(string, ns_music)<0 || !S_ChangeMusic(string,true))
-	{
-		// Retry with O_ prepended to the music name, then with D_
-		mysnprintf(buffer, countof(buffer), "O_%s", string);
-		if (Wads.CheckNumForName(buffer, ns_music)<0 || !S_ChangeMusic(buffer,true))
-		{
-			mysnprintf(buffer, countof(buffer), "D_%s", string);
-			if (Wads.CheckNumForName(buffer, ns_music)<0) 
-			{
-				S_ChangeMusic(NULL, 0);
-				return false;
-			}
-			else S_ChangeMusic(buffer,true);
-		}
-	}
-	return true;
-}
-
-void FParser::SF_ChangeMusic(void)
-{
-	if (CheckArgs(1))
-	{
-		FS_ChangeMusic(stringvalue(t_argv[0]));
-	}
-}
-
-
-//==========================================================================
-//
 // FParser::SF_SetLineBlocking()
 //
 //  Sets a line blocking or unblocking
@@ -4351,7 +4315,6 @@ void init_functions(void)
 	gscr->NewFunction("startsectorsound", &FParser::SF_StartSectorSound);
 	gscr->NewFunction("ambientsound", &FParser::SF_AmbientSound);
 	gscr->NewFunction("startambiantsound", &FParser::SF_AmbientSound);	// Legacy's incorrectly spelled name!
-	gscr->NewFunction("changemusic", &FParser::SF_ChangeMusic);
 	
 	// hubs!
 	gscr->NewFunction("changehublevel", &FParser::SF_ChangeHubLevel);

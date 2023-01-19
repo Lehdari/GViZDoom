@@ -79,7 +79,6 @@
 #include "p_effect.h"
 #include "r_utility.h"
 #include "a_morph.h"
-#include "i_music.h"
 #include "serializer.h"
 #include "thingdef.h"
 #include "a_pickups.h"
@@ -6689,10 +6688,6 @@ doplaysound:			if (funcIndex == ACSF_PlayActorSound)
 		}
 		break;
 
-		case ACSF_SetMusicVolume:
-			level.SetMusicVolume(ACSToFloat(args[0]));
-			break;
-
 		case ACSF_CheckProximity:
 		{
 			// [zombie] ACS version of A_CheckProximity
@@ -8985,15 +8980,6 @@ scriptwait:
 				PushToStack (0);
 			break;
 
-		case PCD_MUSICCHANGE:
-			lookup = FBehavior::StaticLookupString (STACK(2));
-			if (lookup != NULL)
-			{
-				S_ChangeMusic (lookup, STACK(1));
-			}
-			sp -= 2;
-			break;
-
 		case PCD_SINGLEPLAYER:
 			PushToStack (!multiplayer);
 			break;
@@ -9486,32 +9472,6 @@ scriptwait:
 				}
 			}
 			sp -= 2;
-			break;
-
-		case PCD_SETMUSIC:
-			S_ChangeMusic (FBehavior::StaticLookupString (STACK(3)), STACK(2));
-			sp -= 3;
-			break;
-
-		case PCD_SETMUSICDIRECT:
-			S_ChangeMusic (FBehavior::StaticLookupString (TAGSTR(uallong(pc[0]))), uallong(pc[1]));
-			pc += 3;
-			break;
-
-		case PCD_LOCALSETMUSIC:
-			if (activator == players[consoleplayer].mo)
-			{
-				S_ChangeMusic (FBehavior::StaticLookupString (STACK(3)), STACK(2));
-			}
-			sp -= 3;
-			break;
-
-		case PCD_LOCALSETMUSICDIRECT:
-			if (activator == players[consoleplayer].mo)
-			{
-				S_ChangeMusic (FBehavior::StaticLookupString (TAGSTR(uallong(pc[0]))), uallong(pc[1]));
-			}
-			pc += 3;
 			break;
 
 		case PCD_FADETO:
