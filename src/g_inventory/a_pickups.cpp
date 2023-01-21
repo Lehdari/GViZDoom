@@ -58,6 +58,7 @@
 #include "c_functions.h"
 #include "g_levellocals.h"
 #include "vm.h"
+#include "logging.h"
 
 EXTERN_CVAR(Bool, sv_unlimited_pickup)
 
@@ -346,7 +347,7 @@ DEFINE_ACTION_FUNCTION(AInventory, PrintPickupMessage)
 		const char *pstr = str.GetChars();
 
 		if (pstr[0] == '$')	pstr = GStrings(pstr + 1);
-		if (pstr[0] != 0) Printf(PRINT_LOW, "%s\n", pstr);
+		if (pstr[0] != 0) doom_logging::print(PRINT_LOW, "%s\n", pstr);
 		StatusBar->FlashCrosshair();
 	}
 	return 0;
