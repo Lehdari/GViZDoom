@@ -10,4 +10,11 @@ inline void print(const char* fmt, ...)
     // Left intentionally blank
 }
 
+inline void print(int loglevel, const char* fmt, ...)
+{
+    (void)loglevel;
+    (void)fmt;
+    // Left intentionally blank
+}
+
 } // namespace
