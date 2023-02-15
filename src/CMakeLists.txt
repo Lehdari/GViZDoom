@@ -245,17 +245,17 @@ endif()
 if( X64 )
 	set( HAVE_MMX 1 )
 else( X64 )
-	set( SAFE_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} )
+	set( SAFE_GVIZDOOM_CXX_FLAGS ${GVIZDOOM_CXX_FLAGS} )
 
 	if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
-		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmmx")
+		set( GVIZDOOM_CXX_FLAGS "${GVIZDOOM_CXX_FLAGS} -mmmx")
 	endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 
 	CHECK_CXX_SOURCE_COMPILES("#include <mmintrin.h>
 		int main(void) { __m64 v = _m_from_int(0); }"
 		HAVE_MMX)
 
-	set( CMAKE_CXX_FLAGS ${SAFE_CMAKE_CXX_FLAGS} )
+	set( GVIZDOOM_CXX_FLAGS ${SAFE_GVIZDOOM_CXX_FLAGS} )
 endif( X64 )
 
 CHECK_CXX_SOURCE_COMPILES("#include <ppl.h>
@@ -270,17 +270,17 @@ endif()
 
 # Set up flags for MSVC
 if (MSVC)
-	set( CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}" )
+	set( GVIZDOOM_CXX_FLAGS "/MP ${GVIZDOOM_CXX_FLAGS}" )
 endif (MSVC)
 
 # Set up flags for GCC
 
 if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	if( PROFILE )
-		set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -pg" )
-		set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -pg" )
-		set( CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -pg" )
-		set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -pg" )
+		set( GVIZDOOM_C_FLAGS_DEBUG "${GVIZDOOM_C_FLAGS_DEBUG} -pg" )
+		set( GVIZDOOM_CXX_FLAGS_DEBUG "${GVIZDOOM_CXX_FLAGS_DEBUG} -pg" )
+		set( GVIZDOOM_C_FLAGS_RELWITHDEBINFO "${GVIZDOOM_C_FLAGS_RELWITHDEBINFO} -pg" )
+		set( GVIZDOOM_CXX_FLAGS_RELWITHDEBINFO "${GVIZDOOM_CXX_FLAGS_RELWITHDEBINFO} -pg" )
 	endif()
 
 	set( REL_CXX_FLAGS "-fno-rtti" )
@@ -288,9 +288,9 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 		# On OS X frame pointers are required for exception handling, at least with Clang
 		set( REL_CXX_FLAGS "${REL_CXX_FLAGS} -fomit-frame-pointer" )
 	endif()
-	set( CMAKE_CXX_FLAGS_RELEASE "${REL_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}" )
-	set( CMAKE_CXX_FLAGS_MINSIZEREL "${REL_CXX_FLAGS} ${CMAKE_CXX_FLAGS_MINSIZEREL}" )
-	set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${REL_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" )
+	set( GVIZDOOM_CXX_FLAGS_RELEASE "${REL_CXX_FLAGS} ${GVIZDOOM_CXX_FLAGS_RELEASE}" )
+	set( GVIZDOOM_CXX_FLAGS_MINSIZEREL "${REL_CXX_FLAGS} ${GVIZDOOM_CXX_FLAGS_MINSIZEREL}" )
+	set( GVIZDOOM_CXX_FLAGS_RELWITHDEBINFO "${REL_CXX_FLAGS} ${GVIZDOOM_CXX_FLAGS_RELWITHDEBINFO}" )
 
 	# Support for the GCC/Clang sanitizers.
 	set( WITH_ASAN 0 CACHE BOOL "Enable the Address Sanitizer")
@@ -316,34 +316,34 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 		set( SANITIZER_FLAG "-fsanitize=undefined" )
 	endif( WITH_ASAN )
 
-	set( CMAKE_CXX_FLAGS "${SANITIZER_FLAG} ${CMAKE_CXX_FLAGS}" )
-	set( CMAKE_C_FLAGS "${SANITIZER_FLAG} ${CMAKE_C_FLAGS}" )
+	set( GVIZDOOM_CXX_FLAGS "${SANITIZER_FLAG} ${GVIZDOOM_CXX_FLAGS}" )
+	set( GVIZDOOM_C_FLAGS "${SANITIZER_FLAG} ${GVIZDOOM_C_FLAGS}" )
 
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.5")
-		set( CMAKE_C_FLAGS "-Wno-unused-result ${CMAKE_C_FLAGS}" )
-		set( CMAKE_CXX_FLAGS "-Wno-unused-result ${CMAKE_CXX_FLAGS}" )
+		set( GVIZDOOM_C_FLAGS "-Wno-unused-result ${GVIZDOOM_C_FLAGS}" )
+		set( GVIZDOOM_CXX_FLAGS "-Wno-unused-result ${GVIZDOOM_CXX_FLAGS}" )
 	endif()
 	if( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
 		if( APPLE OR CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.6" )
-			set( CMAKE_CXX_FLAGS "-Wno-inconsistent-missing-override ${CMAKE_CXX_FLAGS}" )
+			set( GVIZDOOM_CXX_FLAGS "-Wno-inconsistent-missing-override ${GVIZDOOM_CXX_FLAGS}" )
 		endif()
 	endif()
-	set( CMAKE_C_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers -ffp-contract=off ${CMAKE_C_FLAGS}" )
-	set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers -ffp-contract=off ${CMAKE_CXX_FLAGS}" )
+	set( GVIZDOOM_C_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers -ffp-contract=off ${GVIZDOOM_C_FLAGS}" )
+	set( GVIZDOOM_CXX_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers -ffp-contract=off ${GVIZDOOM_CXX_FLAGS}" )
 
 	# ARM processors (Raspberry Pi, et al) - enable ARM NEON support.
 	if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 		set (USE_ARMV8 0 CACHE BOOL "Use ARMv8 instructions - Raspberry Pi 3")
 		if (USE_ARMV8)
-			set( CMAKE_CXX_FLAGS "-mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mtune=cortex-a53 -mhard-float -DNO_SSE ${CMAKE_CXX_FLAGS}" )
+			set( GVIZDOOM_CXX_FLAGS "-mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mtune=cortex-a53 -mhard-float -DNO_SSE ${GVIZDOOM_CXX_FLAGS}" )
 		else ()
-			set( CMAKE_CXX_FLAGS "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mtune=cortex-a7 -mhard-float -DNO_SSE ${CMAKE_CXX_FLAGS}" )
+			set( GVIZDOOM_CXX_FLAGS "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mtune=cortex-a7 -mhard-float -DNO_SSE ${GVIZDOOM_CXX_FLAGS}" )
 		endif ()
 	endif ()
 
 	if( NOT X64 AND NOT CAN_DO_MFPMATH )
-		set( CMAKE_C_FLAGS "-DNO_SSE ${CMAKE_CXX_FLAGS}" )
-		set( CMAKE_CXX_FLAGS "-DNO_SSE ${CMAKE_CXX_FLAGS}" )
+		set( GVIZDOOM_C_FLAGS "-DNO_SSE ${GVIZDOOM_CXX_FLAGS}" )
+		set( GVIZDOOM_CXX_FLAGS "-DNO_SSE ${GVIZDOOM_CXX_FLAGS}" )
 	endif()
 
 	set(CMAKE_CXX_STANDARD 20)
@@ -352,7 +352,7 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	# With standard Apple tools -stdlib=libc++ needs to be specified in order to get
 	# C++11 support using SDKs 10.7 and 10.8.
 	if ( APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
-		set( CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}" )
+		set( GVIZDOOM_CXX_FLAGS "-stdlib=libc++ ${GVIZDOOM_CXX_FLAGS}" )
 		set( CMAKE_EXE_LINKER_FLAGS "-stdlib=libc++ ${CMAKE_EXE_LINKER_FLAGS}" )
 	endif ()
 
@@ -360,13 +360,13 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	# Also, TDM-GCC 4.4.0 no longer accepts glibc-style printf formats as valid,
 	# which is a royal pain. The previous version I had been using was fine with them.
 	if( WIN32 )
-		set( CMAKE_CXX_FLAGS "-Wno-unknown-pragmas -Wno-comment -Wno-format ${CMAKE_CXX_FLAGS}" )
+		set( GVIZDOOM_CXX_FLAGS "-Wno-unknown-pragmas -Wno-comment -Wno-format ${GVIZDOOM_CXX_FLAGS}" )
 	endif()
 
 	# Detect FreeBSD and add flags
 	if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-		set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" )
-		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
+		set( GVIZDOOM_C_FLAGS "${GVIZDOOM_C_FLAGS} -fPIC" )
+		set( GVIZDOOM_CXX_FLAGS "${GVIZDOOM_CXX_FLAGS} -fPIC" )
 	endif()
 
 	if( NOT NO_STRIP )
@@ -553,8 +553,8 @@ else()
 		include( FindOpenMP )
 
 		if( OPENMP_FOUND )
-			set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
-			set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+			set( GVIZDOOM_C_FLAGS "${GVIZDOOM_C_FLAGS} ${OpenMP_C_FLAGS}" )
+			set( GVIZDOOM_CXX_FLAGS "${GVIZDOOM_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
 		endif( OPENMP_FOUND )
 	endif( NOT NO_OPENMP )
 endif()
@@ -590,6 +590,18 @@ option( SEND_ANON_STATS "Enable sending of anonymous hardware statistics" ON )
 if( NOT SEND_ANON_STATS )
 	add_definitions( -DNO_SEND_STATS )
 endif()
+
+# split flag strings into lists
+string(REPLACE " " ";" GVIZDOOM_C_FLAGS ${GVIZDOOM_C_FLAGS})
+string(REPLACE " " ";" GVIZDOOM_CXX_FLAGS ${GVIZDOOM_CXX_FLAGS})
+string(REPLACE " " ";" GVIZDOOM_C_FLAGS_RELEASE ${GVIZDOOM_C_FLAGS_RELEASE})
+string(REPLACE " " ";" GVIZDOOM_CXX_FLAGS_RELEASE ${GVIZDOOM_CXX_FLAGS_RELEASE})
+string(REPLACE " " ";" GVIZDOOM_C_FLAGS_MINSIZEREL ${GVIZDOOM_C_FLAGS_MINSIZEREL})
+string(REPLACE " " ";" GVIZDOOM_CXX_FLAGS_MINSIZEREL ${GVIZDOOM_CXX_FLAGS_MINSIZEREL})
+string(REPLACE " " ";" GVIZDOOM_C_FLAGS_RELWITHDEBINFO ${GVIZDOOM_C_FLAGS_RELWITHDEBINFO})
+string(REPLACE " " ";" GVIZDOOM_CXX_FLAGS_RELWITHDEBINFO ${GVIZDOOM_CXX_FLAGS_RELWITHDEBINFO})
+string(REPLACE " " ";" GVIZDOOM_C_FLAGS_DEBUG ${GVIZDOOM_C_FLAGS_DEBUG})
+string(REPLACE " " ";" GVIZDOOM_CXX_FLAGS_DEBUG ${GVIZDOOM_CXX_FLAGS_DEBUG})
 
 # Project files should be aware of the header files. We can GLOB these since
 # there's generally a new cpp for every header so this file will get changed
@@ -1051,6 +1063,16 @@ PUBLIC
 target_compile_definitions(gvizdoom
 PUBLIC
 	BUILD_GVIZDOOM
+)
+
+target_compile_options(gvizdoom
+PRIVATE
+	${GVIZDOOM_C_FLAGS}
+	${GVIZDOOM_CXX_FLAGS}
+	$<$<CONFIG:RELEASE>:${GVIZDOOM_C_FLAGS_RELEASE} ${GVIZDOOM_CXX_FLAGS_RELEASE}>
+	$<$<CONFIG:MINSIZEREL>:${GVIZDOOM_C_FLAGS_MINSIZEREL} ${GVIZDOOM_CXX_FLAGS_MINSIZEREL}>
+	$<$<CONFIG:RELWITHDEBINFO>:${GVIZDOOM_C_FLAGS_RELWITHDEBINFO} ${GVIZDOOM_CXX_FLAGS_RELWITHDEBINFO}>
+	$<$<CONFIG:DEBUG>:${GVIZDOOM_C_FLAGS_DEBUG} ${GVIZDOOM_CXX_FLAGS_DEBUG}>
 )
 
 if (WITH_ASAN)
