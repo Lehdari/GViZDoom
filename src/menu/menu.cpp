@@ -161,7 +161,6 @@ IMPLEMENT_POINTERS_END
 DMenu::DMenu(DMenu *parent) 
 {
 	mParentMenu = parent;
-	mMouseCapture = false;
 	mBackbuttonSelected = false;
 	DontDim = false;
 	GC::WriteBarrier(this, parent);
@@ -225,15 +224,6 @@ bool DMenu::CallMenuEvent(int mkey, bool fromcontroller)
 //
 //
 //=============================================================================
-
-DEFINE_ACTION_FUNCTION(DMenu, SetMouseCapture)
-{
-	PARAM_PROLOGUE;
-	PARAM_BOOL(on);
-	if (on) I_SetMouseCapture();
-	else I_ReleaseMouseCapture();
-	return 0;
-}
 
 void DMenu::Close ()
 {
@@ -344,11 +334,6 @@ void M_StartControlPanel (bool makeSound)
 void M_ActivateMenu(DMenu *menu)
 {
 	if (menuactive == MENU_Off) menuactive = MENU_On;
-	if (CurrentMenu != nullptr && CurrentMenu->mMouseCapture)
-	{
-		CurrentMenu->mMouseCapture = false;
-		I_ReleaseMouseCapture();
-	}
 	CurrentMenu = menu;
 	GC::WriteBarrier(CurrentMenu);
 }
@@ -1074,7 +1059,6 @@ DEFINE_GLOBAL(BackbuttonTime)
 DEFINE_GLOBAL(BackbuttonAlpha)
 
 DEFINE_FIELD(DMenu, mParentMenu)
-DEFINE_FIELD(DMenu, mMouseCapture);
 DEFINE_FIELD(DMenu, mBackbuttonSelected);
 DEFINE_FIELD(DMenu, DontDim);
 
