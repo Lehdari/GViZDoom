@@ -262,7 +262,6 @@ public:
 	};
 
 	TObjPtr<DMenu*> mParentMenu;
-	bool mMouseCapture;
 	bool mBackbuttonSelected;
 	bool DontDim;
 
