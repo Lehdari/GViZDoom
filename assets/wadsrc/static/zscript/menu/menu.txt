@@ -87,7 +87,6 @@ class Menu : Object native ui version("2.4")
 	};
 
 	native Menu mParentMenu;
-	native bool mMouseCapture;
 	native bool mBackbuttonSelected;
 	native bool DontDim;
 
@@ -96,7 +95,6 @@ class Menu : Object native ui version("2.4")
 	native static Menu GetCurrentMenu();
 	native static clearscope void SetMenu(Name mnu, int param = 0);	// This is not 100% safe but needs to be available - but always make sure to check that only the desired player opens it!
 	native static void StartMessage(String msg, int mode = 0, Name command = 'none');
-	native static void SetMouseCapture(bool on);
 	native void Close();
 	native void ActivateMenu();
 	
@@ -109,7 +107,6 @@ class Menu : Object native ui version("2.4")
 	void Init(Menu parent)
 	{
 		mParentMenu = parent;
-		mMouseCapture = false;
 		mBackbuttonSelected = false;
 		DontDim = false;
 	}
@@ -179,30 +176,15 @@ class Menu : Object native ui version("2.4")
 			// make the menu's mouse handler believe that the current coordinate is outside the valid range
 			if (res) y = -1;	
 			res |= MouseEvent(MOUSE_Click, ev.MouseX, y);
-			if (res)
-			{
-				SetCapture(true);
-			}
-			
 		}
 		else if (ev.type == UIEvent.Type_MouseMove)
 		{
 			BackbuttonTime = 4*Thinker.TICRATE;
-			if (mMouseCapture || m_use_mouse == 1)
+			if (m_use_mouse == 1)
 			{
 				res = MouseEventBack(MOUSE_Move, ev.MouseX, y);
 				if (res) y = -1;	
 				res |= MouseEvent(MOUSE_Move, ev.MouseX, y);
-			}
-		}
-		else if (ev.type == UIEvent.Type_LButtonUp)
-		{
-			if (mMouseCapture)
-			{
-				SetCapture(false);
-				res = MouseEventBack(MOUSE_Release, ev.MouseX, y);
-				if (res) y = -1;	
-				res |= MouseEvent(MOUSE_Release, ev.MouseX, y);
 			}
 		}
 		return false; 
@@ -231,7 +213,7 @@ class Menu : Object native ui version("2.4")
 				int h = int(v.Y + 0.5) * CleanYfac;
 				int x = (!(m_show_backbutton&1))? 0:screen.GetWidth() - w;
 				int y = (!(m_show_backbutton&2))? 0:screen.GetHeight() - h;
-				if (mBackbuttonSelected && (mMouseCapture || m_use_mouse == 1))
+				if (mBackbuttonSelected && (m_use_mouse == 1))
 				{
 					screen.DrawTexture(tex, true, x, y, DTA_CleanNoMove, true, DTA_ColorOverlay, Color(40, 255,255,255));
 				}
@@ -240,21 +222,6 @@ class Menu : Object native ui version("2.4")
 					screen.DrawTexture(tex, true, x, y, DTA_CleanNoMove, true, DTA_Alpha, BackbuttonAlpha);
 				}
 			}
-		}
-	}
-	
-	//=============================================================================
-	//
-	//
-	//
-	//=============================================================================
-
-	void SetCapture(bool on)
-	{
-		if (mMouseCapture != on)
-		{
-			mMouseCapture = on;
-			SetMouseCapture(on);
 		}
 	}
 

@@ -197,16 +197,6 @@ static void I_CheckGUICapture ()
 	}
 }
 
-void I_SetMouseCapture()
-{
-	SetCapture(Window);
-}
-
-void I_ReleaseMouseCapture()
-{
-	ReleaseCapture();
-}
-
 bool GUIWndProcHook(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, LRESULT *result)
 {
 	event_t ev = { EV_GUI_Event };
