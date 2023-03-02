@@ -778,7 +778,6 @@ set (PCH_SOURCES
 	doom/m_argv.cpp
 	doom/m_bbox.cpp
 	doom/m_cheat.cpp
-	doom/m_joy.cpp
 	doom/m_misc.cpp
 	doom/m_png.cpp
 	doom/m_random.cpp

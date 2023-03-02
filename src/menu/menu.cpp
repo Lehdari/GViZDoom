@@ -932,12 +932,6 @@ CCMD (menu_mouse)
 	M_SetMenu(NAME_MouseOptions, -1);
 }
 
-CCMD (menu_joystick)
-{
-	M_StartControlPanel (true);
-	M_SetMenu(NAME_JoystickOptions, -1);
-}
-
 CCMD (menu_sound)
 {
 	M_StartControlPanel (true);
@@ -1115,17 +1109,6 @@ DMenuItemBase * CreateOptionMenuItemStaticText(const char *name, int v)
 	auto p = c->CreateNew();
 	FString namestr = name;
 	VMValue params[] = { p, &namestr, v };
-	auto f = dyn_cast<PFunction>(c->FindSymbol("Init", false));
-	VMCall(f->Variants[0].Implementation, params, countof(params), nullptr, 0);
-	return (DMenuItemBase*)p;
-}
-
-DMenuItemBase * CreateOptionMenuItemJoyConfigMenu(const char *label, IJoystickConfig *joy)
-{
-	auto c = PClass::FindClass("OptionMenuItemJoyConfigMenu");
-	auto p = c->CreateNew();
-	FString namestr = label;
-	VMValue params[] = { p, &namestr, joy };
 	auto f = dyn_cast<PFunction>(c->FindSymbol("Init", false));
 	VMCall(f->Variants[0].Implementation, params, countof(params), nullptr, 0);
 	return (DMenuItemBase*)p;

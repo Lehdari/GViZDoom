@@ -143,7 +143,6 @@ extern HWND Window, ConWindow;
 
 EXTERN_CVAR (String, language)
 EXTERN_CVAR (Bool, lookstrafe)
-EXTERN_CVAR (Bool, use_joystick)
 EXTERN_CVAR (Bool, use_mouse)
 
 static int WheelDelta;
