@@ -77,7 +77,6 @@
 #include "d_event.h"
 #include "p_acs.h"
 #include "p_effect.h"
-#include "m_joy.h"
 #include "r_renderer.h"
 #include "r_utility.h"
 #include "a_morph.h"
@@ -544,18 +543,6 @@ CCMD (select)
 		}
 	}
 	who->player->inventorytics = 5*TICRATE;
-}
-
-static inline int joyint(double val)
-{
-	if (val >= 0)
-	{
-		return int(ceil(val));
-	}
-	else
-	{
-		return int(floor(val));
-	}
 }
 
 //
