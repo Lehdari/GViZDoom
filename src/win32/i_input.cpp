@@ -871,56 +871,6 @@ IJoystickConfig *I_UpdateDeviceList()
 	return newone;
 }
 
-void I_PutInClipboard (const char *str)
-{
-	if (str == NULL || !OpenClipboard (Window))
-		return;
-	EmptyClipboard ();
-
-	HGLOBAL cliphandle = GlobalAlloc (GMEM_DDESHARE, strlen (str) + 1);
-	if (cliphandle != NULL)
-	{
-		char *ptr = (char *)GlobalLock (cliphandle);
-		strcpy (ptr, str);
-		GlobalUnlock (cliphandle);
-		SetClipboardData (CF_TEXT, cliphandle);
-	}
-	CloseClipboard ();
-}
-
-FString I_GetFromClipboard (bool return_nothing)
-{
-	FString retstr;
-	HGLOBAL cliphandle;
-	char *clipstr;
-	char *nlstr;
-
-	if (return_nothing || !IsClipboardFormatAvailable (CF_TEXT) || !OpenClipboard (Window))
-		return retstr;
-
-	cliphandle = GetClipboardData (CF_TEXT);
-	if (cliphandle != NULL)
-	{
-		clipstr = (char *)GlobalLock (cliphandle);
-		if (clipstr != NULL)
-		{
-			// Convert CR-LF pairs to just LF while copying to the FString
-			for (nlstr = clipstr; *nlstr != '\0'; ++nlstr)
-			{
-				if (nlstr[0] == '\r' && nlstr[1] == '\n')
-				{
-					nlstr++;
-				}
-				retstr += *nlstr;
-			}
-			GlobalUnlock (clipstr);
-		}
-	}
-
-	CloseClipboard ();
-	return retstr;
-}
-
 //==========================================================================
 //
 // FInputDevice - Destructor

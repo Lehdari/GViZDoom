@@ -215,19 +215,6 @@ void I_GetEvent()
 	[[NSRunLoop currentRunLoop] limitDateForMode:NSDefaultRunLoopMode];
 }
 
-void I_StartTic()
-{
-	CheckGUICapture();
-	CheckNativeMouse();
-
-	I_ProcessJoysticks();
-	I_GetEvent();
-}
-
-void I_StartFrame()
-{
-}
-
 void I_SetNativeMouse(bool wantNative)
 {
 	static bool nativeMouse = true;

@@ -49,7 +49,6 @@
 #include "hu_stuff.h"
 #include "gi.h"
 #include "v_palette.h"
-#include "g_input.h"
 #include "gameconfigfile.h"
 #include "gstrings.h"
 #include "r_utility.h"

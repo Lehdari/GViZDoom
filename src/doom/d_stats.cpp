@@ -20,8 +20,6 @@ extern int sys_ostype;
 #else
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
-#else // !__APPLE__
-#include <SDL.h>
 #endif // __APPLE__
 #include <sys/socket.h>
 #include <sys/types.h>

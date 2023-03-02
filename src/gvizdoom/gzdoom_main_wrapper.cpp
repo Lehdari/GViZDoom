@@ -12,7 +12,6 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <SDL.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -163,9 +162,6 @@ static int DoomSpecificInfo (char *buffer, char *end)
     return p;
 }
 
-void I_StartupJoysticks();
-void I_ShutdownJoysticks();
-
 int gzdoom_main_init(int argc, char **argv) // TODO can this stuff be moved to DoomMain::Init() ?
 {
 #if !defined (__APPLE__)
@@ -188,13 +184,6 @@ int gzdoom_main_init(int argc, char **argv) // TODO can this stuff be moved to D
     setenv ("LC_NUMERIC", "C", 1);
 
     setlocale (LC_ALL, "C");
-
-    if (SDL_Init (0) < 0)
-    {
-        fprintf (stderr, "Could not initialize SDL:\n%s\n", SDL_GetError());
-        return -1;
-    }
-    atterm (SDL_Quit);
 
 #if 0
     try
@@ -238,14 +227,12 @@ int gzdoom_main_init(int argc, char **argv) // TODO can this stuff be moved to D
         progdir = std::filesystem::current_path().c_str();
     }
 
-    I_StartupJoysticks();
     C_InitConsole(80 * 8, 25 * 8, false);
 #if 0
         D_DoomMain ();
     }
     catch (class CDoomError &error)
     {
-        I_ShutdownJoysticks();
         if (error.GetMessage ())
             fprintf (stderr, "%s\n", error.GetMessage ());
 

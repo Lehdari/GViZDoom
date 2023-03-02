@@ -48,7 +48,6 @@
 #include "hu_stuff.h"
 #include "i_system.h"
 #include "i_video.h"
-#include "g_input.h"
 #include "m_swap.h"
 #include "v_palette.h"
 #include "v_video.h"
@@ -1678,14 +1677,9 @@ static bool C_HandleKey (event_t *ev, FCommandBuffer &buffer)
 			{
 				if (data1 == 'C')
 				{ // copy to clipboard
-					if (buffer.Text.IsNotEmpty())
-					{
-						I_PutInClipboard(buffer.Text);
-					}
 				}
 				else
 				{ // paste from clipboard
-					buffer.AddString(I_GetFromClipboard(false));
 					HistPos = NULL;
 				}
 				break;
@@ -1746,7 +1740,6 @@ static bool C_HandleKey (event_t *ev, FCommandBuffer &buffer)
 
 #ifdef __unix__
 	case EV_GUI_MButtonDown:
-		buffer.AddString(I_GetFromClipboard(true));
 		HistPos = NULL;
 		break;
 #endif

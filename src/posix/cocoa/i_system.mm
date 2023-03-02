@@ -348,33 +348,6 @@ int I_FindAttr(findstate_t* const fileinfo)
 }
 
 
-void I_PutInClipboard(const char* const string)
-{
-	NSPasteboard* const pasteBoard = [NSPasteboard generalPasteboard];
-	NSString* const stringType = NSStringPboardType;
-	NSArray* const types = [NSArray arrayWithObjects:stringType, nil];
-	NSString* const content = [NSString stringWithUTF8String:string];
-
-	[pasteBoard declareTypes:types
-					   owner:nil];
-	[pasteBoard setString:content
-				  forType:stringType];
-}
-
-FString I_GetFromClipboard(bool returnNothing)
-{
-	if (returnNothing)
-	{
-		return FString();
-	}
-
-	NSPasteboard* const pasteBoard = [NSPasteboard generalPasteboard];
-	NSString* const value = [pasteBoard stringForType:NSStringPboardType];
-
-	return FString([value UTF8String]);
-}
-
-
 unsigned int I_MakeRNGSeed()
 {
 	return static_cast<unsigned int>(arc4random());
