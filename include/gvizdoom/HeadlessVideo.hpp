@@ -12,7 +12,6 @@
 
 #include "hardware.h"
 #include "v_video.h"
-#include <SDL.h>
 
 
 EXTERN_CVAR (Float, dimamount)

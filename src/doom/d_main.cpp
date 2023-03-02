@@ -104,7 +104,6 @@
 #include "v_palette.h"
 #include "m_cheat.h"
 #include "compatibility.h"
-#include "m_joy.h"
 #include "sc_man.h"
 #include "po_man.h"
 #include "resourcefiles/resourcefile.h"
@@ -207,20 +206,7 @@ CVAR (Float, timelimit, 0.f, CVAR_SERVERINFO);
 CVAR (Int, snd_drawoutput, 0, 0);
 CUSTOM_CVAR (String, vid_cursor, "None", CVAR_ARCHIVE | CVAR_NOINITCALL)
 {
-	bool res = false;
-
-	if (!stricmp(self, "None" ) && gameinfo.CursorPic.IsNotEmpty())
-	{
-		res = I_SetCursor(TexMan[gameinfo.CursorPic]);
-	}
-	else
-	{
-		res = I_SetCursor(TexMan[self]);
-	}
-	if (!res)
-	{
-		I_SetCursor(TexMan["cursor"]);
-	}
+    // TODO remove?
 }
 
 // Controlled by startup dialog
@@ -308,8 +294,6 @@ void D_ProcessEvents (void)
 		ev = &events[eventtail];
 		if (ev->type == EV_None)
 			continue;
-		if (ev->type == EV_DeviceChange)
-			UpdateJoystickMenu(I_UpdateDeviceList());
 		if (C_Responder (ev))
 			continue;				// console ate the event
 		if (M_Responder (ev))
@@ -970,7 +954,7 @@ void D_ErrorCleanup ()
 // D_DoomLoop
 //
 // Manages timing and IO, calls all ?_Responder, ?_Ticker, and ?_Drawer,
-// calls I_GetTime, I_StartFrame, and I_StartTic
+// calls I_GetTime
 //
 //==========================================================================
 
@@ -1005,14 +989,12 @@ void DoomLoop::Iter(
         if (gametic > _lasttic)
         {
             _lasttic = gametic;
-            I_StartFrame ();
         }
         I_SetFrameTime();
 
         // process one or more tics
         if (singletics)
         {
-            I_StartTic ();
             D_ProcessEvents ();
             ticcmd_t forceCmd;
 
@@ -1071,7 +1053,6 @@ void DoomLoop::Iter(
         }
 #endif
         // Update display, next frame, with current state.
-        I_StartTic ();
         D_Display(gameConfig, context);
 #if 0 // Not needed since the loop has been spliced and we can terminate it whenever we want
         if (wantToRestart)
@@ -2575,7 +2556,6 @@ void DoomMain::ReInit(gvizdoom::Context& context, const gvizdoom::GameConfig& ga
         }
 
         V_Init2(context);
-        UpdateJoystickMenu(NULL);
 
         _v = Args->CheckValue("-loadgame");
         if (_v) {

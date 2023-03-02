@@ -16,38 +16,6 @@ struct OptionValues native version("2.4")
 	native static String GetTextValue(Name group, int index);
 }
 
-struct JoystickConfig native version("2.4")
-{
-	enum EJoyAxis
-	{
-		JOYAXIS_None = -1,
-		JOYAXIS_Yaw,
-		JOYAXIS_Pitch,
-		JOYAXIS_Forward,
-		JOYAXIS_Side,
-		JOYAXIS_Up,
-	//	JOYAXIS_Roll,		// Ha ha. No roll for you.
-		NUM_JOYAXIS,
-	};
-
-	native float GetSensitivity();
-	native void SetSensitivity(float scale);
-
-	native float GetAxisScale(int axis);
-	native void SetAxisScale(int axis, float scale);
-
-	native float GetAxisDeadZone(int axis);
-	native void SetAxisDeadZone(int axis, float zone);
-	
-	native int GetAxisMap(int axis);
-	native void SetAxisMap(int axis, int gameaxis);
-	
-	native String GetName();
-	native int GetNumAxes();
-	native String GetAxisName(int axis);
-	
-}
-
 class Menu : Object native ui version("2.4")
 {
 	enum EMenuKey

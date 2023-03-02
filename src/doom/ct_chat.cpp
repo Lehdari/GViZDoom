@@ -38,7 +38,6 @@
 #include "v_video.h"
 #include "gi.h"
 #include "d_gui.h"
-#include "g_input.h"
 #include "templates.h"
 #include "d_net.h"
 #include "d_event.h"
@@ -165,7 +164,6 @@ bool CT_Responder (event_t *ev)
 			else if (ev->data1 == 'C' && (ev->data3 & GKM_CTRL))
 #endif // __APPLE__
 			{
-				I_PutInClipboard ((char *)ChatQueue);
 				return true;
 			}
 #ifdef __APPLE__
@@ -174,7 +172,6 @@ bool CT_Responder (event_t *ev)
 			else if (ev->data1 == 'V' && (ev->data3 & GKM_CTRL))
 #endif // __APPLE__
 			{
-				CT_PasteChat(I_GetFromClipboard(false));
 			}
 		}
 		else if (ev->subtype == EV_GUI_Char)
@@ -194,7 +191,6 @@ bool CT_Responder (event_t *ev)
 #ifdef __unix__
 		else if (ev->subtype == EV_GUI_MButtonDown)
 		{
-			CT_PasteChat(I_GetFromClipboard(true));
 		}
 #endif
 	}
