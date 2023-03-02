@@ -47,11 +47,11 @@ struct event_t
 {
 	uint8_t		type;
 	uint8_t		subtype;
-	int16_t 		data1;		// keys / mouse/joystick buttons
+	int16_t 		data1;		// keys / mouse buttons
 	int16_t		data2;
 	int16_t		data3;
-	int 		x;			// mouse/joystick x move
-	int 		y;			// mouse/joystick y move
+	int 		x;			// mouse x move
+	int 		y;			// mouse y move
 };
 
  

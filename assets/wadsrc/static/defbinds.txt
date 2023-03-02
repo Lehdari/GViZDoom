@@ -62,12 +62,6 @@ pgdn +lookup
 del +lookdown
 end centerview
 
-// Generic joystick buttons
-joy1 +attack
-joy2 +strafe
-joy3 +speed
-joy4 +use
-
 // Xbox 360 / PS2 controllers
 pad_a +use
 pad_y +jump
